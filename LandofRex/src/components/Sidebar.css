@@ -1,0 +1,32 @@
+.sidebar {
+  width: 250px; /* 사이드바의 너비 */
+  background-color: #f0f0f0; /* 배경색 */
+  padding: 20px; /* 패딩 */
+  height: 100vh; /* 전체 높이 */
+}
+
+.header {
+  font-size: 24px; /* 헤더 글꼴 크기 */
+  font-weight: bold; /* 헤더 굵기 */
+  margin-bottom: 20px; /* 헤더와 메뉴 간격 */
+}
+
+.menu {
+  display: flex;
+  flex-direction: column; /* 메뉴를 세로로 나열 */
+}
+
+.menu-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.menu-item:hover {
+  background-color: #f0f0f0; /* 호버 시 배경 색상 변경 */
+}
+
+.menu-item-active {
+  font-weight: bold;
+  background-color: #e0e0e0; /* 선택된 메뉴 배경 색상 변경 */
+}
