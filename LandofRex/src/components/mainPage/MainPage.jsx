@@ -16,7 +16,6 @@ const MainPage = () => {
         <h1 className="title">Land<br />of<br />Rex</h1>
 
         {/* 다운로드 버튼과 QR 코드 컨테이너 */}
-        <div className="download-qr-container">
           <div className="download-button">
             <a 
               onClick={() => navigate('/adminPage')} // 클릭 시 바로 adminPage로 이동
@@ -26,13 +25,7 @@ const MainPage = () => {
               <img src={test} className="downloadImg" alt="앱 다운로드" />
             </a>
           </div>
-
-          <div className="qr-code">
-            <p className="qrtext">QR 코드 다운로드</p>
-            <img src={test} className="qrImg" alt="QR 코드" />
-          </div>
         </div>
-      </div>
     </div>
   );
 };

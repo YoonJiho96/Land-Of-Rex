@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../Sidebar"; // Sidebar import
-import "./AdminPage.css"; // AdminPage 전용 CSS 파일
+import Sidebar from "../../Sidebar"; // Sidebar import
+import "./DashboardPage.css";
 
-const AdminPage = () => {
-  const [selectedMenu, setSelectedMenu] = useState("");
+const dashboardPage = () => {
+  const [selectedMenu, setSelectedMenu] = useState("대시보드");
 
   return (
     <div className="admin-page-layout">
       <Sidebar selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
       <div className="admin-page-content">
         <div className="admin-header">
-          <h1>관리자 페이지</h1>
+          <h1>대시보드 페이지</h1>
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminPage;
+export default dashboardPage;

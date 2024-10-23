@@ -1,32 +1,42 @@
 .sidebar {
-  width: 250px; /* 사이드바의 너비 */
-  background-color: #f0f0f0; /* 배경색 */
-  padding: 20px; /* 패딩 */
-  height: 100vh; /* 전체 높이 */
+  width: 240px;
+  height: 100vh;
+  background-color: #8B7FD0;
+  color: white;
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .header {
-  font-size: 24px; /* 헤더 글꼴 크기 */
-  font-weight: bold; /* 헤더 굵기 */
-  margin-bottom: 20px; /* 헤더와 메뉴 간격 */
+  font-size: 24px;
+  font-weight: bold;
+  padding: 20px;
+  margin-bottom: 40px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .menu {
   display: flex;
-  flex-direction: column; /* 메뉴를 세로로 나열 */
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 20px;
 }
 
 .menu-item {
-  padding: 10px 15px;
+  padding: 15px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .menu-item:hover {
-  background-color: #f0f0f0; /* 호버 시 배경 색상 변경 */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .menu-item-active {
-  font-weight: bold;
-  background-color: #e0e0e0; /* 선택된 메뉴 배경 색상 변경 */
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
 }

@@ -1,16 +1,39 @@
 import React from 'react';
-import './Sidebar.css'; // Sidebar의 스타일
+import { useNavigate } from 'react-router-dom';
+import './Sidebar.css';
 
 const Sidebar = ({ selectedMenu, setSelectedMenu }) => {
-  const menuItems = ['대시보드', '사용자 관리', '문의내역']; // 메뉴 항목 설정
+  const navigate = useNavigate();
+  const menuItems = ['대시보드', '사용자 관리', '문의내역'];
 
   const handleMenuClick = (item) => {
-    setSelectedMenu(item); // 선택된 메뉴 상태 업데이트
+    setSelectedMenu(item);
+    
+    // 메뉴 항목에 따른 경로 설정
+    switch(item) {
+      case '대시보드':
+        navigate('/dashboardPage');
+        break;
+      case '사용자 관리':
+        navigate('/userManagement');
+        break;
+      case '문의내역':
+        navigate('/inquiryPage');
+        break;
+      default:
+        navigate('/adminPage');
+    }
   };
 
   return (
     <div className="sidebar">
-      <div className="header">관리자 페이지</div>
+      <div 
+        className="header" 
+        onClick={() => navigate('/adminPage')}  // 클릭 시 바로 이동
+        style={{ cursor: 'pointer' }} // 커서를 pointer로 변경
+      >
+        관리자 페이지
+      </div>
       <div className="menu">
         {menuItems.map((item) => (
           <div
