@@ -25,9 +25,6 @@ const createWindow = () => {
   // 현재 버전 보내기
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.send('current-version', app.getVersion());
-    if (latestVersion) {
-      mainWindow.webContents.send('latest-version', latestVersion);
-    }
   });
 
   // 업데이트가 있을 때 최신 버전 정보 사용자에게 알림

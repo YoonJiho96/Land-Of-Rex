@@ -49,8 +49,8 @@ installNoBtn.addEventListener('click', () => {
 
 // 페이지 로드 시 현재 버전 표시
 window.addEventListener('DOMContentLoaded', () => {
-    window.updater.onUpdateAvailable((version) => {
-    currentVersionSpan.textContent = `1.0.0`; // 실제 버전으로 대체
+    window.updater.onCurrentVersion((version) => {
+        document.getElementById('current-version').textContent = version;
     });
 });
 
