@@ -1,6 +1,21 @@
-const { app, BrowserWindow, ipcMain } = require('electron/main');
-const path = require('node:path');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
 const { autoUpdater } = require('electron-updater');
+const AWS = require('aws-sdk');
+const fs = require('fs');
+
+require('dotenv').config(); // 환경 변수 로드
+
+// AWS S3 설정
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const s3 = new AWS.S3();
+const S3_BUCKET = process.env.S3_BUCKET_NAME;
+const GAME_FOLDER = process.env.GAME_FOLDER_NAME;
 
 let mainWindow;
 let latestVersion = null;
@@ -27,23 +42,20 @@ const createWindow = () => {
     mainWindow.webContents.send('current-version', app.getVersion());
   });
 
-  // 업데이트가 있을 때 최신 버전 정보 사용자에게 알림
+  // 업데이트 이벤트 핸들러
   autoUpdater.on('update-available', (info) => {
     latestVersion = info.version;
     mainWindow.webContents.send('update-available', latestVersion);
   });
 
-  // 업데이트 다운로드 진행 상황
   autoUpdater.on('download-progress', (progressObj) => {
     mainWindow.webContents.send('download-progress', progressObj);
   });
 
-  // 업데이트 다운로드 완료 후 사용자에게 알림
   autoUpdater.on('update-downloaded', () => {
     mainWindow.webContents.send('update-downloaded');
   });
 
-  // 예외 처리
   autoUpdater.on('error', (error) => {
     console.error('업데이트 중 에러 발생:', error);
     mainWindow.webContents.send('update-error', error == null ? "알 수 없는 오류" : (error.stack || error).toString());
@@ -51,7 +63,6 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
-  // autoDownload를 false로 설정하여 자동 다운로드를 방지
   autoUpdater.autoDownload = false;
 
   createWindow();
@@ -70,17 +81,16 @@ app.on('window-all-closed', () => {
   }
 });
 
-// 업데이트 다운로드 요청 처리
+// 업데이트 관련 IPC 핸들러
 ipcMain.on('download-update', () => {
   autoUpdater.downloadUpdate();
 });
 
-// 업데이트 설치 요청 처리
 ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall();
 });
 
-// 창 제어 이벤트 처리
+// 창 제어 IPC 핸들러
 ipcMain.on('minimize-window', () => {
   mainWindow.minimize();
 });
@@ -95,4 +105,67 @@ ipcMain.on('maximize-window', () => {
 
 ipcMain.on('close-window', () => {
   mainWindow.close();
+});
+
+// 게임 다운로드 IPC 핸들러
+ipcMain.on('download-game', async () => {
+  try {
+    // 기본 다운로드 경로 설정
+    const defaultDownloadPath = path.join(__dirname, 'LandOfRex');
+
+    // S3에서 게임 폴더의 모든 객체 목록 가져오기
+    const listParams = {
+      Bucket: S3_BUCKET,
+      Prefix: `${GAME_FOLDER}/`,
+    };
+
+    const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+    if (!listedObjects.Contents.length) {
+      throw new Error('S3에 다운로드할 게임 폴더가 존재하지 않습니다.');
+    }
+
+    // 디렉토리 생성
+    fs.mkdirSync(defaultDownloadPath, { recursive: true });
+
+    // 각 객체 다운로드
+    for (let i = 0; i < listedObjects.Contents.length; i++) {
+      const obj = listedObjects.Contents[i];
+      const key = obj.Key;
+
+      // 폴더는 건너뛰기
+      if (key.endsWith('/')) continue;
+
+      const relativePath = key.substring(GAME_FOLDER.length + 1);
+      const filePath = path.join(defaultDownloadPath, relativePath);
+
+      // 디렉토리 생성
+      const dir = path.dirname(filePath);
+      fs.mkdirSync(dir, { recursive: true });
+
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: key,
+      };
+
+      const file = fs.createWriteStream(filePath);
+      const s3Stream = s3.getObject(params).createReadStream();
+
+      await new Promise((resolve, reject) => {
+        s3Stream.pipe(file)
+          .on('error', reject)
+          .on('close', resolve);
+      });
+
+      // 진행 상황 전송
+      const progress = ((i + 1) / listedObjects.Contents.length) * 100;
+      mainWindow.webContents.send('download-game-progress', { percent: progress.toFixed(2) });
+    }
+
+    // 다운로드 완료 이벤트 전송
+    mainWindow.webContents.send('download-complete');
+  } catch (error) {
+    console.error('게임 다운로드 중 오류 발생:', error);
+    mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
+  }
 });

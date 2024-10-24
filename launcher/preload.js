@@ -16,3 +16,13 @@ contextBridge.exposeInMainWorld('electron', {
   minimizeWindow: () => ipcRenderer.send('minimize-window'),
   closeWindow: () => ipcRenderer.send('close-window')
 });
+
+// 게임 다운로드
+contextBridge.exposeInMainWorld('api', {
+  downloadGame: () => ipcRenderer.send('download-game'),
+  onDownloadGameProgress: (callback) => ipcRenderer.on('download-game-progress', callback),
+  onDownloadGameComplete: (callback) => ipcRenderer.on('download-complete', callback),
+  onDownloadError: (callback) => ipcRenderer.on('download-error', callback),
+  minimizeWindow: () => ipcRenderer.send('minimize-window'),
+  closeWindow: () => ipcRenderer.send('close-window'),
+});

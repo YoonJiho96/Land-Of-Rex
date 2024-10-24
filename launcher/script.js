@@ -15,7 +15,7 @@ const installNoBtn = document.getElementById('install-no');
 
 // 현재 버전 설정 (메인 프로세스로부터 수신)
 window.updater.onCurrentVersion((version) => {
-    document.getElementById('current-version').textContent = version;
+    currentVersionSpan.textContent = version;
 });
 
 // 업데이트가 있을 때
@@ -66,11 +66,56 @@ installNoBtn.addEventListener('click', () => {
     downloadedModal.style.display = 'none';
 });
 
-// 버튼 동작
+// 창 제어 버튼 동작
 document.getElementById('minimize-btn').addEventListener('click', () => {
-    window.electron.minimizeWindow();
+    window.api.minimizeWindow();
 });
 
 document.getElementById('close-btn').addEventListener('click', () => {
-    window.electron.closeWindow();
+    window.api.closeWindow();
+});
+
+// 게임 다운로드 버튼 클릭 시 다운로드 확인 모달 표시 및 다운로드 시작
+document.getElementById('download-button').addEventListener('click', () => {
+    // 게임 다운로드 확인 모달을 표시하는 로직 추가
+    const downloadModal = document.getElementById('download-modal');
+    const downloadYesBtn = document.getElementById('download-yes');
+    const downloadNoBtn = document.getElementById('download-no');
+
+    // '예' 버튼 클릭 시 다운로드 시작
+    downloadYesBtn.addEventListener('click', () => {
+        downloadModal.style.display = 'none';
+        window.api.downloadGame();
+        document.getElementById('progress-game-container').style.display = 'block';
+    });
+
+    // '아니오' 버튼 클릭 시 모달 닫기
+    downloadNoBtn.addEventListener('click', () => {
+        downloadModal.style.display = 'none';
+    });
+
+    // 다운로드 확인 모달 표시
+    downloadModal.style.display = 'flex';
+});
+
+// 게임 다운로드 진행 상황 업데이트
+window.api.onDownloadGameProgress((progress) => {
+    document.getElementById('progress-game-percent').innerText = `${progress.percent}%`;
+    document.getElementById('progress-game-bar').value = progress.percent;
+});
+
+// 게임 다운로드 완료 시 처리
+window.api.onDownloadGameComplete(() => {
+    alert('게임 다운로드가 완료되었습니다!');
+    document.getElementById('progress-game-container').style.display = 'none';
+    document.getElementById('progress-game-bar').value = 0;
+    document.getElementById('progress-game-percent').innerText = '0%';
+});
+
+// 게임 다운로드 오류 발생 시 처리
+window.api.onDownloadError((error) => {
+    alert(`다운로드 중 오류 발생: ${error}`);
+    document.getElementById('progress-game-container').style.display = 'none';
+    document.getElementById('progress-game-bar').value = 0;
+    document.getElementById('progress-game-percent').innerText = '0%';
 });

@@ -100,3 +100,24 @@ button {
     font-size: 16px;
     font-weight: bold;
 }
+
+/* 게임 다운로드 */
+.progress-game-container {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 25px;
+    margin: 20px 0;
+}
+
+.progress-game-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #4CAF50;
+    border-radius: 25px;
+    transition: width 0.3s;
+}
+
+#progress-game-percent {
+    font-size: 16px;
+    font-weight: bold;
+}
