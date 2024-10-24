@@ -33,6 +33,11 @@ const createWindow = () => {
     mainWindow.webContents.send('update-available', latestVersion);
   });
 
+  // 업데이트 다운로드 진행 상황
+  autoUpdater.on('download-progress', (progressObj) => {
+    mainWindow.webContents.send('download-progress', progressObj);
+  });
+
   // 업데이트 다운로드 완료 후 사용자에게 알림
   autoUpdater.on('update-downloaded', () => {
     mainWindow.webContents.send('update-downloaded');

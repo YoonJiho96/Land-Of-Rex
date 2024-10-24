@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('updater', {
   onUpdateAvailable: (callback) => ipcRenderer.on('update-available', (event, version) => callback(version)),
   onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', () => callback()),
   onUpdateError: (callback) => ipcRenderer.on('update-error', (event, error) => callback(error)),
+  onDownloadProgress: (callback) => ipcRenderer.on('download-progress', (event, progress) => callback(progress)),
   downloadUpdate: () => ipcRenderer.send('download-update'),
   installUpdate: () => ipcRenderer.send('install-update'),
 
