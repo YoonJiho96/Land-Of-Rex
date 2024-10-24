@@ -3,7 +3,7 @@ using UnityEngine;
 public class BuildingController : MonoBehaviour
 {
     public GameObject nextBuilding;
-    public GameObject previewBuilding;
+    private GameObject previewBuilding;
 
     public Material priviewMaterial;
     public Material CompleteMaterial;
@@ -24,7 +24,6 @@ public class BuildingController : MonoBehaviour
 
     public void CompleteBuilding()
     {
-        previewBuilding = Instantiate(nextBuilding, transform.position, transform.rotation);
         SetMaterial(CompleteMaterial);
         SetCollider();
 

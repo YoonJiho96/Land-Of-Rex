@@ -1,8 +1,40 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerBuildingCollider : MonoBehaviour
 {
-    public BuildingController nearestBuilding;
+    // 입력
+    public InputActionAsset inputActions;
+    private InputAction interactAction;
+
+    private BuildingController nearestBuilding;
+
+    private void Awake()
+    {
+        // Input Actions를 가져와서 액션을 초기화
+        var playerActions = inputActions.FindActionMap("Player"); // PlayerInputActions는 Input Actions Asset의 이름
+        interactAction = playerActions.FindAction("Interact");
+    }
+
+    private void OnEnable()
+    {
+        interactAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        interactAction.Disable();
+    }
+
+    private void Update()
+    {
+        // 입력을 받아서 움직임 처리
+        float isInteracted = interactAction.ReadValue<float>();
+        if (isInteracted > 0)
+        {
+            nearestBuilding.CompleteBuilding();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
