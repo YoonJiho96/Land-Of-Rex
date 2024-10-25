@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 22d890d4a18608b45904a9eed56d0154
+timeCreated: 1574036091
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/RockStone/TB_D_Env_StoneF_A.prefab
+  uploadId: 561865

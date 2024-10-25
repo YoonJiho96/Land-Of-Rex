@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0c4237effd95c824481161f1220ddefe
+timeCreated: 1574036547
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Prop/Bucket/TB_D_Prop_Bucket_Water_C.prefab
+  uploadId: 561865

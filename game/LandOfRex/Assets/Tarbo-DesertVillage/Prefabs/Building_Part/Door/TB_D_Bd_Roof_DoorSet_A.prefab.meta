@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: fe0224559127dda4084f48aa0d088b88
+timeCreated: 1574034541
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Building_Part/Door/TB_D_Bd_Roof_DoorSet_A.prefab
+  uploadId: 561865

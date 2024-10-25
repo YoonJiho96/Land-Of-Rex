@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dffc3406290a45b44b5e3dab76c387fd
+timeCreated: 1574036289
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Tree/Trunk/TB_D_Env_TrunkB_A.prefab
+  uploadId: 561865

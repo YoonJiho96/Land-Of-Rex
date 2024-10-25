@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b54d25d56b0861949bbff50976ecd674
+timeCreated: 1574036727
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Prop/Chest/TB_D_Prop_ChestB_C.prefab
+  uploadId: 561865

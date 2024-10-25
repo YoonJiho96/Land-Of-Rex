@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 746ad75717a86524a91167424f7e1477
+timeCreated: 1574035209
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Bone/C/TB_D_Env_BoneC_C.prefab
+  uploadId: 561865
