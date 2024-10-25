@@ -5,9 +5,25 @@ public class BuildingAttackController : MonoBehaviour
 {
     public GameObject towerAttack;
     public float attackInterval = 3f;
+    public int towerDamage = 10;
 
     private float lastAttackTime = 0f;
     private List<Transform> enemiesInRange = new List<Transform>();
+
+    private void OnEnable()
+    {
+        HPController.OnEntityDestroyed += RemoveEnemyOrBuilding;
+    }
+
+    private void OnDisable()
+    {
+        HPController.OnEntityDestroyed -= RemoveEnemyOrBuilding;
+    }
+
+    private void RemoveEnemyOrBuilding(Transform entity)
+    {
+        enemiesInRange.Remove(entity); // 적 리스트에서 제거
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -59,6 +75,6 @@ public class BuildingAttackController : MonoBehaviour
     private void Attack(Transform enemy)
     {
         GameObject projectile = Instantiate(towerAttack, transform.position, Quaternion.identity);
-        projectile.GetComponent<AttackController>().Initialize(enemy);
+        projectile.GetComponent<AttackController>().Initialize(enemy, towerDamage);
     }
 }

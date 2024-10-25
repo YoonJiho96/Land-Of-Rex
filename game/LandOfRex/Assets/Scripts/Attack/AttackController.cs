@@ -2,12 +2,14 @@ using UnityEngine;
 
 public class AttackController : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed = 20f;
+    public int damage = 10;
     private Transform target;
 
-    public void Initialize(Transform enemy)
+    public void Initialize(Transform enemy, int damage)
     {
         target = enemy;
+        this.damage = damage;
     }
 
     private void Update()
@@ -26,7 +28,7 @@ public class AttackController : MonoBehaviour
         if (Vector3.Distance(transform.position, target.position) < 0.2f)
         {
             // 적에게 피해를 입히는 코드 (적 스크립트에 맞게 조정)
-            //target.GetComponent<Enemy>().TakeDamage(10); // 예: 10만큼 피해를 줌
+            target.GetComponent<HPController>().GetDamage(damage); // 예: 10만큼 피해를 줌
             Destroy(gameObject);
         }
     }
