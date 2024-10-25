@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 39b16eda811f5f746b90987b2629987f
+timeCreated: 1574035926
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Ground/Mountain/TB_D_Env_MtB_A.prefab
+  uploadId: 561865

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4c153c49ed5859c47bb2ae5926c4be93
+timeCreated: 1574036338
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Vegetation/TB_D_Env_GrassE_C.prefab
+  uploadId: 561865

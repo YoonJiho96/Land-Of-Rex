@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 08eaddb8787096d4bb10c1e9741c2b1c
+timeCreated: 1574037012
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Prop/etc/TB_D_Prop_Ladder_B.prefab
+  uploadId: 561865

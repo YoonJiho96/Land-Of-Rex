@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 775e2727ec065c74a895e38d8d831404
+timeCreated: 1574033209
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Building_Part/Body/Base/TB_D_Bd_Body_Med.prefab
+  uploadId: 561865
