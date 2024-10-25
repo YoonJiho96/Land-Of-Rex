@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dca231540902e6642af122a7538168c7
+timeCreated: 1574035352
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Cactus/TB_D_Env_CactusG_A.prefab
+  uploadId: 561865

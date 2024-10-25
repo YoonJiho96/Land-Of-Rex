@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dd066658ce1878446a04357543d74dd6
+timeCreated: 1574037203
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Prop/Store/TB_D_Prop_StoreTent_Small_D.prefab
+  uploadId: 561865
