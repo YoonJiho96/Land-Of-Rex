@@ -4,7 +4,7 @@ public class AttackController : MonoBehaviour
 {
     public float speed = 20f;
     public int damage = 10;
-    private Transform target;
+    public Transform target;
 
     public void Initialize(Transform enemy, int damage)
     {

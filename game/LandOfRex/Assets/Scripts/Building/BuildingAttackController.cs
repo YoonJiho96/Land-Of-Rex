@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class BuildingAttackController : MonoBehaviour
 {
     public GameObject towerAttack;
+    public Transform attackPoint;
     public float attackInterval = 3f;
     public int towerDamage = 10;
 
@@ -74,7 +75,7 @@ public class BuildingAttackController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
-        GameObject projectile = Instantiate(towerAttack, transform.position, Quaternion.identity);
+        GameObject projectile = Instantiate(towerAttack, attackPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, towerDamage);
     }
 }
