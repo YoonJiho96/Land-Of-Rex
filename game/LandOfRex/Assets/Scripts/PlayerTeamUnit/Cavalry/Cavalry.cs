@@ -4,17 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Infantry : MonoBehaviour
+public class Cavalry : MonoBehaviour
 {
-    // 보병 스탯
+    // 기마병 스탯
     [Header("Unit Stats")]
-    [SerializeField] public int attackDamage = 15;
-    [SerializeField] public float attackRange = 5f;
+    [SerializeField] public int attackDamage = 25;
+    [SerializeField] public float attackRange = 8f;
     [SerializeField] public float attackCooldown = 1f;
-    [SerializeField] public float detectionRange = 15f;
+    [SerializeField] public float detectionRange = 30f;
 
     [Header("Movement")]
-    [SerializeField] public float moveSpeed = 5f;
+    [SerializeField] public float moveSpeed = 15f;
     [SerializeField] public float followDistance = 5f;
 
     // 플레이어와 가까이 있을 때 플레이어가 E 키를 누를 수 있는 범위
@@ -62,7 +62,7 @@ public class Infantry : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        
+
 
         // NavMeshAgent 설정
         if (agent != null)
@@ -136,7 +136,7 @@ public class Infantry : MonoBehaviour
             yield return new WaitForSeconds(targetUpdateInterval);
             Debug.Log("UpdateTargetRoutine e");
         }
-        
+
     }
 
 

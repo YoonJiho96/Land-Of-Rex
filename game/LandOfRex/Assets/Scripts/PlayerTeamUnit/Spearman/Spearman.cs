@@ -3,14 +3,13 @@ using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-public class Infantry : MonoBehaviour
+public class Spearman : MonoBehaviour
 {
     // 보병 스탯
     [Header("Unit Stats")]
-    [SerializeField] public int attackDamage = 15;
-    [SerializeField] public float attackRange = 5f;
-    [SerializeField] public float attackCooldown = 1f;
+    [SerializeField] public int attackDamage = 30;
+    [SerializeField] public float attackRange = 10f;
+    [SerializeField] public float attackCooldown = 2f;
     [SerializeField] public float detectionRange = 15f;
 
     [Header("Movement")]
@@ -28,7 +27,7 @@ public class Infantry : MonoBehaviour
 
 
     // Components
-    public NavMeshAgent agent; // 보병의 자동 경로 탐색
+    public UnityEngine.AI.NavMeshAgent agent; // 보병의 자동 경로 탐색
     public Animator animator; // 보병의 움직임, 애니메이션
     public Transform player; // 플레이어 위치 정보. 보병이 플레이어 따라다닐 수 있어야 함.
     public Transform currentTarget; // 현재 어떤 적을 보고 있는가
@@ -59,10 +58,10 @@ public class Infantry : MonoBehaviour
     {
         Debug.Log("start s");
         // 컴포넌트 초기화
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        
+
 
         // NavMeshAgent 설정
         if (agent != null)
@@ -136,7 +135,7 @@ public class Infantry : MonoBehaviour
             yield return new WaitForSeconds(targetUpdateInterval);
             Debug.Log("UpdateTargetRoutine e");
         }
-        
+
     }
 
 

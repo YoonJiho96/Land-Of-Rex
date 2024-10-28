@@ -8,10 +8,10 @@ public class Archer : MonoBehaviour
 {
     // 궁병 스탯
     [Header("Unit Stats")]
-    [SerializeField] public int attackDamage = 20;
-    [SerializeField] public float attackRange = 10f;
-    [SerializeField] public float attackCooldown = 4f;
-    [SerializeField] public float detectionRange = 10f;
+    [SerializeField] public int attackDamage = 25;
+    [SerializeField] public float attackRange = 20f;
+    [SerializeField] public float attackCooldown = 3f;
+    [SerializeField] public float detectionRange = 25f;
 
     [Header("Movement")]
     [SerializeField] public float moveSpeed = 5f;
