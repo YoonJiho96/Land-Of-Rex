@@ -1,0 +1,23 @@
+.admin-page-layout {
+  display: flex;
+}
+
+.admin-page-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.admin-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.admin-user-list {
+  margin-top: 20px;
+}
+
+.admin-function-button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+}

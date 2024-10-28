@@ -1,0 +1,81 @@
+/* 전체 HTML과 body에 대한 스타일 */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden; /* 스크롤 완전히 제거 */
+}
+
+/* 메인 페이지 스타일 */
+.main-page {
+  background-color: #DAEBFD;
+  background-position: center;
+  height: 100vh; /* 고정 높이로 변경 */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden; /* 스크롤 제거 */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  width: 100%;
+}
+
+.title {
+  margin-top: -100px;
+  font-size: min(6rem, 12vh); /* 반응형 폰트 크기 */
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: min(50px, 8vh); /* 반응형 마진 */
+  text-align: center;
+  text-shadow: 
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.download-qr-container {
+  display: flex;
+  justify-content: center;
+  gap: 200%;
+  width: 100%;
+}
+
+.download-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.downloadImg {
+  width: min(250px, 30vw); /* 반응형 이미지 크기 */
+  height: auto;
+}
+
+.auth-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+/* 매우 작은 화면에서의 조정 */
+@media screen and (max-height: 500px) {
+  .title {
+    font-size: min(4rem, 10vh);
+    margin-bottom: 3vh;
+  }
+  
+  .downloadImg {
+    width: min(200px, 25vw);
+  }
+}
