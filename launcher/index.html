@@ -30,6 +30,10 @@
     <progress id="progress-game-bar" value="0" max="100"></progress>
   </div>
 
+  <div id="game-start-container">
+    <button id="game-start-button">게임 시작</button>
+  </div>
+
   <!-- 업데이트 알림 모달 -->
   <div id="update-modal" class="modal">
     <div class="modal-content">
@@ -96,6 +100,17 @@
       <p id="download-error-message">다운로드 중 오류가 발생했습니다.</p>
       <div class="modal-buttons">
         <button id="download-error-ok" class="btn-primary">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게임 실행 오류 모달 -->
+  <div id="game-start-error-modal" class="modal">
+    <div class="modal-content">
+      <h2>게임 시작 오류</h2>
+      <p id="game-start-error-message">게임 시작 중 오류가 발생했습니다.</p>
+      <div class="modal-buttons">
+        <button id="game-start-error-ok" class="btn-primary">확인</button>
       </div>
     </div>
   </div>

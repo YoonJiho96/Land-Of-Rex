@@ -28,6 +28,14 @@ const downloadErrorModal = document.getElementById('download-error-modal');
 const downloadErrorOkBtn = document.getElementById('download-error-ok');
 const downloadErrorMessage = document.getElementById('download-error-message');
 
+// 게임 시작 버튼
+const gameStartBtn = document.getElementById('game-start-button');
+
+// 게임 시작 오류 모달
+const gameStartErrorModal = document.getElementById('game-start-error-modal');
+const gameStartErrorOkBtn = document.getElementById('game-start-error-ok');
+const gameStartErrorMessage = document.getElementById('game-start-error-message');
+
 // 현재 버전 설정 (메인 프로세스로부터 수신)
 window.updater.onCurrentVersion((version) => {
     currentVersionSpan.textContent = version;
@@ -139,4 +147,21 @@ downloadCompleteOkBtn.addEventListener('click', () => {
 // 다운로드 오류 모달의 "확인" 버튼 클릭 시 모달 닫기
 downloadErrorOkBtn.addEventListener('click', () => {
     downloadErrorModal.style.display = 'none';
+});
+
+// 게임 시작
+gameStartBtn.addEventListener('click', () => {
+    window.game.gameStart();
+});
+
+// 게임 시작 오류 이벤트 수신 시
+window.game.onGameStartError((errorMessage) => {
+    console.log("게임 실행 오류 발생2:", errorMessage); // 오류 발생 시 로그 추가
+    gameStartErrorMessage.textContent = `게임 시작 중 오류 발생: ${errorMessage}`;
+    gameStartErrorModal.style.display = 'flex';
+});
+
+// 게임 시작 오류 모달의 "확인" 버튼 클릭 시 모달 닫기
+gameStartErrorOkBtn.addEventListener('click', () => {
+    gameStartErrorModal.style.display = 'none';
 });

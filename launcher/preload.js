@@ -26,3 +26,9 @@ contextBridge.exposeInMainWorld('api', {
   minimizeWindow: () => ipcRenderer.send('minimize-window'),
   closeWindow: () => ipcRenderer.send('close-window'),
 });
+
+// 게임 시작
+contextBridge.exposeInMainWorld('game', {
+  gameStart: () => ipcRenderer.send('game-start'),
+  onGameStartError: (callback) => ipcRenderer.on('game-start-error', (event, errorMessage) => callback(errorMessage))
+});

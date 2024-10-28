@@ -3,6 +3,7 @@ const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const { execFile } = require('child_process');
 
 require('dotenv').config(); // 환경 변수 로드
 
@@ -111,7 +112,7 @@ ipcMain.on('close-window', () => {
 ipcMain.on('download-game', async () => {
   try {
     // 기본 다운로드 경로 설정
-    const defaultDownloadPath = path.join(__dirname, 'LandOfRex');
+    const defaultDownloadPath = path.join(__dirname, localFolder);
 
     // S3에서 게임 폴더의 모든 객체 목록 가져오기
     const listParams = {
@@ -168,4 +169,23 @@ ipcMain.on('download-game', async () => {
     console.error('게임 다운로드 중 오류 발생:', error);
     mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
   }
+});
+
+// 게임 시작
+const localFolder = process.env.GAME_LOCAL_FOLDER_NAME
+const gameExeName = process.env.GAME_EXE_NAME
+
+ipcMain.on('game-start', () => {
+  console.log("게임 시작 요청 수신"); // 로그 추가
+  const gamePath = path.join(__dirname, localFolder, gameExeName);
+  console.log("실행 파일 경로:", gamePath); // 로그 추가
+
+  execFile(gamePath, (error) => {
+    if (error) {
+      console.error('게임 실행 중 오류 발생:', error);
+      mainWindow.webContents.send('game-start-error', error.message || '게임 실행에 실패했습니다.');
+    } else {
+      console.log("게임이 정상적으로 실행되었습니다."); // 성공 시 로그 추가
+    }
+  });
 });
