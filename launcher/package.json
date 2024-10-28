@@ -11,8 +11,7 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^33.0.1",
-    "electron-builder": "^24.3.0",
-    "electron-updater": "6.3.9"
+    "electron-builder": "^24.3.0"
   },
   "dependencies": {
     "aws-sdk": "^2.1691.0",
@@ -30,8 +29,8 @@
       "preload.js",
       "index.html",
       "style.css",
-      "script.js",
-      "assets/"
+      "assets/",
+      "scripts/"
     ],
     "win": {
       "target": [

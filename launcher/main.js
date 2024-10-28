@@ -166,7 +166,6 @@ ipcMain.on('download-game', async () => {
     // 다운로드 완료 이벤트 전송
     mainWindow.webContents.send('download-complete');
   } catch (error) {
-    console.error('게임 다운로드 중 오류 발생:', error);
     mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
   }
 });
@@ -176,16 +175,13 @@ const localFolder = process.env.GAME_LOCAL_FOLDER_NAME
 const gameExeName = process.env.GAME_EXE_NAME
 
 ipcMain.on('game-start', () => {
-  console.log("게임 시작 요청 수신"); // 로그 추가
   const gamePath = path.join(__dirname, localFolder, gameExeName);
-  console.log("실행 파일 경로:", gamePath); // 로그 추가
 
   execFile(gamePath, (error) => {
     if (error) {
-      console.error('게임 실행 중 오류 발생:', error);
       mainWindow.webContents.send('game-start-error', error.message || '게임 실행에 실패했습니다.');
     } else {
-      console.log("게임이 정상적으로 실행되었습니다."); // 성공 시 로그 추가
+      console.log("게임이 정상적으로 실행되었습니다.");
     }
   });
 });
