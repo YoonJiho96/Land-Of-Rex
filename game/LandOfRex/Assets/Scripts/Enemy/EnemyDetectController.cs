@@ -6,24 +6,24 @@ public class EnemyDetectController : MonoBehaviour
 
     private void OnEnable()
     {
-        HPController.OnEntityDestroyed += RemoveEnemyOrBuilding;
+        HPController.OnEntityDestroyed += RemoveUnitOrBuilding;
     }
 
     private void OnDisable()
     {
-        HPController.OnEntityDestroyed -= RemoveEnemyOrBuilding;
+        HPController.OnEntityDestroyed -= RemoveUnitOrBuilding;
     }
 
-    private void RemoveEnemyOrBuilding(Transform entity)
+    private void RemoveUnitOrBuilding(Transform entity)
     {
-        enemyController.RemoveTarget(entity); // 적 리스트에서 제거
+        enemyController.RemoveDetectedTarget(entity); // 적 리스트에서 제거
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Building") || other.CompareTag("Player"))
         {
-            enemyController.AddTarget(other.transform);
+            enemyController.AddDetectedTarget(other.transform);
         }
     }
 
@@ -31,7 +31,7 @@ public class EnemyDetectController : MonoBehaviour
     {
         if (other.CompareTag("Building") || other.CompareTag("Player"))
         {
-            RemoveEnemyOrBuilding(other.transform);
+            RemoveUnitOrBuilding(other.transform);
         }
     }
 }

@@ -23,7 +23,8 @@ public class HPController : MonoBehaviour
 
             if (isBuilding)
             {
-                gameObject.SetActive(false);
+                Transform rootParent = GetRootParent(transform);
+                rootParent.gameObject.SetActive(false);
             }
             else
             {
