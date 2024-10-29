@@ -14,8 +14,8 @@ const AWS_REGION = process.env.AWS_REGION;
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
 const GAME_FOLDER = process.env.GAME_FOLDER_NAME;
 // 게임 시작 환경 변수
-const LOCAL_FOLDER = process.env.GAME_LOCAL_FOLDER_NAME
-const GAME_EXE = process.env.GAME_EXE_NAME
+const LOCAL_FOLDER = "land-of-rex-launcher/LandOfRex"
+const GAME_EXE = "LandOfRex.exe"
 
 // AWS S3 설정
 AWS.config.update({
@@ -117,7 +117,7 @@ ipcMain.on('close-window', () => {
 });
 
 // 빌드 경로
-const exeDir = path.dirname(app.getPath('exe'));
+const exeDir = path.dirname(app.getPath('userData'));
 
 // 게임 다운로드 IPC 핸들러
 ipcMain.on('download-game', async () => {
