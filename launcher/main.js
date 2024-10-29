@@ -175,13 +175,16 @@ const localFolder = process.env.GAME_LOCAL_FOLDER_NAME
 const gameExeName = process.env.GAME_EXE_NAME
 
 ipcMain.on('game-start', () => {
-  const gamePath = path.join(__dirname, localFolder, gameExeName);
-
-  execFile(gamePath, (error) => {
-    if (error) {
-      mainWindow.webContents.send('game-start-error', error.message || '게임 실행에 실패했습니다.');
-    } else {
-      console.log("게임이 정상적으로 실행되었습니다.");
-    }
-  });
+  try {
+    const gamePath = path.join(__dirname, localFolder, gameExeName);
+    execFile(gamePath, (error) => {
+      if (error) {
+        mainWindow.webContents.send('game-start-error', error.message || '게임 실행에 실패했습니다.');
+      } else {
+        console.log("게임이 정상적으로 실행되었습니다.");
+      }
+    });
+  } catch (error) {
+    mainWindow.webContents.send('game-start-error', error.message);
+  }
 });
