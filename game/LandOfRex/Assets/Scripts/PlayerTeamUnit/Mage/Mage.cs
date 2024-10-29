@@ -58,7 +58,6 @@ public class Mage : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("start s");
         // 컴포넌트 초기화
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -74,37 +73,29 @@ public class Mage : MonoBehaviour
         }
 
         StartCoroutine(UpdateTargetRoutine());
-
-        Debug.Log("start e");
     }
 
     void OnDisable()
     {
-        Debug.Log("onDisalbe s");
         // 컴포넌트가 비활성화될 때 코루틴 정지
         if (targetUpdateCoroutine != null)
         {
             StopCoroutine(targetUpdateCoroutine);
             targetUpdateCoroutine = null;
         }
-        Debug.Log("onDisalbe e");
     }
 
     void OnEnable()
     {
-        Debug.Log("OnEnable s");
         // 컴포넌트가 활성화될 때 코루틴 시작
         if (targetUpdateCoroutine == null)
         {
             targetUpdateCoroutine = StartCoroutine(UpdateTargetRoutine());
         }
-        Debug.Log("OnEnable e");
     }
 
     public void Update()
     {
-        Debug.Log("update s");
-
         // E키 입력 처리
         if (Input.GetKeyDown(KeyCode.E) && player != null)
         {
@@ -123,12 +114,10 @@ public class Mage : MonoBehaviour
         {
             HandleCombat();
         }
-        Debug.Log("update e");
     }
 
     public IEnumerator UpdateTargetRoutine()
     {
-        Debug.Log("UpdateTargetRoutine s");
         while (true)
         {
             if (!isFollowingPlayer)
@@ -137,7 +126,6 @@ public class Mage : MonoBehaviour
                 FindBestAttackPosition();
             }
             yield return new WaitForSeconds(targetUpdateInterval);
-            Debug.Log("UpdateTargetRoutine e");
         }
 
     }
@@ -145,7 +133,7 @@ public class Mage : MonoBehaviour
     private void FindBestAttackPosition()
     {
         // 공격 범위 내의 모든 적 탐지
-        Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, attackRange);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, detectionRange);
         List<Transform> enemies = new List<Transform>();
 
         foreach (Collider collider in nearbyEnemies)
@@ -192,8 +180,6 @@ public class Mage : MonoBehaviour
 
     private void HandleCombat() // 적과의 거리가 일정 수준 이하면 공격함.
     {
-        Debug.Log("HandleCombat s");
-        
         if (targetPosition == Vector3.zero) return;
 
         float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
@@ -208,13 +194,11 @@ public class Mage : MonoBehaviour
             agent.SetDestination(targetPosition);
             if (animator != null) animator.SetBool("IsMoving", true);
         }
-        Debug.Log("HandleCombat e");
     }
 
 
     public void AttackTarget()
     {
-        Debug.Log("AttackTarget s");
         transform.LookAt(targetPosition);
 
         // 공격 애니메이션 실행
@@ -225,12 +209,10 @@ public class Mage : MonoBehaviour
         attack.GetComponent<AreaAttackController>().Initialize(targetPosition, attackDamage);
 
         lastAttackTime = Time.time;
-        Debug.Log("AttackTarget e");
     }
 
     public void FollowPlayer()
     {
-        Debug.Log("FollowPlayer s");
         if (player == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -245,12 +227,10 @@ public class Mage : MonoBehaviour
             agent.ResetPath();
             if (animator != null) animator.SetBool("IsMoving", false);
         }
-        Debug.Log("FollowPlayer e");
     }
 
     public void Die()
     {
-        Debug.Log("Die s");
         if (animator != null) animator.SetTrigger("Die");
 
         if (targetUpdateCoroutine != null)
@@ -264,12 +244,10 @@ public class Mage : MonoBehaviour
         // 컴포넌트들 비활성화
         enabled = false;
         if (agent != null) agent.enabled = false;
-        Debug.Log("Die e");
     }
 
     public void SetFollowPlayer(bool follow)
     {
-        Debug.Log("SetFollowPlayer s");
         isFollowingPlayer = follow;
         if (follow)
         {
@@ -283,7 +261,6 @@ public class Mage : MonoBehaviour
             if (animator != null) animator.SetTrigger("StopFollow");
             agent.ResetPath();
         }
-        Debug.Log("SetFollowPlayer e");
     }
 
     // 기즈모를 통한 시각적 디버깅

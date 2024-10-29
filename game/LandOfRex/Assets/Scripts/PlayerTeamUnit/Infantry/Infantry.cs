@@ -57,7 +57,6 @@ public class Infantry : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("start s");
         // 컴포넌트 초기화
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -72,37 +71,29 @@ public class Infantry : MonoBehaviour
         }
 
         StartCoroutine(UpdateTargetRoutine());
-
-        Debug.Log("start e");
     }
 
     void OnDisable()
     {
-        Debug.Log("onDisalbe s");
         // 컴포넌트가 비활성화될 때 코루틴 정지
         if (targetUpdateCoroutine != null)
         {
             StopCoroutine(targetUpdateCoroutine);
             targetUpdateCoroutine = null;
         }
-        Debug.Log("onDisalbe e");
     }
 
     void OnEnable()
     {
-        Debug.Log("OnEnable s");
         // 컴포넌트가 활성화될 때 코루틴 시작
         if (targetUpdateCoroutine == null)
         {
             targetUpdateCoroutine = StartCoroutine(UpdateTargetRoutine());
         }
-        Debug.Log("OnEnable e");
     }
 
     public void Update()
     {
-        Debug.Log("update s");
-
         // E키 입력 처리
         if (Input.GetKeyDown(KeyCode.E) && player != null)
         {
@@ -121,12 +112,10 @@ public class Infantry : MonoBehaviour
         {
             HandleCombat();
         }
-        Debug.Log("update e");
     }
 
     public IEnumerator UpdateTargetRoutine()
     {
-        Debug.Log("UpdateTargetRoutine s");
         while (true)
         {
             if (!isFollowingPlayer)
@@ -134,15 +123,12 @@ public class Infantry : MonoBehaviour
                 UpdateTargetPriority();
             }
             yield return new WaitForSeconds(targetUpdateInterval);
-            Debug.Log("UpdateTargetRoutine e");
         }
-        
     }
 
 
     private void UpdateTargetPriority()
     {
-        Debug.Log("UpdateTargetPriority s");
         enemiesInRange.Clear();
 
         // 먼저 공격 범위 내의 적들을 확인
@@ -185,44 +171,35 @@ public class Infantry : MonoBehaviour
         {
             currentTarget = null;
         }
-        Debug.Log("UpdateTargetPriority e");
     }
 
     private void HandleCombat() // 적과의 거리가 일정 수준 이하면 공격함.
     {
-        Debug.Log("HandleCombat s");
         if (currentTarget == null) return;
 
         float distanceToTarget = Vector3.Distance(transform.position, currentTarget.position);
 
         if (distanceToTarget <= attackRange)
         {
-
-            Debug.Log("HandleCombat attack");
             AttackTarget();
             if (animator != null) animator.SetBool("IsMoving", false);
         }
         else if (distanceToTarget > detectionRange)
         {
-            Debug.Log("HandleCombat missing");
             currentTarget = null;
             if (animator != null) animator.SetBool("IsMoving", false);
         }
         else
         {
-
-            Debug.Log("HandleCombat moving");
             // 타겟을 향해 이동
             agent.SetDestination(currentTarget.position);
             if (animator != null) animator.SetBool("IsMoving", true);
         }
-        Debug.Log("HandleCombat e");
     }
 
 
     public void AttackTarget()
     {
-        Debug.Log("AttackTarget s");
         if (Time.time - lastAttackTime >= attackCooldown) // 쿨타임 비교해서 공격
         {
             // 타겟 방향으로 회전
@@ -244,12 +221,10 @@ public class Infantry : MonoBehaviour
 
             lastAttackTime = Time.time;
         }
-        Debug.Log("AttackTarget e");
     }
 
     public void FollowPlayer()
     {
-        Debug.Log("FollowPlayer s");
         if (player == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -264,12 +239,10 @@ public class Infantry : MonoBehaviour
             agent.ResetPath();
             if (animator != null) animator.SetBool("IsMoving", false);
         }
-        Debug.Log("FollowPlayer e");
     }
 
     public void Die()
     {
-        Debug.Log("Die s");
         if (animator != null) animator.SetTrigger("Die");
 
         if (targetUpdateCoroutine != null)
@@ -283,12 +256,10 @@ public class Infantry : MonoBehaviour
         // 컴포넌트들 비활성화
         enabled = false;
         if (agent != null) agent.enabled = false;
-        Debug.Log("Die e");
     }
 
     public void SetFollowPlayer(bool follow)
     {
-        Debug.Log("SetFollowPlayer s");
         isFollowingPlayer = follow;
         if (follow)
         {
@@ -302,7 +273,6 @@ public class Infantry : MonoBehaviour
             if (animator != null) animator.SetTrigger("StopFollow");
             agent.ResetPath();
         }
-        Debug.Log("SetFollowPlayer e");
     }
 
     // 기즈모를 통한 시각적 디버깅
