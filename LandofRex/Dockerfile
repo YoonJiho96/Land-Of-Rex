@@ -1,5 +1,3 @@
-# Frontend Dockerfile
-
 # Base image for building the application
 FROM node:18 AS build
 
@@ -20,17 +18,3 @@ RUN npm run build
 
 # Check if build directory exists
 RUN ls -la /app/dist  # 빌드 결과물 확인 (Vite의 기본 빌드 경로)
-
-# Use a lightweight web server to serve the static files
-FROM nginx:alpine
-
-# Copy the built files from the build stage
-COPY --from=build /app/dist /usr/share/nginx/html
-# Nginx 설정 파일 복사
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose the default port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
