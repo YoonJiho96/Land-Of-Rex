@@ -112,7 +112,7 @@ ipcMain.on('close-window', () => {
 ipcMain.on('download-game', async () => {
   try {
     // 기본 다운로드 경로 설정
-    const defaultDownloadPath = path.join(__dirname, localFolder);
+    const defaultDownloadPath = path.join(__dirname, LOCAL_FOLDER);
 
     // S3에서 게임 폴더의 모든 객체 목록 가져오기
     const listParams = {
@@ -171,12 +171,12 @@ ipcMain.on('download-game', async () => {
 });
 
 // 게임 시작
-const localFolder = process.env.GAME_LOCAL_FOLDER_NAME
-const gameExeName = process.env.GAME_EXE_NAME
+const LOCAL_FOLDER = process.env.GAME_LOCAL_FOLDER_NAME
+const GAME_EXE = process.env.GAME_EXE_NAME
 
 ipcMain.on('game-start', () => {
   try {
-    const gamePath = path.join(__dirname, localFolder, gameExeName);
+    const gamePath = path.join(__dirname, LOCAL_FOLDER, GAME_EXE);
     execFile(gamePath, (error) => {
       if (error) {
         mainWindow.webContents.send('game-start-error', error.message || '게임 실행에 실패했습니다.');
