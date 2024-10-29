@@ -26,6 +26,8 @@ FROM nginx:alpine
 
 # Copy the built files from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
+# Nginx 설정 파일 복사
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose the default port
 EXPOSE 80
