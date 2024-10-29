@@ -7,12 +7,15 @@ const { execFile } = require('child_process');
 
 require('dotenv').config(); // 환경 변수 로드
 
-// 환경 변수
+// S3 환경 변수
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_REGION = process.env.AWS_REGION;
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
 const GAME_FOLDER = process.env.GAME_FOLDER_NAME;
+// 게임 시작 환경 변수
+const LOCAL_FOLDER = process.env.GAME_LOCAL_FOLDER_NAME
+const GAME_EXE = process.env.GAME_EXE_NAME
 
 // AWS S3 설정
 AWS.config.update({
@@ -175,10 +178,7 @@ ipcMain.on('download-game', async () => {
   }
 });
 
-// 게임 시작
-const LOCAL_FOLDER = process.env.GAME_LOCAL_FOLDER_NAME
-const GAME_EXE = process.env.GAME_EXE_NAME
-
+// 게임 시작 버튼
 ipcMain.on('game-start', () => {
   try {
     const gamePath = path.join(__dirname, LOCAL_FOLDER, GAME_EXE);
