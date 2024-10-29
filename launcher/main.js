@@ -116,11 +116,14 @@ ipcMain.on('close-window', () => {
   mainWindow.close();
 });
 
+// 빌드 경로
+const exeDir = path.dirname(app.getPath('exe'));
+
 // 게임 다운로드 IPC 핸들러
 ipcMain.on('download-game', async () => {
   try {
-    // 기본 다운로드 경로 설정
-    const defaultDownloadPath = path.join(__dirname, LOCAL_FOLDER);
+    // 실행 파일의 디렉토리 경로 가져오기
+    const defaultDownloadPath = path.join(exeDir, LOCAL_FOLDER);
 
     // S3에서 게임 폴더의 모든 객체 목록 가져오기
     const listParams = {
@@ -181,7 +184,7 @@ ipcMain.on('download-game', async () => {
 // 게임 시작 버튼
 ipcMain.on('game-start', () => {
   try {
-    const gamePath = path.join(__dirname, LOCAL_FOLDER, GAME_EXE);
+    const gamePath = path.join(exeDir, LOCAL_FOLDER, GAME_EXE);
     execFile(gamePath, (error) => {
       if (error) {
         mainWindow.webContents.send('game-start-error', error.message || '게임 실행에 실패했습니다.');
