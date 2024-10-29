@@ -28,7 +28,15 @@ public class AttackController : MonoBehaviour
         if (Vector3.Distance(transform.position, target.position) < 0.2f)
         {
             // 적에게 피해를 입히는 코드 (적 스크립트에 맞게 조정)
-            target.GetComponent<HPController>().GetDamage(damage); // 예: 10만큼 피해를 줌
+            if (target.CompareTag("Player"))
+            {
+                target.GetComponent<PlayerHPController>().GetDamage(damage);
+            }
+            else
+            {
+                target.GetComponent<HPController>().GetDamage(damage); // 예: 10만큼 피해를 줌
+            }
+
             Destroy(gameObject);
         }
     }

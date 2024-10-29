@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - BuildingInteraction
   - Unit
+  - DeadPlayer
   layers:
   - Default
   - TransparentFX
