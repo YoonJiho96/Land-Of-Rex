@@ -44,7 +44,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "perMachine": true,
-      "shortcutName": "Land Of Rex"
+      "shortcutName": "Land Of Rex",
+      "deleteAppDataOnUninstall": true
     },
     "publish": [
       {
