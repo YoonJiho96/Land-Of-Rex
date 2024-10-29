@@ -232,9 +232,14 @@ public class Cavalry : MonoBehaviour
             if (animator != null) animator.SetTrigger("Attack");
             if (currentTarget != null)
             {
-                // 여기서 뭘 던질지 정해야함.
-                GameObject attack = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
-                attack.GetComponent<AttackController>().Initialize(currentTarget, attackDamage);
+                EnemyController enemyController = currentTarget.getComponent<EnemyController>();
+
+                if(enemyController != null && !enemyController.isAerial)
+                {
+                    // 여기서 뭘 던질지 정해야함.
+                    GameObject attack = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
+                    attack.GetComponent<AttackController>().Initialize(currentTarget, attackDamage);
+                }
             }
 
             lastAttackTime = Time.time;
