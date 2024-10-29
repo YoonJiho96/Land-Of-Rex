@@ -8,6 +8,7 @@ TagManager:
   - Attack
   - Enemy
   - BuildingInteraction
+  - Unit
   layers:
   - Default
   - TransparentFX
