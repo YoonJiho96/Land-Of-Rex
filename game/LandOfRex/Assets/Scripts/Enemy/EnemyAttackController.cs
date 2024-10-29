@@ -1,0 +1,37 @@
+using UnityEngine;
+
+public class EnemyAttackController : MonoBehaviour
+{
+    public EnemyController enemyController;
+
+    private void OnEnable()
+    {
+        HPController.OnEntityDestroyed += RemoveUnitOrBuilding;
+    }
+
+    private void OnDisable()
+    {
+        HPController.OnEntityDestroyed -= RemoveUnitOrBuilding;
+    }
+
+    private void RemoveUnitOrBuilding(Transform entity)
+    {
+        enemyController.RemoveAttackTarget(entity); // 적 리스트에서 제거
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Building") || other.CompareTag("Player"))
+        {
+            enemyController.AddAttackTarget(other.transform);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Building") || other.CompareTag("Player"))
+        {
+            RemoveUnitOrBuilding(other.transform);
+        }
+    }
+}
