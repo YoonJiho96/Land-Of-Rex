@@ -232,7 +232,7 @@ public class Cavalry : MonoBehaviour
             if (animator != null) animator.SetTrigger("Attack");
             if (currentTarget != null)
             {
-                EnemyController enemyController = currentTarget.getComponent<EnemyController>();
+                EnemyController enemyController = currentTarget.GetComponent<EnemyController>();
 
                 if(enemyController != null && !enemyController.isAerial)
                 {
