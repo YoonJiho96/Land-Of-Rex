@@ -6,13 +6,18 @@ public class EnemyController : MonoBehaviour
 {
     public Transform destination; // 최종 목적지
     public GameObject attackPrefeb;
+    public bool isAerial = false;
+
+    public Transform attackStartPoint;
 
     private NavMeshAgent agent;
 
     private Transform detectedTarget;
-    public List<Transform> detectedTargets = new List<Transform>();
+    private List<Transform> detectedTargets = new List<Transform>();
 
-    public List<Transform> attackTargets = new List<Transform>();
+    private List<Transform> attackTargets = new List<Transform>();
+
+    public string[] priorityTags = { "Building", "Player" };
 
     public float attackInterval = 3f;
     public int damage = 10;
@@ -46,7 +51,11 @@ public class EnemyController : MonoBehaviour
         {
             // 우선순위가 가장 높은 대상에게 이동
             detectedTarget = GetHighestPriorityTarget();
-            agent.SetDestination(detectedTarget.position);
+
+            if (detectedTarget != null)
+            {
+                agent.SetDestination(detectedTarget.position);
+            }
         }
         else
         {
@@ -77,20 +86,33 @@ public class EnemyController : MonoBehaviour
 
     Transform GetHighestPriorityTarget()
     {
-        // 우선순위 기준에 따라 타겟을 선택 (예: 거리)
-        Transform highestPriorityTarget = detectedTargets[0];
-        float closestDistance = Vector3.Distance(transform.position, highestPriorityTarget.position);
+        Transform highestPriorityTarget = null;
+        float closestDistance = float.MaxValue;
 
-        foreach (Transform target in detectedTargets)
+        foreach (string tag in priorityTags)
         {
-            float distance = Vector3.Distance(transform.position, target.position);
-            if (distance < closestDistance)
+            foreach (Transform target in detectedTargets)
             {
-                closestDistance = distance;
-                highestPriorityTarget = target;
+                // 현재 태그와 일치하는 대상 중에서 가장 가까운 대상 찾기
+                if (target.CompareTag(tag))
+                {
+                    float distance = Vector3.Distance(transform.position, target.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        highestPriorityTarget = target;
+                    }
+                }
+            }
+
+            // 우선순위가 가장 높은 태그에서 타겟을 찾으면 반환
+            if (highestPriorityTarget != null)
+            {
+                return highestPriorityTarget;
             }
         }
 
+        // 만약 모든 우선순위에 해당하는 타겟이 없다면 null 반환
         return highestPriorityTarget;
     }
 
@@ -101,7 +123,7 @@ public class EnemyController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
-        GameObject projectile = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
+        GameObject projectile = Instantiate(attackPrefeb, attackStartPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, damage);
     }
 }
