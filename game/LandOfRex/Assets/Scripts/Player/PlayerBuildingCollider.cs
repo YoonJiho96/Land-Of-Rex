@@ -53,7 +53,7 @@ public class PlayerBuildingCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Building"))
+        if (other.CompareTag("BuildingInteraction"))
         {
             BuildingController currentBuilding = other.GetComponent<BuildingController>();
             if (currentBuilding != null)
@@ -73,7 +73,7 @@ public class PlayerBuildingCollider : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Building"))
+        if (other.CompareTag("BuildingInteraction"))
         {
             BuildingController currentBuilding = other.GetComponent<BuildingController>();
             if (currentBuilding != null && nearestBuilding == currentBuilding)
@@ -86,7 +86,7 @@ public class PlayerBuildingCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Building"))
+        if (other.CompareTag("BuildingInteraction"))
         {
             BuildingController currentBuilding = other.GetComponent<BuildingController>();
             if (currentBuilding != null)
