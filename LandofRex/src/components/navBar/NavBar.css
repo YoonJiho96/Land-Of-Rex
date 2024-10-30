@@ -1,0 +1,32 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    z-index: 1000;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .nav-links li {
+    cursor: pointer;
+    padding: 10px 15px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, font-size 0.3s ease;
+  }
+  
+  .nav-links li.active {
+    font-size: 1.5em;
+    color: #007bff;
+  }
+  
