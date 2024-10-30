@@ -32,3 +32,9 @@ contextBridge.exposeInMainWorld('game', {
   gameStart: () => ipcRenderer.send('game-start'),
   onGameStartError: (callback) => ipcRenderer.on('game-start-error', (event, errorMessage) => callback(errorMessage))
 });
+
+// 유효성 검사
+contextBridge.exposeInMainWorld('validation', {
+  onUpdateRequired: (callback) => ipcRenderer.on('update-required', (event, requireUpdate) => callback(requireUpdate)),
+  onInstallRequired: (callback) => ipcRenderer.on('installation-required', (event, requireInstall) => callback(requireInstall))
+});
