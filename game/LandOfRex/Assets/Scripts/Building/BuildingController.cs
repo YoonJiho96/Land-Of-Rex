@@ -4,21 +4,35 @@ public class BuildingController : MonoBehaviour
 {
     public GameObject nextBuilding;
     public GameObject previewBuilding;
+    public GameObject attackRangeObject;
 
     public Material priviewMaterial;
     public Material CompleteMaterial;
 
+    public Material priviewRangeMaterial;
+    public Material CompleteRangeMaterial;
+
     public void ShowPreview()
     {
+        if(attackRangeObject != null)
+        {
+            attackRangeObject.SetActive(true);
+        }
+
         if (nextBuilding != null)
         {
             previewBuilding = Instantiate(nextBuilding, transform.position, transform.rotation);
-            SetMaterial(priviewMaterial);
+            SetMaterial(priviewMaterial, priviewRangeMaterial);
         }
     }
 
     public void HidePreview()
     {
+        if (attackRangeObject != null)
+        {
+            attackRangeObject.SetActive(false);
+        }
+
         if (previewBuilding != null)
         {
             Destroy(previewBuilding);
@@ -27,7 +41,7 @@ public class BuildingController : MonoBehaviour
 
     public void CompleteBuilding()
     {
-        SetMaterial(CompleteMaterial);
+        SetMaterial(CompleteMaterial, CompleteRangeMaterial);
         SetCollider();
 
         // 최상위 부모를 찾아서 파괴
@@ -35,10 +49,17 @@ public class BuildingController : MonoBehaviour
         Destroy(rootParent.gameObject);
     }
 
-    private void SetMaterial(Material material)
+    private void SetMaterial(Material buildingMaterial, Material rangeMaterial)
     {
         Renderer renderer = previewBuilding.transform.Find("Body").GetComponent<Renderer>();
-        renderer.material = material;
+        renderer.material = buildingMaterial;
+
+        Transform attackRange = previewBuilding.transform.Find("AttackRange");
+        if(attackRange != null)
+        {
+            attackRange.gameObject.SetActive(true);
+            attackRange.GetComponent<Renderer>().material = rangeMaterial;
+        }
     }
 
     private void SetCollider()
