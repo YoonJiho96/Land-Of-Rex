@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-public class RangeVisualizer : MonoBehaviour
+public class BuildingAttackRangeController : MonoBehaviour
 {
     public float radius = 0.5f; // 원의 반지름
     public int segments = 50; // 원을 그릴 때 사용할 세그먼트 수
