@@ -1,0 +1,62 @@
+.ranking-section {
+  height: 100vh; /* 화면 전체를 채우도록 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #f4f6f8; /* 배경색 예시 */
+  border-bottom: 1px solid #ddd;
+}
+
+.ranking-content {
+  max-width: 800px;
+  text-align: center;
+}
+
+.ranking-content h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.ranking-table th,
+.ranking-table td {
+  padding: 15px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.ranking-table th {
+  background-color: #0073e6; /* 헤더 배경색 */
+  color: #fff;
+  font-weight: bold;
+}
+
+.ranking-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* 짝수 행 배경색 */
+}
+
+.stats {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.stats h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.stats p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
