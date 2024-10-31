@@ -3,41 +3,48 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>게임 런처</title>
+  <title>Land Of Rex</title>
   <link rel="stylesheet" href="scripts/css/style.css">
+  <link rel="stylesheet" href="scripts/css/fonts.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
-  <div id="window-controls">
-    <button id="minimize-btn" class="control-btn">
-      <i class="far fa-window-minimize"></i>
-    </button>
-    <button id="close-btn" class="control-btn">
-      <i class="fas fa-times"></i>
-    </button>
+  <!-- 상단 바 컨테이너 -->
+  <div id="top-bar">
+    <p class="launcher-version">v<span id="current-version">1.0.0</span></p>
+    <div id="window-controls">
+      <button id="minimize-btn" class="control-btn" title="최소화">
+        <i class="far fa-window-minimize"></i>
+      </button>
+      <button id="close-btn" class="control-btn" title="닫기">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
   </div>
 
-  <h1>게임 런처</h1>
-  <p>현재 버전: <span id="current-version">1.0.0</span></p>
-  <p id="latest-version"></p>
-
-  <h1>게임 다운로드</h1>
-  <button id="download-button">게임 다운로드</button>
-
-  <div id="progress-game-container" style="display: none;">
-    <p>다운로드 진행률: <span id="progress-game-percent">0%</span></p>
-    <progress id="progress-game-bar" value="0" max="100"></progress>
+  <!-- 타이틀 -->
+  <div class="title-container">
+    <p class="game-title">Land Of Rex</p>
   </div>
+  <!-- <p id="latest-version"></p> -->
 
-  <div id="game-start-container">
-    <button id="game-start-button">게임 시작</button>
-  </div>
+  <div id="footer">
+    <div id="progress-game-container">
+      <div class="progress-info">
+        <p class="progress-text">다운로드 진행률: <span id="progress-game-percent">0%</span></p>
+        <p class="validate-text" id="latest-game-version">버전 확인 중...</p>
+        <button id="game-validate" class="game-validate-btn"><i class="fas fa-search"></i> 파일 검사하기</button>
+      </div>
+      <progress id="progress-game-bar" value="0" max="100"></progress>
+    </div>
 
-  <div>
-    <h1>유효성 검사</h1>
-    <button id="game-validate">유효성 검사하기</button>
-    <p id="latest-game-version">버전 확인 중...</p>
+
+
+    <div id="game-start-container">
+      <button id="download-button" class="game-button">게임 다운로드</button>
+      <button id="game-start-button" class="game-button" style="display: none;">게임 시작</button>
+    </div>
   </div>
 
   <!-- 업데이트 알림 모달 -->

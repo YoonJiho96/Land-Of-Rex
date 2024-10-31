@@ -12,7 +12,7 @@ export function handleUpdate(updater) {
 
     // 업데이트 이벤트 핸들러
     updater.onUpdateAvailable((version) => {
-        latestVersionP.textContent = `새로운 버전: ${version}`;
+        // latestVersionP.textContent = `새로운 버전: ${version}`;
         updateModal.style.display = 'flex';
     });
 
