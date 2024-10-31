@@ -20,4 +20,10 @@ export function handleValidationControls(validation) {
             updateStatus.style.color = 'red';
         }
     });
+
+    // 유효성 검사 버튼
+    const gameValidateBtn = document.getElementById('game-validate');
+    gameValidateBtn.addEventListener('click', () => {
+        validation.onValidateGame();
+    });
 }

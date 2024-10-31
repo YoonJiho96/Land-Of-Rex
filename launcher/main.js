@@ -335,6 +335,46 @@ async function validateManifest() {
   }
 }
 
+// 직접 게임 설치 유효성 검사
+async function doValidateGame() {
+  const gameFolderPath = path.join(exeDir, LOCAL_FOLDER);
+
+  // LandOfRex 폴더가 존재하지 않는 경우
+  if (!fs.existsSync(gameFolderPath)) {
+    console.log("유효성 확인 : 게임 폴더가 존재하지 않습니다. 설치가 필요합니다.");
+    mainWindow.webContents.send('installation-required', true);
+    return;
+  }
+
+  // 새로 manifest 생성
+  const localManifestPath = path.join(exeDir, "land-of-rex-launcher", 'manifest.json');
+  const manifest = generateFileManifest(gameFolderPath);
+  fs.writeFileSync(localManifestPath, JSON.stringify(manifest, null, 2));
+
+  // manifest 체크
+  const serverManifest = await downloadManifestFromS3();
+  const localManifest = JSON.parse(fs.readFileSync(localManifestPath, 'utf-8'));
+  if (localManifest.root_directory.hash === serverManifest.root_directory.hash) {
+    mainWindow.webContents.send('update-required', false);
+    console.log("로컬과 서버 manifest가 일치합니다.");
+    return;
+  } else {
+    mainWindow.webContents.send('update-required', true);
+    console.log("업데이트가 필요합니다.");
+    return;
+  }
+}
+
+// 게임 유효성 검사 버튼
+ipcMain.on('game-validate', () => {
+  try {
+    console.log("유효성 검사 시작");
+    doValidateGame();
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
 const downloadManifestFromS3 = async () => {
   const params = {
     Bucket: S3_BUCKET,  // 버킷 이름

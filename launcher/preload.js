@@ -36,5 +36,6 @@ contextBridge.exposeInMainWorld('game', {
 // 유효성 검사
 contextBridge.exposeInMainWorld('validation', {
   onUpdateRequired: (callback) => ipcRenderer.on('update-required', (event, requireUpdate) => callback(requireUpdate)),
-  onInstallRequired: (callback) => ipcRenderer.on('installation-required', (event, requireInstall) => callback(requireInstall))
+  onInstallRequired: (callback) => ipcRenderer.on('installation-required', (event, requireInstall) => callback(requireInstall)),
+  onValidateGame: () => ipcRenderer.send('game-validate'),
 });
