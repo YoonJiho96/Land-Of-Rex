@@ -4,34 +4,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Infantry : MonoBehaviour
+public class UnitController : MonoBehaviour
 {
-    // 보병 스탯
+    // 스탯
     [Header("Unit Stats")]
-    [SerializeField] public int attackDamage = 15;
-    [SerializeField] public float attackRange = 5f;
-    [SerializeField] public float attackCooldown = 1f;
-    [SerializeField] public float detectionRange = 15f;
+    [SerializeField] public int attackDamage;
+    [SerializeField] public float attackRange;
+    [SerializeField] public float attackCooldown;
+    [SerializeField] public float detectionRange;
+    [SerializeField] public float areaEffectRadius;
 
     [Header("Movement")]
-    [SerializeField] public float moveSpeed = 5f;
-    [SerializeField] public float followDistance = 5f;
-
-    // 플레이어와 가까이 있을 때 플레이어가 E 키를 누를 수 있는 범위
-    [Header("Input")]
-    [SerializeField] public float interactionRange = 3f;
+    [SerializeField] public float moveSpeed;
+    [SerializeField] public float followDistance;
 
     [Header("Combat Settings")]
     [SerializeField] public float targetUpdateInterval = 0.5f; // 타겟 업데이트 주기
     public GameObject attackPrefeb;
-
-
+    public bool canAttackAerial;
+    public bool isMage;
 
     // Components
-    public NavMeshAgent agent; // 보병의 자동 경로 탐색
-    public Animator animator; // 보병의 움직임, 애니메이션
-    public Transform player; // 플레이어 위치 정보. 보병이 플레이어 따라다닐 수 있어야 함.
+    public NavMeshAgent agent; // 자동 경로 탐색
+    public Animator animator; // 움직임, 애니메이션
+    public Transform player; // 플레이어 위치 정보. 플레이어 따라다닐 수 있어야 함.
     public Transform currentTarget; // 현재 어떤 적을 보고 있는가
+    private Vector3 targetPosition; // 마법사일때 사용하는 공격 목표 위치
 
     // States
     public bool isAttacking = false; // 공격 중인지
@@ -61,13 +59,18 @@ public class Infantry : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        
+
 
         // NavMeshAgent 설정
         if (agent != null)
         {
             agent.speed = moveSpeed;
             agent.stoppingDistance = attackRange;
+            
+            if(isMage)
+            {
+                agent.stoppingDistance *= 0.8f;
+            }
         }
 
         StartCoroutine(UpdateTargetRoutine());
@@ -94,16 +97,6 @@ public class Infantry : MonoBehaviour
 
     public void Update()
     {
-        // E키 입력 처리
-        if (Input.GetKeyDown(KeyCode.E) && player != null)
-        {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-            if (distanceToPlayer <= interactionRange)
-            {
-                SetFollowPlayer(!isFollowingPlayer);
-            }
-        }
-
         if (isFollowingPlayer && player != null)
         {
             FollowPlayer();
@@ -120,12 +113,66 @@ public class Infantry : MonoBehaviour
         {
             if (!isFollowingPlayer)
             {
-                UpdateTargetPriority();
+                if (!isMage)
+                {
+                    UpdateTargetPriority();
+                }
+                else
+                {
+                    FindBestAttackPosition();
+                }
             }
             yield return new WaitForSeconds(targetUpdateInterval);
         }
     }
 
+    private void FindBestAttackPosition()
+    {
+        // 공격 범위 내의 모든 적 탐지
+        Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, detectionRange);
+        List<Transform> enemies = new List<Transform>();
+
+        foreach (Collider collider in nearbyEnemies)
+        {
+            if (collider.CompareTag("Enemy"))
+            {
+                enemies.Add(collider.transform);
+            }
+        }
+
+        if (enemies.Count == 0)
+        {
+            targetPosition = Vector3.zero;
+            return;
+        }
+
+        // 가장 많은 적을 포함하는 위치 찾기
+        Vector3 bestPosition = Vector3.zero;
+        int maxEnemiesHit = 0;
+
+        foreach (Transform enemy in enemies)
+        {
+            int enemiesInRange = 0;
+            foreach (Transform otherEnemy in enemies)
+            {
+                if (Vector3.Distance(enemy.position, otherEnemy.position) <= areaEffectRadius)
+                {
+                    enemiesInRange++;
+                }
+            }
+
+            if (enemiesInRange > maxEnemiesHit)
+            {
+                maxEnemiesHit = enemiesInRange;
+                bestPosition = enemy.position;
+            }
+        }
+
+        if (maxEnemiesHit > 0)
+        {
+            targetPosition = bestPosition;
+        }
+    }
 
     private void UpdateTargetPriority()
     {
@@ -139,10 +186,15 @@ public class Infantry : MonoBehaviour
         {
             if (collider.CompareTag("Enemy"))
             {
-                float distance = Vector3.Distance(transform.position, collider.transform.position);
-                enemiesInRange.Add(new EnemyInfo(collider.transform, distance));
-                foundEnemyInAttackRange = true;
-            }
+                    EnemyController enemyController = collider.GetComponent<EnemyController>();
+
+                    if ((enemyController != null && (!enemyController.isAerial && !canAttackAerial)) || canAttackAerial)
+                    {
+                        float distance = Vector3.Distance(transform.position, collider.transform.position);
+                        enemiesInRange.Add(new EnemyInfo(collider.transform, distance));
+                        foundEnemyInAttackRange = true;
+                    }
+                }
         }
 
         // 공격 범위 내에 적이 없다면 탐지 범위 내의 적들을 확인
@@ -153,8 +205,13 @@ public class Infantry : MonoBehaviour
             {
                 if (collider.CompareTag("Enemy"))
                 {
-                    float distance = Vector3.Distance(transform.position, collider.transform.position);
-                    enemiesInRange.Add(new EnemyInfo(collider.transform, distance));
+                    EnemyController enemyController = collider.GetComponent<EnemyController>();
+
+                    if ((enemyController != null && (!enemyController.isAerial && !canAttackAerial)) || canAttackAerial)
+                    {
+                        float distance = Vector3.Distance(transform.position, collider.transform.position);
+                        enemiesInRange.Add(new EnemyInfo(collider.transform, distance));
+                    }
                 }
             }
         }
@@ -175,9 +232,13 @@ public class Infantry : MonoBehaviour
 
     private void HandleCombat() // 적과의 거리가 일정 수준 이하면 공격함.
     {
-        if (currentTarget == null) return;
+        if (!isMage && currentTarget == null) return;
 
-        float distanceToTarget = Vector3.Distance(transform.position, currentTarget.position);
+        if (isMage && targetPosition == Vector3.zero) return;
+
+        float distanceToTarget = isMage ? 
+            Vector3.Distance(transform.position, targetPosition) : 
+            Vector3.Distance(transform.position, currentTarget.position);
 
         if (distanceToTarget <= attackRange)
         {
@@ -187,16 +248,23 @@ public class Infantry : MonoBehaviour
         else if (distanceToTarget > detectionRange)
         {
             currentTarget = null;
+            targetPosition = Vector3.zero;
             if (animator != null) animator.SetBool("IsMoving", false);
         }
         else
         {
             // 타겟을 향해 이동
-            agent.SetDestination(currentTarget.position);
+            if (!isMage)
+            {
+                agent.SetDestination(currentTarget.position);
+            }
+            else
+            {
+                agent.SetDestination(targetPosition);
+            }
             if (animator != null) animator.SetBool("IsMoving", true);
         }
     }
-
 
     public void AttackTarget()
     {
@@ -207,15 +275,25 @@ public class Infantry : MonoBehaviour
 
             // 공격 애니메이션 실행
             if (animator != null) animator.SetTrigger("Attack");
-            if (currentTarget != null)
+            if (!isMage && currentTarget != null)
             {
                 EnemyController enemyController = currentTarget.GetComponent<EnemyController>();
 
-                if (enemyController != null && !enemyController.isAerial)
+                if ((enemyController != null && (!enemyController.isAerial && !canAttackAerial)) || canAttackAerial)
                 {
                     // 여기서 뭘 던질지 정해야함.
                     GameObject attack = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
                     attack.GetComponent<AttackController>().Initialize(currentTarget, attackDamage);
+                }
+            }
+            else if(isMage)
+            {
+                EnemyController enemyController = currentTarget.GetComponent<EnemyController>();
+
+                if (enemyController != null && ((!enemyController.isAerial && !canAttackAerial) || canAttackAerial))
+                {
+                    GameObject attack = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
+                    attack.GetComponent<AreaAttackController>().Initialize(targetPosition, attackDamage);
                 }
             }
 
@@ -263,12 +341,20 @@ public class Infantry : MonoBehaviour
         isFollowingPlayer = follow;
         if (follow)
         {
+            agent.stoppingDistance = followDistance;
             currentTarget = null;
+            targetPosition = Vector3.zero;
             // 따라가기 시작할 때 효과 추가 가능
             if (animator != null) animator.SetTrigger("StartFollow");
         }
         else
         {
+            agent.stoppingDistance = attackRange;
+            if(isMage)
+            {
+                agent.stoppingDistance *= 0.8f;
+            }
+
             // 따라가기 중단할 때 효과 추가 가능
             if (animator != null) animator.SetTrigger("StopFollow");
             agent.ResetPath();
@@ -285,9 +371,5 @@ public class Infantry : MonoBehaviour
         // 감지 범위 (노란색)
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
-
-        // 상호작용 범위 (초록색)
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }

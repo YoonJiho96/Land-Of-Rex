@@ -5,7 +5,7 @@ public class AreaAttackController : MonoBehaviour
 {
     public float speed = 20f;
     public int damage = 10;
-    public float radius = 3f; // 폭발 범위
+    public float radius = 10f; // 폭발 범위
     public Vector3 targetPosition;
     public float explosionDelay = 0.5f; // 폭발까지의 지연 시간
     public GameObject explosionEffectPrefab; // 폭발 이펙트 프리팹
