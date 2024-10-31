@@ -3,10 +3,12 @@ using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;  // TextMeshPro를 사용하는 경우
+using UnityEngine.UI;
 
 
-    // 랭킹 데이터 구조
-    [Serializable]
+// 랭킹 데이터 구조
+[Serializable]
     public class RankingData
     {
         public string nickname; // 사용자 닉네임
@@ -68,7 +70,7 @@ public class RankingManager : MonoBehaviour
     // 게임 결과 전송
     public IEnumerator SendGameResult(float clearTime, int earnGold, int spendGold, int deathCount)
     {
-        if (string.IsNullOrEmpty(UserData.Instance.token))
+        if (string.IsNullOrEmpty(UserData.Instance.accessToken))
         {
             Debug.LogError("User not logged in!");
             yield break;
@@ -116,7 +118,7 @@ public class RankingManager : MonoBehaviour
             www.uploadHandler = new UploadHandlerRaw(bodyRaw);
             www.downloadHandler = new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");
-            www.SetRequestHeader("Authorization", "Bearer " + UserData.Instance.token);
+            www.SetRequestHeader("Authorization", "Bearer " + UserData.Instance.accessToken);
 
             yield return www.SendWebRequest();
 
@@ -141,9 +143,9 @@ public class RankingManager : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Get(baseUrl + "rankings"))
         {
             www.SetRequestHeader("Content-Type", "application/json");
-            if (!string.IsNullOrEmpty(UserData.Instance.token))
+            if (!string.IsNullOrEmpty(UserData.Instance.accessToken))
             {
-                www.SetRequestHeader("Authorization", "Bearer " + UserData.Instance.token);
+                www.SetRequestHeader("Authorization", "Bearer " + UserData.Instance.accessToken);
             }
 
             yield return www.SendWebRequest();

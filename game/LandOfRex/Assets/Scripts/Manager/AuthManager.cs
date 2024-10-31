@@ -2,216 +2,384 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Collections;
-using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;  // TextMeshPro를 사용하는 경우
+using System.Collections.Generic;
 
-// 로그인 요청/응답 데이터
 [Serializable]
-public class LoginRequest
-{
-    public string email;
-    public string password;
-
-    public LoginRequest(string email, string password)
-    {
-        this.email = email;
-        this.password = password;
-    }
-}
-
-// 회원가입 요청/응답 데이터
-[Serializable]
-public class SignUpRequest
-{
-    public string email;
-    public string password;
-    public string nickname;
-
-    public SignUpRequest(string email, string password, string nickname)
-    {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-    }
-}
-
-// 서버 응답 데이터
-[Serializable]
-public class AuthResponse
+public class OAuthTokenResponse
 {
     public bool success;
-    public UserData data;
+    public TokenData data;
     public string message;
-    public string token;
 }
 
-// 사용자 데이터
 [Serializable]
+public class TokenData
+{
+    public string access_token;
+    public string refresh_token;
+    public string token_type;
+    public int expires_in;
+}
+
+[Serializable]
+public class OAuthUserData
+{
+    public int user_id;
+    public string email;
+    public string image_url;
+    public string nickname;
+    public string refresh_token;
+    public string social_id;
+    public string role;
+    public string social_type;
+    public string created_at;
+    public string updated_at;
+}
+
+public class AuthManager : MonoBehaviour
+{
+    // 싱글톤
+    private static AuthManager _instance;
+    public static AuthManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // 1. 먼저 씬에서 AuthManager 컴포넌트를 찾아봄
+                _instance = FindAnyObjectByType<AuthManager>();
+                if (_instance == null)
+                {
+                    // 2. 새로운 GameObject를 만들고
+                    GameObject go = new GameObject("AuthManager");
+                    // 3. AuthManager 컴포넌트를 추가
+                    _instance = go.AddComponent<AuthManager>();
+                    // 4. 씬이 바뀌어도 파괴되지 않도록 설정
+                    DontDestroyOnLoad(go);
+                }
+            }
+            return _instance; // 존재하는 인스턴스 반환
+        }
+    }
+
+    // 백엔드 기본 api 주소
+    private string baseUrl = "https://your-backend-url.com/api/";
+    private string currentProvider; // "GOOGLE", "KAKAO", "NAVER" 중 하나
+
+    // OAuth 제공자별 클라이언트 ID
+    private readonly Dictionary<string, string> clientIds = new Dictionary<string, string>
+    {
+        { "GOOGLE", "your-google-client-id" },
+        { "KAKAO", "your-kakao-client-id" },
+        { "NAVER", "your-naver-client-id" }
+    };
+
+    private void Awake()
+    {
+        // 이미 다른 AuthManager가 존재하는가
+        if (_instance != null && _instance != this)
+        {
+            // 중복 인스턴스가 감지되면 현재 게임오브젝트를 파괴
+            Destroy(gameObject);
+            return;
+        }
+        _instance = this;
+        // 이 게임오브젝트를 씬이 변경되어도 파괴되지 않도록 설정
+        DontDestroyOnLoad(gameObject);
+    }
+
+    // OAuth 로그인 시작
+    public void StartOAuthLogin(string provider)
+    {
+        // Oauth 제공 하는 곳 ex. 카카오
+        currentProvider = provider.ToUpper();
+        string clientId = clientIds[currentProvider];
+
+        // 이는 OAuth 인증 완료 후 리다이렉트될 URL
+        string redirectUri = $"{baseUrl}auth/{currentProvider.ToLower()}/callback";
+        string authUrl = "";
+
+        switch (currentProvider)
+        {
+            case "GOOGLE":
+                authUrl = $"https://accounts.google.com/o/oauth2/v2/auth" +
+                         $"?client_id={clientId}" +
+                         $"&redirect_uri={UnityWebRequest.EscapeURL(redirectUri)}" +
+                         "&response_type=code" +
+                         "&scope=email%20profile";
+                break;
+
+            case "KAKAO":
+                authUrl = $"https://kauth.kakao.com/oauth/authorize" +
+                         $"?client_id={clientId}" +
+                         $"&redirect_uri={UnityWebRequest.EscapeURL(redirectUri)}" +
+                         "&response_type=code";
+                break;
+
+            case "NAVER":
+                string state = GenerateRandomState();
+                PlayerPrefs.SetString("oauth_state", state);
+                authUrl = $"https://nid.naver.com/oauth2.0/authorize" +
+                         $"?client_id={clientId}" +
+                         $"&redirect_uri={UnityWebRequest.EscapeURL(redirectUri)}" +
+                         "&response_type=code" +
+                         $"&state={state}";
+                break;
+        }
+
+        Application.OpenURL(authUrl);
+        StartCoroutine(WaitForAuthCode());
+    }
+
+    private string GenerateRandomState()
+    {
+        return System.Guid.NewGuid().ToString();
+    }
+
+    // Authorization Code 대기
+    private IEnumerator WaitForAuthCode()
+    {
+        // 인증 코드가 없으면 0.5초마다 확인
+        while (string.IsNullOrEmpty(UserData.Instance.authCode))
+        {
+            // 0.5초마다 확인
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // 네이버 로그인의 경우 state 값 검증
+        if (currentProvider == "NAVER")
+        {
+            // 저장된 state와 받은 state 비교
+            string savedState = PlayerPrefs.GetString("oauth_state");
+            string receivedState = UserData.Instance.authState;
+
+            if (savedState != receivedState)
+            {
+                // CSRF 공격 방지를 위한 검증 실패 처리
+                Debug.LogError("OAuth state mismatch - possible CSRF attack");
+                UserData.Instance.ClearAuthData();
+                yield break;
+            }
+
+            PlayerPrefs.DeleteKey("oauth_state");
+        }
+
+        // 인증 코드를 받으면 토큰 교환 진행
+        StartCoroutine(ExchangeCodeForToken(UserData.Instance.authCode));
+        UserData.Instance.ClearAuthData();
+    }
+
+    // Authorization Code를 토큰으로 교환
+    private IEnumerator ExchangeCodeForToken(string authCode)
+    {
+        // 토큰 교환 url
+        string tokenUrl = $"{baseUrl}auth/{currentProvider.ToLower()}/token";
+        WWWForm form = new WWWForm();
+        form.AddField("code", authCode);
+        form.AddField("grant_type", "authorization_code");
+
+        using (UnityWebRequest www = UnityWebRequest.Post(tokenUrl, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                OAuthTokenResponse tokenResponse = JsonUtility.FromJson<OAuthTokenResponse>(www.downloadHandler.text);
+                if (tokenResponse.success)
+                {
+                    // 토큰 저장
+                    UserData.Instance.SetTokens(
+                        tokenResponse.data.access_token,
+                        tokenResponse.data.refresh_token
+                    );
+                    // 사용자 정보 요청 시작
+                    StartCoroutine(GetUserInfo());
+                }
+                else
+                {
+                    Debug.LogError("Token exchange failed: " + tokenResponse.message);
+                }
+            }
+            else
+            {
+                Debug.LogError("Token exchange error: " + www.error);
+            }
+        }
+    }
+
+    // 사용자 정보 가져오기
+    private IEnumerator GetUserInfo()
+    {
+        using (UnityWebRequest www = UnityWebRequest.Get($"{baseUrl}auth/user"))
+        {
+            // Bearer 토큰 인증 헤더 추가
+            www.SetRequestHeader("Authorization", "Bearer " + UserData.Instance.accessToken);
+
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                // 사용자 정보 파싱 및 저장
+                OAuthUserData userData = JsonUtility.FromJson<OAuthUserData>(www.downloadHandler.text);
+
+                // UserData 싱글톤에 정보 저장
+                UserData.Instance.SetUserInfo(
+                    userData.user_id,
+                    userData.email,
+                    userData.nickname,
+                    userData.image_url,
+                    userData.social_id,
+                    userData.social_type,
+                    userData.role
+                );
+
+                // 로비 씬으로 이동
+                SceneManager.LoadScene("LobbyScene");
+            }
+            else
+            {
+                Debug.LogError("Failed to get user info: " + www.error);
+            }
+        }
+    }
+
+    // 토큰 갱신
+    public IEnumerator RefreshAuthToken()
+    {
+        string refreshUrl = $"{baseUrl}auth/refresh";
+        WWWForm form = new WWWForm();
+        form.AddField("refresh_token", UserData.Instance.refreshToken);
+        form.AddField("grant_type", "refresh_token");
+
+        // 토큰 갱신 요청
+        using (UnityWebRequest www = UnityWebRequest.Post(refreshUrl, form))
+        {
+            yield return www.SendWebRequest();
+
+            // 성공시 새 토큰 저장, 실패시 로그아웃
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                OAuthTokenResponse tokenResponse = JsonUtility.FromJson<OAuthTokenResponse>(www.downloadHandler.text);
+                if (tokenResponse.success)
+                {
+                    UserData.Instance.SetTokens(
+                        tokenResponse.data.access_token,
+                        tokenResponse.data.refresh_token
+                    );
+                }
+                else
+                {
+                    Debug.LogError("Token refresh failed: " + tokenResponse.message);
+                    StartCoroutine(Logout()); // 토큰 갱신 실패시 로그아웃
+                }
+            }
+            else
+            {
+                Debug.LogError("Token refresh error: " + www.error);
+                StartCoroutine(Logout());
+            }
+        }
+    }
+
+    // 로그아웃
+    public IEnumerator Logout()
+    {
+        if (string.IsNullOrEmpty(UserData.Instance.accessToken))
+        {
+            yield break;
+        }
+
+        using (UnityWebRequest www = UnityWebRequest.PostWwwForm($"{baseUrl}auth/logout", ""))
+        {
+            www.SetRequestHeader("Authorization", "Bearer " + UserData.Instance.accessToken);
+
+            yield return www.SendWebRequest();
+
+            // 로컬 사용자 데이터 초기화
+            UserData.Instance.ClearUserData();
+
+            // 로그인 씬으로 이동
+            SceneManager.LoadScene("LoginScene");
+        }
+    }
+}
+
+// UserData 클래스 정의
 public class UserData
 {
-    public int userId;
-    public string email;
-    public string nickname;
-    public string token;
-
-    // 싱글톤 인스턴스
+    // 싱글톤 패턴 구현
     private static UserData _instance;
     public static UserData Instance
     {
         get
         {
             if (_instance == null)
+            {
                 _instance = new UserData();
+            }
             return _instance;
         }
     }
-}
 
-public class AuthManager : MonoBehaviour
-{
-    private string baseUrl = "https://your-backend-url.com/api/auth/";
+    // OAuth 인증 관련 데이터
+    public string authCode { get; private set; }
+    public string authState { get; private set; }
+    public string accessToken { get; private set; }
+    public string refreshToken { get; private set; }
 
-    [Header("UI References")]
-    public TMP_InputField emailInput;
-    public TMP_InputField passwordInput;
-    public TMP_InputField nicknameInput;
-    public Button loginButton;
-    public Button signUpButton;
-    public Button logoutButton;
-    public Text errorText;
+    // 사용자 정보
+    public int userId { get; private set; }
+    public string email { get; private set; }
+    public string nickname { get; private set; }
+    public string imageUrl { get; private set; }
+    public string socialId { get; private set; }
+    public string socialType { get; private set; }
+    public string role { get; private set; }
 
-    void Start()
+    public void SetAuthCode(string code, string state = null)
     {
-        // 버튼 이벤트 등록
-        loginButton?.onClick.AddListener(() => StartCoroutine(Login()));
-        signUpButton?.onClick.AddListener(() => StartCoroutine(SignUp()));
-        logoutButton?.onClick.AddListener(Logout);
-
-        // 저장된 토큰이 있다면 자동 로그인
-        string savedToken = PlayerPrefs.GetString("AuthToken", "");
-        if (!string.IsNullOrEmpty(savedToken))
-        {
-            UserData.Instance.token = savedToken;
-            // 토큰 유효성 검증 필요시 추가
-        }
+        authCode = code;
+        authState = state;
     }
 
-    // 로그인
-    private IEnumerator Login()
+    public void SetTokens(string access, string refresh)
     {
-        string email = emailInput.text;
-        string password = passwordInput.text;
-
-        // 입력 검증
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-        {
-            errorText.text = "이메일과 비밀번호를 입력해주세요.";
-            yield break;
-        }
-
-        LoginRequest loginData = new LoginRequest(email, password);
-        string jsonData = JsonUtility.ToJson(loginData);
-
-        using (UnityWebRequest www = new UnityWebRequest(baseUrl + "login", "POST"))
-        {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                AuthResponse response = JsonUtility.FromJson<AuthResponse>(www.downloadHandler.text);
-                if (response.success)
-                {
-                    // 사용자 데이터와 토큰 저장
-                    UserData.Instance.userId = response.data.userId;
-                    UserData.Instance.email = response.data.email;
-                    UserData.Instance.nickname = response.data.nickname;
-                    UserData.Instance.token = response.token;
-
-                    // 토큰 로컬 저장
-                    PlayerPrefs.SetString("AuthToken", response.token);
-                    PlayerPrefs.Save();
-
-                    // 로그인 성공 처리 (예: 씬 전환)
-                    Debug.Log("Login successful!");
-                }
-                else
-                {
-                    errorText.text = response.message;
-                }
-            }
-            else
-            {
-                errorText.text = "로그인 실패: " + www.error;
-            }
-        }
+        accessToken = access;
+        refreshToken = refresh;
     }
 
-    // 회원가입
-    private IEnumerator SignUp()
+    public void SetUserInfo(int id, string email, string nickname, string imageUrl,
+                          string socialId, string socialType, string role)
     {
-        string email = emailInput.text;
-        string password = passwordInput.text;
-        string nickname = nicknameInput.text;
-
-        // 입력 검증
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(nickname))
-        {
-            errorText.text = "모든 필드를 입력해주세요.";
-            yield break;
-        }
-
-        SignUpRequest signUpData = new SignUpRequest(email, password, nickname);
-        string jsonData = JsonUtility.ToJson(signUpData);
-
-        using (UnityWebRequest www = new UnityWebRequest(baseUrl + "signup", "POST"))
-        {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                AuthResponse response = JsonUtility.FromJson<AuthResponse>(www.downloadHandler.text);
-                if (response.success)
-                {
-                    Debug.Log("Sign up successful!");
-                    // 회원가입 성공 후 자동 로그인 또는 로그인 화면으로 전환
-                    yield return StartCoroutine(Login());
-                }
-                else
-                {
-                    errorText.text = response.message;
-                }
-            }
-            else
-            {
-                errorText.text = "회원가입 실패: " + www.error;
-            }
-        }
+        this.userId = id;
+        this.email = email;
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
+        this.socialId = socialId;
+        this.socialType = socialType;
+        this.role = role;
     }
 
-    // 로그아웃
-    private void Logout()
+    public void ClearAuthData()
     {
-        // 토큰 및 사용자 데이터 삭제
-        UserData.Instance.token = null;
-        UserData.Instance.userId = 0;
-        UserData.Instance.email = null;
-        UserData.Instance.nickname = null;
+        authCode = null;
+        authState = null;
+    }
 
-        // 저장된 토큰 삭제
-        PlayerPrefs.DeleteKey("AuthToken");
-        PlayerPrefs.Save();
-
-        // 로그아웃 후 처리 (예: 로그인 화면으로 전환)
-        Debug.Log("Logged out successfully!");
+    public void ClearUserData()
+    {
+        accessToken = null;
+        refreshToken = null;
+        userId = 0;
+        email = null;
+        nickname = null;
+        imageUrl = null;
+        socialId = null;
+        socialType = null;
+        role = null;
+        ClearAuthData();
     }
 }
