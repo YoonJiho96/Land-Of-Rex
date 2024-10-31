@@ -28,12 +28,14 @@ public class UnitController : MonoBehaviour
     public NavMeshAgent agent; // 자동 경로 탐색
     public Animator animator; // 움직임, 애니메이션
     public Transform player; // 플레이어 위치 정보. 플레이어 따라다닐 수 있어야 함.
+    public Vector3 lastPosition;
     public Transform currentTarget; // 현재 어떤 적을 보고 있는가
     private Vector3 targetPosition; // 마법사일때 사용하는 공격 목표 위치
 
     // States
     public bool isAttacking = false; // 공격 중인지
-    public bool isFollowingPlayer = false; // 플레이어 따라가기 on/off 
+    public bool isFollowingPlayerTotal = false; // 플레이어 따라가기 on/off 
+    public bool isFollowingPlayerSub = false;
     public float lastAttackTime = 0f; // 쿨타임 관리
 
     // 적 타겟 관리
@@ -97,7 +99,7 @@ public class UnitController : MonoBehaviour
 
     public void Update()
     {
-        if (isFollowingPlayer && player != null)
+        if (isFollowingPlayerTotal && player != null)
         {
             FollowPlayer();
         }
@@ -111,7 +113,7 @@ public class UnitController : MonoBehaviour
     {
         while (true)
         {
-            if (!isFollowingPlayer)
+            if (!isFollowingPlayerTotal)
             {
                 if (!isMage)
                 {
@@ -288,13 +290,8 @@ public class UnitController : MonoBehaviour
             }
             else if(isMage)
             {
-                EnemyController enemyController = currentTarget.GetComponent<EnemyController>();
-
-                if (enemyController != null && ((!enemyController.isAerial && !canAttackAerial) || canAttackAerial))
-                {
-                    GameObject attack = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
-                    attack.GetComponent<AreaAttackController>().Initialize(targetPosition, attackDamage);
-                }
+                GameObject attack = Instantiate(attackPrefeb, transform.position, Quaternion.identity);
+                attack.GetComponent<AreaAttackController>().Initialize(targetPosition, attackDamage);
             }
 
             lastAttackTime = Time.time;
@@ -305,17 +302,36 @@ public class UnitController : MonoBehaviour
     {
         if (player == null) return;
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        Vector3 destination = player.position;
+
+        if(!isFollowingPlayerSub)
+        {
+            destination = lastPosition;
+        }
+
+        float distanceToPlayer = Vector3.Distance(transform.position, destination);
 
         if (distanceToPlayer > followDistance)
         {
-            agent.SetDestination(player.position);
+            agent.SetDestination(destination);
             if (animator != null) animator.SetBool("IsMoving", true);
         }
         else
         {
-            agent.ResetPath();
-            if (animator != null) animator.SetBool("IsMoving", false);
+            if(!isFollowingPlayerSub)
+            {
+                isFollowingPlayerTotal = false;
+
+                agent.stoppingDistance = attackRange;
+                if (isMage)
+                {
+                    agent.stoppingDistance *= 0.8f;
+                }
+
+                // 따라가기 중단할 때 효과 추가 가능
+                if (animator != null) animator.SetTrigger("StopFollow");
+                agent.ResetPath();
+            }
         }
     }
 
@@ -338,9 +354,11 @@ public class UnitController : MonoBehaviour
 
     public void SetFollowPlayer(bool follow)
     {
-        isFollowingPlayer = follow;
+        isFollowingPlayerSub = follow;
+
         if (follow)
         {
+            isFollowingPlayerTotal = follow;
             agent.stoppingDistance = followDistance;
             currentTarget = null;
             targetPosition = Vector3.zero;
@@ -349,15 +367,7 @@ public class UnitController : MonoBehaviour
         }
         else
         {
-            agent.stoppingDistance = attackRange;
-            if(isMage)
-            {
-                agent.stoppingDistance *= 0.8f;
-            }
-
-            // 따라가기 중단할 때 효과 추가 가능
-            if (animator != null) animator.SetTrigger("StopFollow");
-            agent.ResetPath();
+            lastPosition = player.position;
         }
     }
 

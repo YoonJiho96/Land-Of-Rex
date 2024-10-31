@@ -18,29 +18,70 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;            // 중력 및 이동 속도 벡터
     private bool isGrounded;
 
+    // 배치 관련
+    private InputAction arrangeAction;
+    public PlayerArrangeController arrangeController;
+    public bool isArrange = false;
+    private float arrangeCooldown = 0.5f;
+    private float lastArrangeTime = 0f;
+
+    private PlayerHPController playerHPController;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        playerHPController = GetComponent<PlayerHPController>();
 
         // Input Actions를 가져와서 액션을 초기화
         var playerActions = inputActions.FindActionMap("Player"); // PlayerInputActions는 Input Actions Asset의 이름
         moveAction = playerActions.FindAction("Move");
+        arrangeAction = playerActions.FindAction("Arrange");
     }
 
     private void OnEnable()
     {
         // 액션 활성화
         moveAction.Enable();
+        arrangeAction.Enable();
     }
 
     private void OnDisable()
     {
         // 액션 비활성화
         moveAction.Disable();
+        arrangeAction.Disable();
     }
 
     private void Update()
     {
+        if(playerHPController.isDead)
+        {
+            isArrange = false;
+            arrangeController.finishArrange();
+        }
+
+        // 상호작용 입력 처리
+        float isArranged = arrangeAction.ReadValue<float>();
+
+        if (!playerHPController.isDead && isArranged > 0 && Time.time - lastArrangeTime > arrangeCooldown)
+        {
+            if (arrangeController != null)
+            {
+                if(!isArrange)
+                {
+                    isArrange = true;
+                    arrangeController.startArrange();
+                }
+                else
+                {
+                    isArrange = false;
+                    arrangeController.finishArrange();
+                }
+
+                lastArrangeTime = Time.time;
+            }
+        }
+
         // 캐릭터가 땅에 닿았는지 여부 확인
         isGrounded = controller.isGrounded;
 
