@@ -17,13 +17,16 @@ services:
   frontend:
     image: react-app
     build:
-      context: ./LandofRex  # Frontend Dockerfile 위치
-      dockerfile: Dockerfile
+      context: .  # Set the build context to the parent directory
+      dockerfile: LandofRex/Dockerfile  # Specify Dockerfile location within the build context
     ports:
       - "3000:80"
     networks:
       - app-network
-    restart: always
+    volumes:
+      - /usr/share/nginx/html:/app/dist  # Map build output to Nginx directory
+    command: ["npm", "run", "build"]  # Run the build command only
+
 
 networks:
   app-network:
