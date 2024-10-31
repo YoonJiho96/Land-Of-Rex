@@ -1,7 +1,7 @@
 import React from 'react';
-import './Navbar.css';
+import './NavBar.css';
 
-const Navbar = ({ activeSection, scrollToSection, sections }) => {
+const NavBar = ({ activeSection, scrollToSection, sections }) => {
   return (
     <nav className="navbar">
       <div className="logo">E102</div>
@@ -23,4 +23,4 @@ const Navbar = ({ activeSection, scrollToSection, sections }) => {
   );
 };
 
-export default Navbar;
+export default NavBar;
