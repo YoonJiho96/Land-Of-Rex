@@ -77,9 +77,10 @@ app.whenReady().then(async () => {
   createWindow();
   autoUpdater.checkForUpdates();
 
-  // 게임 다운로드 되어 있으면 유효성 체크
-  const isUpToDate = await validateManifest();
-  // mainWindow.webContents.send('update-required', !isUpToDate);
+  // 화면 로드된 후 게임 설치 검증
+  mainWindow.webContents.on('did-finish-load', async () => {
+    await validateManifest();
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -180,6 +181,7 @@ ipcMain.on('download-game', async () => {
 
     // 다운로드 완료 이벤트 전송
     mainWindow.webContents.send('download-complete');
+    await validateManifest(); // 클라이언트 유효성 확인
   } catch (error) {
     mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
   }
@@ -324,6 +326,7 @@ async function validateManifest() {
     // 폴더가 없는 경우 null이 반환되므로 null 체크 후 파일 생성
     if (manifest) {
       fs.writeFileSync(localManifestPath, JSON.stringify(manifest, null, 2));
+      await validateManifest();
       return true; // manifest 생성 성공
     } else {
       mainWindow.webContents.send('installation-required', true); // 설치 필요 알림

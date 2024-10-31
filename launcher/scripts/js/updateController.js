@@ -54,4 +54,10 @@ export function handleUpdate(updater) {
     installNoBtn.addEventListener('click', () => {
         downloadedModal.style.display = 'none';
     });
+
+    // 현재 버전 설정
+    const currentVersionSpan = document.getElementById('current-version');
+    updater.onCurrentVersion((version) => {
+        currentVersionSpan.textContent = version;
+    });
 }
