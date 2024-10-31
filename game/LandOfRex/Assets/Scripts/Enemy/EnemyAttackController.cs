@@ -6,11 +6,13 @@ public class EnemyAttackController : MonoBehaviour
 
     private void OnEnable()
     {
+        PlayerHPController.OnEntityDestroyed += RemoveUnitOrBuilding;
         HPController.OnEntityDestroyed += RemoveUnitOrBuilding;
     }
 
     private void OnDisable()
     {
+        PlayerHPController.OnEntityDestroyed -= RemoveUnitOrBuilding;
         HPController.OnEntityDestroyed -= RemoveUnitOrBuilding;
     }
 

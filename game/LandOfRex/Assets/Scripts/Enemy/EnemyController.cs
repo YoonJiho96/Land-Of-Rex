@@ -12,8 +12,8 @@ public class EnemyController : MonoBehaviour
 
     private NavMeshAgent agent;
 
-    private Transform detectedTarget;
-    private List<Transform> detectedTargets = new List<Transform>();
+    public Transform detectedTarget;
+    public List<Transform> detectedTargets = new List<Transform>();
 
     private List<Transform> attackTargets = new List<Transform>();
 
