@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../Sidebar"; // Sidebar import
+import Sidebar from "./Sidebar"; // Sidebar import
 import "./AdminPage.css"; // AdminPage 전용 CSS 파일
 
 const AdminPage = () => {
