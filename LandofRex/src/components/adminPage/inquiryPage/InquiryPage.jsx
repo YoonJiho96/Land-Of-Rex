@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../Sidebar";
+import Sidebar from "../Sidebar";
 import "./InquiryPage.css";
 
 const InquiryPage = () => {
