@@ -9,6 +9,8 @@ spring:
   datasource:
     initialize: false
     driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: prod
 
 logging.level:
   org.hibernate.SQL: debug
