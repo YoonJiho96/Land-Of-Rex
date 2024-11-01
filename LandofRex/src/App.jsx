@@ -19,7 +19,6 @@ const App = () => {
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/dashboardPage" element={<DashboardPage />} />
 
-
       </Routes>
     </Router>
   );

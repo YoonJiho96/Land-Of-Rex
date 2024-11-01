@@ -4,6 +4,7 @@ import IntroSection from '../introSection/IntroSection.jsx';
 import NoticeSection from '../noticeSection/NoticeSection.jsx';
 import RankingSection from '../rankingSection/RankingSection.jsx';
 import InquirySection from '../inquirySection/InquirySection.jsx';
+import EditorSection from '../editor/myEditor-tiny.jsx';
 import Footer from '../footer/Footer.jsx';
 import './MainPage.css';
 
@@ -14,6 +15,7 @@ const MainPage = () => {
   const noticesRef = useRef(null);
   const rankingRef = useRef(null);
   const inquiryRef = useRef(null);
+  const editorRef  = useRef(null);
 
   // 현재 활성화된 섹션을 관리하는 상태
   const [activeSection, setActiveSection] = useState('intro');
@@ -62,7 +64,8 @@ const MainPage = () => {
       <IntroSection ref={introRef} />
       <NoticeSection ref={noticesRef} />
       <RankingSection ref={rankingRef} />
-      <InquirySection ref={inquiryRef} />
+      <EditorSection ref={editorRef}/>
+      {/* <InquirySection ref={inquiryRef} /> */}
       
       {/* 페이지 하단의 Footer */}
       <Footer />
