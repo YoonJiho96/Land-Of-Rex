@@ -1,0 +1,33 @@
+services:
+  backend:
+    image: spring-app
+    container_name: spring_container
+    build:
+      context: .  # Set the context to the root of your project
+      dockerfile: backend/landOfRex/Dockerfile  # Path to the Dockerfile within backend/landOfRex
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      # SPRING_DATASOURCE_URL: jdbc:mysql://mysql_container:3306/land_of_rex
+    networks:
+      - app-network
+    volumes:
+      - /home/ubuntu/volumes/spring-logs:/app/logs
+
+  frontend:
+    image: react-app
+    build:
+      context: .  # Set the build context to the parent directory
+      dockerfile: LandofRex/Dockerfile  # Specify Dockerfile location within the build context
+    ports:
+      - "3000:80"
+    volumes:
+      - /usr/share/nginx/html:/app/dist  # Map build output to Nginx directory
+    command: ["npm", "run", "build"]  # Run the build command only
+
+networks:
+  app-network:
+    external: true
+
+
