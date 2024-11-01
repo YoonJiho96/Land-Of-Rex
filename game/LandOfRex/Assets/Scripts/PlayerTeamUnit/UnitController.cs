@@ -328,6 +328,8 @@ public class UnitController : MonoBehaviour
                     agent.stoppingDistance *= 0.8f;
                 }
 
+                agent.speed = moveSpeed;
+
                 // 따라가기 중단할 때 효과 추가 가능
                 if (animator != null) animator.SetTrigger("StopFollow");
                 agent.ResetPath();
@@ -360,6 +362,8 @@ public class UnitController : MonoBehaviour
         {
             isFollowingPlayerTotal = follow;
             agent.stoppingDistance = followDistance;
+            agent.speed = 20f;
+
             currentTarget = null;
             targetPosition = Vector3.zero;
             // 따라가기 시작할 때 효과 추가 가능

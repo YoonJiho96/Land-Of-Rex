@@ -25,6 +25,10 @@ public class PlayerController : MonoBehaviour
     private float arrangeCooldown = 0.5f;
     private float lastArrangeTime = 0f;
 
+    // 병과 배치 관련
+    private InputAction arrange2Action;
+    private float lastArrange2Time = 0f;
+
     private PlayerHPController playerHPController;
 
     private void Awake()
@@ -36,6 +40,7 @@ public class PlayerController : MonoBehaviour
         var playerActions = inputActions.FindActionMap("Player"); // PlayerInputActions는 Input Actions Asset의 이름
         moveAction = playerActions.FindAction("Move");
         arrangeAction = playerActions.FindAction("Arrange");
+        arrange2Action = playerActions.FindAction("Arrange2");
     }
 
     private void OnEnable()
@@ -43,6 +48,7 @@ public class PlayerController : MonoBehaviour
         // 액션 활성화
         moveAction.Enable();
         arrangeAction.Enable();
+        arrange2Action.Enable();
     }
 
     private void OnDisable()
@@ -50,6 +56,7 @@ public class PlayerController : MonoBehaviour
         // 액션 비활성화
         moveAction.Disable();
         arrangeAction.Disable();
+        arrange2Action.Disable();
     }
 
     private void Update()
@@ -57,10 +64,10 @@ public class PlayerController : MonoBehaviour
         if(playerHPController.isDead)
         {
             isArrange = false;
-            arrangeController.finishArrange();
+            arrangeController.FinishArrange();
         }
 
-        // 상호작용 입력 처리
+        // 배치 입력 처리
         float isArranged = arrangeAction.ReadValue<float>();
 
         if (!playerHPController.isDead && isArranged > 0 && Time.time - lastArrangeTime > arrangeCooldown)
@@ -70,16 +77,27 @@ public class PlayerController : MonoBehaviour
                 if(!isArrange)
                 {
                     isArrange = true;
-                    arrangeController.startArrange();
+                    arrangeController.StartArrange();
                 }
                 else
                 {
                     isArrange = false;
-                    arrangeController.finishArrange();
+                    arrangeController.FinishArrange();
                 }
 
                 lastArrangeTime = Time.time;
             }
+        }
+
+        if (arrange2Action.activeControl != null && Time.time - lastArrange2Time > arrangeCooldown)
+        {
+            string arrangeInput = arrange2Action.activeControl.path.Replace("/Keyboard/", "");
+            int arrangeNum = int.Parse(arrangeInput);
+
+            isArrange = true;
+            arrangeController.StartArrange2(arrangeNum);
+
+            lastArrange2Time = Time.time;
         }
 
         // 캐릭터가 땅에 닿았는지 여부 확인
