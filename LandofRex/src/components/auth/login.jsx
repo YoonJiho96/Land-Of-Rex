@@ -1,5 +1,5 @@
 import React from 'react';
-import { baseUrl } from '/src/config/url.js';
+import { baseUrl } from '../../config/url';
 
 const OAuthLogin = () => {
 

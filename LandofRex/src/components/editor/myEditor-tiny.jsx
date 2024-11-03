@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import axios from 'axios';
+import {baseUrl} from '../../config/url.js'
 
 const TextEditorWithCustomImageUpload = () => {
     const editorRef = useRef(null);
@@ -31,40 +32,31 @@ const TextEditorWithCustomImageUpload = () => {
     const handleSave = async () => {
         if (editorRef.current) {
             let content = editorRef.current.getContent();
-
+    
             const formData = new FormData();
+    
+            // Append content to FormData
+            formData.append('content', content);
+    
+            // Append images to FormData
             images.forEach((image, index) => {
                 formData.append(`images[${index}]`, image.blob, image.id);
             });
-
+    
             try {
-                const imageResponse = await axios.post('/your-image-upload-endpoint', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-
-                if (!imageResponse.data || imageResponse.data.length !== images.length) {
-                    throw new Error("Image upload response doesn't match images count");
-                }
-
-                content = images.reduce((updatedContent, image, index) => {
-                    const imageUrl = imageResponse.data[index].url;
-                    return updatedContent.replace(URL.createObjectURL(image.blob), imageUrl);
-                }, content);
-
-                const finalData = new FormData();
-                finalData.append('content', content);
-
-                await axios.post('http://localhost:8080/api/v1/posts', finalData, {
+                // Send both content and images in one API call
+                const response = await axios.post(`${baseUrl}/api/v1/posts`, formData, {
                     withCredentials: true,
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
-
-                console.log('Content saved successfully');
+    
+                console.log('Content and images saved successfully:', response.data);
             } catch (error) {
-                console.error('Error saving content:', error);
+                console.error('Error saving content and images:', error);
             }
         }
     };
+    
 
     // Helper to calculate spaces based on the current font size
     const calculateTabSpaces = () => {
@@ -89,11 +81,13 @@ const TextEditorWithCustomImageUpload = () => {
                         setCurrentFontSize(fontSize);
                     });
                 }}
+                
+                   
                 init={{
                     height: 500,
                     menubar: false,
                     plugins: 'image code link',
-                    toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image link',
+                    toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image link |               save',
                     content_style: 'p, span, .space { font-family: inherit; font-size: inherit; }', // Ensure consistent font style
                     file_picker_callback: handleCustomImageUpload,
                     setup: (editor) => {
@@ -103,11 +97,17 @@ const TextEditorWithCustomImageUpload = () => {
                                 editor.execCommand('mceInsertContent', false, calculateTabSpaces()); // Insert 4x font size space for Tab
                             }
                         });
+                        editor.ui.registry.addButton('save', {
+                            text: '등록하기',
+                            onAction: function () {
+                                handleSave();
+                                console.log("api save send"); // 여기서 서버에 데이터를 보내는 함수 호출
+                            }
+                        });
                     }
-                
                 }}
             />
-            <button onClick={handleSave}>Save</button>
+            {/* <button onClick={handleSave}>Save</button> */}
         </div>
     );
 };

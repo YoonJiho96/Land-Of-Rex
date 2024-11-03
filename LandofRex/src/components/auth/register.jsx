@@ -26,6 +26,7 @@ function SignupForm() {
       const email = await response.text();
       setEmail(email);
     } catch (error) {
+      
       console.error('Error:', error);
       setEmail('Error loading email');
     }
