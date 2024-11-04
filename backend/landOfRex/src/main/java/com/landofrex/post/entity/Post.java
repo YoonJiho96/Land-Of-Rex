@@ -31,7 +31,7 @@ public class Post extends AuditDateTime {
     @Column(nullable = false , length = 30)
     private String title;
 
-    private String text;
+    private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
@@ -46,9 +46,9 @@ public class Post extends AuditDateTime {
 
     public Post(@NonNull User user, PostCreateRequest postCreateRequest) {
         this.title= postCreateRequest.title();
-        this.type = postCreateRequest.postType();
+//        this.type = postCreateRequest.postType();
         this.author = user;
-        this.text = postCreateRequest.text();
+        this.content = postCreateRequest.content();
         this.status=PostStatus.UNCHEKCED;
     }
 
@@ -64,7 +64,7 @@ public class Post extends AuditDateTime {
 
     public void updateTitleAndText(PostUpdateRequest postUpdateRequest) {
         this.title=postUpdateRequest.title();
-        this.text=postUpdateRequest.text();
+        this.content=postUpdateRequest.content();
     }
     public void updateStatus(PostStatus status) {
         this.status=status;

@@ -11,13 +11,13 @@ import java.util.List;
 /**
  *
  * @param title
- * @param text
- * @param postType
+// * @param text
+// * @param postType
  * @param imageFiles
  */
 public record PostCreateRequest(@NotBlank String title,
-                                @NotBlank PostType postType,
-                                String text,
+//                                @NotBlank PostType postType,
+                                String content,
                                 List<MultipartFile> imageFiles) {
     @Builder
     public PostCreateRequest {
