@@ -6,101 +6,96 @@ import {baseUrl} from '../../config/url.js'
 const TextEditorWithCustomImageUpload = () => {
     const editorRef = useRef(null);
     const [images, setImages] = useState([]); // Store images temporarily
-    const [currentFontSize, setCurrentFontSize] = useState('16px'); // Default font size
 
-    const handleCustomImageUpload = (callback, value, meta) => {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-
-        input.onchange = () => {
-            const file = input.files[0];
-            const tempUrl = URL.createObjectURL(file);
-
-            // Update image state with a functional update to ensure previous images are retained
-            setImages((prevImages) => [
-                ...prevImages,
-                { id: file.name, blob: file },
-            ]);
-
-            // Use temporary URL in TinyMCE editor
-            callback(tempUrl, { alt: file.name });
-        };
-        input.click();
-    };
-
-    const handleSave = async () => {
-        if (editorRef.current) {
-            let content = editorRef.current.getContent();
-    
-            const formData = new FormData();
-    
-            // Append content to FormData
-            formData.append('content', content);
-    
-            // Append images to FormData
-            images.forEach((image, index) => {
-                formData.append(`images[${index}]`, image.blob, image.id);
-            });
-    
-            try {
-                // Send both content and images in one API call
-                const response = await axios.post(`${baseUrl}/api/v1/posts`, formData, {
-                    withCredentials: true,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-    
-                console.log('Content and images saved successfully:', response.data);
-            } catch (error) {
-                console.error('Error saving content and images:', error);
+    const getEditorImages = () => {
+        // 에디터 내의 모든 이미지 선택
+        const imgs = editorRef.current.dom.select('img')
+        const files = [];
+        const reader = new FileReader();
+        imgs.forEach(img => {
+            const blobUrl = img.src;
+            // blob: 로 시작하는 URL만 처리
+            if (blobUrl.startsWith('blob:')) {
+                // Blob URL로부터 실제 File 객체 가져오기
+                fetch(blobUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // reader.readAsDataURL(blob);
+                        // Blob을 File 객체로 변환
+                        const file = new File([blob], `image-${Date.now()}.jpg`, { type: blob.type });
+                        files.push(blob);
+                    });
             }
-        }
+        });
+        return files;
     };
-    
 
-    // Helper to calculate spaces based on the current font size
-    const calculateTabSpaces = () => {
-        const editor = editorRef.current;
-        if (editor) {
-            // Get the font size at the cursor position
-            const fontSize = parseInt(window.getComputedStyle(editor.selection.getNode()).fontSize, 10);
-            const spaceCount = Math.round((fontSize / 4) * 4); // 4 times the font size space
-            return ' '.repeat(spaceCount);
+    // 제출 시 사용
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        const editor=editorRef.current;
+
+        const rawHtml = editor.getContent({ format: 'raw' });
+        // console.log(rawHtml)
+        formData.append("PostCreateRequest", JSON.stringify({
+            title: document.getElementById("postTitle").value,
+            content: rawHtml
+        }));
+
+        // 에디터의 이미지들을 가져와서 추가
+        const imageFiles = getEditorImages();
+        
+        console.log(imageFiles)
+        return
+        // for (let i = 0; i < imageFiles.length; i++) {
+        //     console.log('File:', imageFiles[i]);
+        //     formData.append('ImageFiles', imageFiles[i]);
+        // }
+        
+        imageFiles.forEach((file, index) => {
+            console.log(file)
+            
+            formData.append(`ImageFiles`, file, `image_${index+1}.png`); // 이미지 파일 추가 (이름은 index로 구분)
+        });
+
+        // return
+        try {
+            await axios.post(`${baseUrl}/api/v1/posts`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                withCredentials: true
+            });
+        } catch (error) {
+            console.error('Error:', error);
         }
-        return '';
     };
 
     return (
         <div>
+            <input 
+                type="text" 
+                id="postTitle" 
+                placeholder="제목을 입력하세요" 
+                style={{ width: '100%', padding: '10px', marginBottom: '10px' }} // style 객체로 수정
+            />
             <Editor
                 apiKey = {import.meta.env.VITE_TINYMCE_API_KEY}  // Vite
                 onInit={(evt, editor) => {
                     editorRef.current = editor;
-                    editor.on('NodeChange', () => {
-                        const fontSize = window.getComputedStyle(editor.selection.getNode()).fontSize;
-                        setCurrentFontSize(fontSize);
-                    });
                 }}
-                
                    
                 init={{
                     height: 500,
                     menubar: false,
                     plugins: 'image code link',
-                    toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image link |               save',
+                    toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image link | save',
                     content_style: 'p, span, .space { font-family: inherit; font-size: inherit; }', // Ensure consistent font style
-                    file_picker_callback: handleCustomImageUpload,
                     setup: (editor) => {
-                        editor.on('keydown', (event) => {
-                            if (event.key === 'Tab') {
-                                event.preventDefault();
-                                editor.execCommand('mceInsertContent', false, calculateTabSpaces()); // Insert 4x font size space for Tab
-                            }
-                        });
                         editor.ui.registry.addButton('save', {
-                            text: '등록하기',
+                            text: '등록',
                             onAction: function () {
-                                handleSave();
+                                handleSubmit();
                                 console.log("api save send"); // 여기서 서버에 데이터를 보내는 함수 호출
                             }
                         });
