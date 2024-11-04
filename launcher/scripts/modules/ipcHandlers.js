@@ -1,7 +1,7 @@
 const { ipcMain } = require('electron');
 const { downloadUpdate, installUpdate } = require('./updater');
 const { downloadGame } = require('./s3Service');
-const { doValidateGame } = require('./manifestValidator');
+const { doValidateGame, doValidateGameVersion } = require('./manifestValidator');
 const path = require('path');
 const { validateManifest } = require('./manifestValidator');
 const { generateVersionJson } = require('./checkGame');
@@ -53,7 +53,8 @@ function handleIPC(mainWindow, exeDir) {
     // 게임 유효성 검사 IPC
     ipcMain.on('game-validate', () => {
         try {
-            doValidateGame(exeDir, mainWindow);
+            // doValidateGame(exeDir, mainWindow);
+            doValidateGameVersion(exeDir, mainWindow);
         } catch (error) {
             mainWindow.webContents.send('validate-error', error.message);
         }

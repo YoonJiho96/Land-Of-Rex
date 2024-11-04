@@ -139,4 +139,65 @@ async function doValidateGame(exeDir, mainWindow) {
     }
 }
 
-module.exports = { validateManifest, doValidateGame };
+async function doValidateGameVersion(exeDir, mainWindow) {
+    // 1. manifest 서버와 비교
+    const checkedList = checkcheck(exeDir, mainWindow);
+
+    if (checkedList.length == 0) {
+        // 업데이트 할 필요가 없음
+        console.log("파일이 모두 최신 버전 입니다.");
+    } else {
+        console.log("갱신 필요한 파일 있음");
+    }
+}
+
+async function checkcheck(exeDir, mainWindow) {
+    const localManifestPath = path.join(exeDir, "land-of-rex-launcher", 'manifest.json');
+    const gameFolderPath = path.join(exeDir, "land-of-rex-launcher", "LandOfRex");
+    const serverManifest = await downloadManifestFromS3();
+
+    // 로컬 manifest 새로 생성
+    const manifest = generateFileManifest(gameFolderPath);
+    if (manifest) {
+        fs.writeFileSync(localManifestPath, JSON.stringify(manifest, null, 2));
+    } else {
+        mainWindow.webContents.send('installation-required', true);
+        return;
+    }
+
+    const localManifest = JSON.parse(fs.readFileSync(localManifestPath, 'utf-8'));
+    const differingFiles = [];
+
+    // 서버와 로컬 manifest의 파일 해시 비교
+    const compareAllFiles = (serverFiles, localFiles) => {
+        const localFileMap = new Map(localFiles.map(file => [file.path, file]));
+
+        serverFiles.forEach(serverFile => {
+            const localFile = localFileMap.get(serverFile.path);
+
+            console.log(`Checking file: ${serverFile.path}`);
+
+            // 서버에만 있는 파일 또는 해시가 다른 파일 기록
+            if (!localFile || localFile.hash !== serverFile.hash) {
+                console.log(`서버와 다른 파일: ${serverFile.path}`);
+                differingFiles.push({
+                    path: serverFile.path,
+                    size: serverFile.size,
+                    hash: serverFile.hash
+                });
+            }
+        });
+    };
+
+    compareAllFiles(serverManifest.files, localManifest.files);
+
+    if (differingFiles.length > 0) {
+        console.log("서버와 다른 파일 목록이 있습니다.");
+    } else {
+        console.log("로컬과 서버 manifest가 일치합니다.");
+    }
+
+    return differingFiles;
+}
+
+module.exports = { validateManifest, doValidateGame, doValidateGameVersion };
