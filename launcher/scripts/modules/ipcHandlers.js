@@ -4,6 +4,7 @@ const { downloadGame } = require('./s3Service');
 const { doValidateGame } = require('./manifestValidator');
 const path = require('path');
 const { validateManifest } = require('./manifestValidator');
+const { generateVersionJson } = require('./checkGame');
 
 const LOCAL_FOLDER = "land-of-rex-launcher/LandOfRex";
 const GAME_EXE = "LandOfRex.exe";
@@ -24,6 +25,9 @@ function handleIPC(mainWindow, exeDir) {
             const defaultDownloadPath = path.join(exeDir, LOCAL_FOLDER);
             await downloadGame(defaultDownloadPath, mainWindow);
             await validateManifest(exeDir, mainWindow);
+
+            // 버전 정보 저장
+            await generateVersionJson(exeDir, mainWindow);
         } catch (error) {
             mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
         }

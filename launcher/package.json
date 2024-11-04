@@ -16,7 +16,8 @@
   "dependencies": {
     "aws-sdk": "^2.1691.0",
     "dotenv": "^16.4.5",
-    "electron-updater": "6.3.9"
+    "electron-updater": "6.3.9",
+    "node-fetch": "^3.3.2"
   },
   "build": {
     "appId": "com.landofrex.launcher",

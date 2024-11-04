@@ -7,6 +7,7 @@ const { createWindow, handleWindowEvents } = require('./scripts/modules/window')
 const { initializeUpdater } = require('./scripts/modules/updater');
 const { handleIPC } = require('./scripts/modules/ipcHandlers');
 const { validateManifest } = require('./scripts/modules/manifestValidator');
+const { checkInstalled } = require('./scripts/modules/checkGame');
 
 let mainWindow;
 
@@ -23,7 +24,10 @@ app.whenReady().then(async () => {
 
   // 창 로드 완료 후 매니페스트 검증
   mainWindow.webContents.on('did-finish-load', async () => {
-    await validateManifest(getExeDir(), mainWindow);
+    // await validateManifest(getExeDir(), mainWindow);
+
+    // 1.설치, 버전 확인
+    await checkInstalled(getExeDir(), mainWindow);
   });
 
   app.on('activate', () => {
