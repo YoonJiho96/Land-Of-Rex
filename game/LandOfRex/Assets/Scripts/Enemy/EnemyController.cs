@@ -57,7 +57,7 @@ public class EnemyController : MonoBehaviour
                 agent.SetDestination(detectedTarget.position);
             }
         }
-        else
+        else if(agent.destination != destination.position)
         {
             // 리스트가 비어있다면 최종 목적지로 이동
             agent.SetDestination(destination.position);
