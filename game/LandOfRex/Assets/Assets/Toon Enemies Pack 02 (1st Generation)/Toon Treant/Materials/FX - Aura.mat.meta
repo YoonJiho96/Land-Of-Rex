@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c5942255daccbd14cac2207a3274ed6f
+timeCreated: 1461923047
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 64355
+  packageName: Toon Enemies Pack 02 (1st Generation)
+  packageVersion: 1.2
+  assetPath: Assets/Toon Enemies Pack 02 (1st Generation)/Toon Treant/Materials/FX
+    - Aura.mat
+  uploadId: 610698
