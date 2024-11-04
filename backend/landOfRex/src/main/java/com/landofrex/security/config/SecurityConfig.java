@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -47,8 +48,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize->authorize
-                        .requestMatchers("/api/v1/patches/latest").permitAll()
-                        .requestMatchers("/api/v1/patches").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/patches/latest").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/patches").hasRole("ADMIN")
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                         .requestMatchers("/api/v1/auth/sign-up","/api/v1/auth/email").hasRole("GUEST")
                         .requestMatchers("/api/v1/**").hasRole("USER")

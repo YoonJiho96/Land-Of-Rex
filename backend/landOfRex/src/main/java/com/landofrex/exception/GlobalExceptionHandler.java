@@ -1,5 +1,6 @@
 package com.landofrex.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
@@ -52,8 +54,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<String> exception(Exception e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예기치 못한 에러 관리자 문의 필요");
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> exception(Exception e) {
+        log.error("exception: ",e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예기치 못한 에러 관리자 문의 필요");
+    }
 }
