@@ -16,9 +16,9 @@ public class PatchController {
     private final PatchRepository patchRepository;
 
     @GetMapping("/latest")
-    public ResponseEntity<String> latest() {
+    public ResponseEntity<PatchDto> latest() {
         PatchDto patchDto=new PatchDto(patchRepository.findTopByOrderByIdDesc());
-        return ResponseEntity.ok(patchDto.getVersion());
+        return ResponseEntity.ok(patchDto);
     }
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody PatchCreateRequest patchCreateRequest) {
