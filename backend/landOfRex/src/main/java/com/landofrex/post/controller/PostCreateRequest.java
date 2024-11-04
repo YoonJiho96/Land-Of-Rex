@@ -1,7 +1,6 @@
 package com.landofrex.post.controller;
 
 
-import com.landofrex.post.entity.PostType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;
