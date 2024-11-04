@@ -6,9 +6,11 @@ export function handleValidationControls(validation) {
         if (requireUpdate) {
             updateStatus.textContent = '업데이트가 필요합니다.';
             updateStatus.style.color = 'red';
+            setActiveButton('game-update-button');
         } else {
             updateStatus.textContent = '게임이 최신 버전입니다.';
             updateStatus.style.color = 'green';
+            setActiveButton('game-start-button');
         }
     });
 
@@ -18,6 +20,7 @@ export function handleValidationControls(validation) {
         if (requireInstall) {
             updateStatus.textContent = '게임 설치가 필요합니다.';
             updateStatus.style.color = 'red';
+            setActiveButton('download-button');
         }
     });
 
@@ -26,4 +29,23 @@ export function handleValidationControls(validation) {
     gameValidateBtn.addEventListener('click', () => {
         validation.onValidateGame();
     });
+
+    // 버튼 활성화
+    function setActiveButton(buttonId) {
+        const buttons = [
+            document.getElementById('game-start-button'),
+            document.getElementById('game-update-button'),
+            document.getElementById('download-button')
+        ];
+
+        buttons.forEach((button) => {
+            if (button.id === buttonId) {
+                button.disabled = false;
+                button.style.display = 'block';
+            } else {
+                button.disabled = true;
+                button.style.display = 'none';
+            }
+        });
+    }
 }

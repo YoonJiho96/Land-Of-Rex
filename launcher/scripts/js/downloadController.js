@@ -38,7 +38,7 @@ export function handleDownload(api) {
 
     // 게임 다운로드 완료 시 처리
     api.onDownloadGameComplete(() => {
-        progressGameContainer.style.display = 'none';
+        // progressGameContainer.style.display = 'none';
         progressGameBar.value = 0;
         progressGamePercent.innerText = '0%';
         downloadCompleteModal.style.display = 'flex';
@@ -46,7 +46,7 @@ export function handleDownload(api) {
 
     // 게임 다운로드 오류 발생 시 처리
     api.onDownloadError((error) => {
-        progressGameContainer.style.display = 'none';
+        // progressGameContainer.style.display = 'none';
         progressGameBar.value = 0;
         progressGamePercent.innerText = '0%';
         downloadErrorMessage.textContent = `다운로드 중 오류 발생: ${error}`;
