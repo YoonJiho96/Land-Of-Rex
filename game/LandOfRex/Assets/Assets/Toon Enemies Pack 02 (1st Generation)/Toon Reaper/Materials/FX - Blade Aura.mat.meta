@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a24177d55878951459cddba82e170f32
+timeCreated: 1462427277
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 64355
+  packageName: Toon Enemies Pack 02 (1st Generation)
+  packageVersion: 1.2
+  assetPath: Assets/Toon Enemies Pack 02 (1st Generation)/Toon Reaper/Materials/FX
+    - Blade Aura.mat
+  uploadId: 610698
