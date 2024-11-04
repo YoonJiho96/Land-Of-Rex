@@ -11,6 +11,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: prod
+  redis:
+    port: 6379
+    host: localhost
+
 
 logging.level:
   org.hibernate.SQL: debug
