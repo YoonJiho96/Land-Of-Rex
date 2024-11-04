@@ -14,7 +14,7 @@ public class AttackController : MonoBehaviour
 
     private void Update()
     {
-        if (target == null)
+        if (target == null || target.tag == "DeadPlayer")
         {
             Destroy(gameObject); // 목표 적이 없어졌다면 공격을 제거
             return;
