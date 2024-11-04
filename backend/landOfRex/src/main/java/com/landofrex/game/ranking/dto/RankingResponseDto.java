@@ -7,8 +7,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class RankingResponseDTO {
+public class RankingResponseDto {
     private boolean success;
-    private List<RankingDTO> data;
+    private List<RankingDto> data;
     private String message;
 }
