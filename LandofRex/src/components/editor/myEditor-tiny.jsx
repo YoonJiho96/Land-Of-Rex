@@ -18,7 +18,10 @@ const TextEditorWithCustomImageUpload = () => {
             if (blobUrl.startsWith('blob:')) {
                 // Blob URL로부터 실제 File 객체 가져오기
                 fetch(blobUrl)
-                    .then(response => response.blob())
+                    .then(response => {
+                        console.log(response)
+                        return response.blob
+                    })
                     .then(blob => {
                         // reader.readAsDataURL(blob);
                         // Blob을 File 객체로 변환
