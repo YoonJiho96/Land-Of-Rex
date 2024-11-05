@@ -3,6 +3,7 @@ package com.landofrex.game.ranking.controller;
 import com.landofrex.game.ranking.dto.RankingResponseDto;
 import com.landofrex.game.ranking.dto.StageInfoRequestDto;
 import com.landofrex.game.ranking.service.RankingService;
+import com.landofrex.security.AuthenticationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,13 @@ public class RankingController {
     public ResponseEntity<RankingResponseDto> submitScore(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody StageInfoRequestDto request) {
-        Long userId = Long.parseLong(userDetails.getUsername());
+
+        Long userId = AuthenticationUtil.getUser().getId();
         return ResponseEntity.ok(rankingService.submitScore(userId, request));
     }
 
     @GetMapping("/{stage}")
-    public ResponseEntity<RankingResponseDto> getRankings(@PathVariable Integer stage) {
+    public ResponseEntity<RankingResponseDto> getRankings(@PathVariable(name = "stage") Integer stage) {
         return ResponseEntity.ok(rankingService.getRankings(stage));
     }
 }

@@ -11,6 +11,7 @@ import com.landofrex.user.entity.User;
 import com.landofrex.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class RankingService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         // Create new stage info
-        StageInfo stageInfo = new StageInfo();
+        StageInfo stageInfo = StageInfo.of(user, request);
 
         // Save to Redis
         String redisKey = getRedisKey(request.getStage());
@@ -45,6 +47,14 @@ public class RankingService {
 
         // Calculate ranking
         Long rank = zSetOps.rank(redisKey, stageInfo);
+
+        if (rank == null) {
+            return createRankingResponseDto(false, "Failed to calculate ranking",
+                    Collections.singletonList(createRankingDTO(stageInfo, 0)));
+        }
+
+        log.info("Score submitted - User: {}, Stage: {}, Score: {}, Rank: {}",
+                user.getNickname(), request.getStage(), request.getScore(), rank);
 
         return createRankingResponseDto(true, "Score submitted successfully",
                 Collections.singletonList(createRankingDTO(stageInfo, rank.intValue() + 1)));
@@ -72,30 +82,42 @@ public class RankingService {
     }
 
     // 스케쥴링
-    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(fixedRate = 5000)
     @Transactional
     public void migrateRankingsToMySQL() {
         Set<String> keys = redisTemplate.keys("ranking:stage:*");
         if (keys == null) return;
+        System.out.println("e1");
+        System.out.println("Found keys: " + keys); // 어떤 키들이 있는지 확인
 
         for (String key : keys) {
+            System.out.println("e2");
             ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
             Set<ZSetOperations.TypedTuple<Object>> rankings = zSetOps.rangeWithScores(key, 0, -1);
-
+            System.out.println("e2_1");
             if (rankings == null) continue;
-
+            System.out.println("rankings size: " + rankings.size());
+            System.out.println("e2_2");
             for (ZSetOperations.TypedTuple<Object> tuple : rankings) {
-                StageInfo stageInfo = (StageInfo) tuple.getValue();
-                StageInfo savedStageInfo = stageInfoRepository.save(stageInfo);
+                try{
+                    System.out.println("e3");
+                    StageInfo stageInfo = (StageInfo) tuple.getValue();
+                    StageInfo savedStageInfo = stageInfoRepository.save(stageInfo);
 
-                int rank = zSetOps.rank(key, tuple.getValue()).intValue() + 1;
+                    int rank = zSetOps.rank(key, tuple.getValue()).intValue() + 1;
 
-                Ranking ranking = new Ranking();
-                ranking.setUser(stageInfo.getUser());
-                ranking.setStageInfo(savedStageInfo);
-                ranking.setRanking(rank);
+                    Ranking ranking = new Ranking();
+                    ranking.setUser(stageInfo.getUser());
+                    ranking.setStageInfo(savedStageInfo);
+                    ranking.setRanking(rank);
 
-                rankingRepository.save(ranking);
+                    rankingRepository.save(ranking);}
+                catch(Exception e) {
+                    System.out.println("Error processing tuple: " + e.getMessage());
+                    e.printStackTrace();
+                }
+
             }
         }
     }
