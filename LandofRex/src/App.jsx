@@ -12,10 +12,8 @@ import PostDetailPage from './components/postDetailPage/PostDetailPage';
 
 
 const App = () => {
-  
   return (
     <Router>
-      
       <Routes>
         <Route path="/main" element={<MainPage />} />
         <Route path="/adminPage" element={<AdminPage />} />
