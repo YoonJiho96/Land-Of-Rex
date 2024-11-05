@@ -8,6 +8,8 @@ public class EnemyController : MonoBehaviour
     public GameObject attackPrefeb;
     public bool isAerial = false;
 
+    public Animator animator;
+
     public Transform attackStartPoint;
 
     private NavMeshAgent agent;
@@ -33,6 +35,7 @@ public class EnemyController : MonoBehaviour
     {
         if(checkIsAttacking())
         {
+            animator.SetBool("Forward", false);
             if (Time.time >= lastAttackTime + attackInterval)
             {
                 if (detectedTarget != null)
@@ -46,6 +49,7 @@ public class EnemyController : MonoBehaviour
         }
 
         agent.isStopped = false;
+        animator.SetBool("Forward", true);
 
         if (detectedTargets.Count > 0)
         {
@@ -127,6 +131,7 @@ public class EnemyController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
+        animator.SetTrigger("Attack");
         transform.LookAt(enemy);
         GameObject projectile = Instantiate(attackPrefeb, attackStartPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, damage);
