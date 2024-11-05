@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingController : MonoBehaviour
@@ -41,18 +42,27 @@ public class BuildingController : MonoBehaviour
 
     public void CompleteBuilding()
     {
-        SetMaterial(CompleteMaterial, CompleteRangeMaterial);
-        SetCollider();
+        if (previewBuilding != null)
+        {
+            SetMaterial(CompleteMaterial, CompleteRangeMaterial);
+            SetCollider();
 
-        // 최상위 부모를 찾아서 파괴
-        Transform rootParent = GetRootParent(transform);
-        Destroy(rootParent.gameObject);
+            // 최상위 부모를 찾아서 파괴
+            Transform rootParent = GetRootParent(transform);
+            Destroy(rootParent.gameObject);
+        }
     }
 
     private void SetMaterial(Material buildingMaterial, Material rangeMaterial)
     {
-        Renderer renderer = previewBuilding.transform.Find("Body").GetComponent<Renderer>();
-        renderer.material = buildingMaterial;
+        Transform body = previewBuilding.transform.Find("Body");
+        
+        foreach(Transform child in body)
+        {
+            Renderer renderer = child.GetComponent<Renderer>();
+            renderer.material = buildingMaterial;
+        }
+
 
         Transform attackRange = previewBuilding.transform.Find("AttackRange");
         if(attackRange != null)
@@ -65,7 +75,12 @@ public class BuildingController : MonoBehaviour
     private void SetCollider()
     {
         Transform notTriggerCollider = previewBuilding.transform.Find("Body");
-        notTriggerCollider.GetComponent<Collider>().enabled = true;
+        Collider[] colliders = notTriggerCollider.GetComponents<Collider>();
+
+        foreach(Collider collider in colliders)
+        {
+            collider.enabled = true;
+        }
 
         Transform triggerCollider = previewBuilding.transform.Find("Completed");
         triggerCollider.gameObject.SetActive(true);

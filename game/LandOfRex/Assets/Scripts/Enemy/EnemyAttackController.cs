@@ -23,7 +23,7 @@ public class EnemyAttackController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Building") || other.CompareTag("Player"))
+        if (other.CompareTag("Building") || other.CompareTag("Player") || other.CompareTag("Core") || other.CompareTag("Unit"))
         {
             enemyController.AddAttackTarget(other.transform);
         }
@@ -31,7 +31,7 @@ public class EnemyAttackController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Building") || other.CompareTag("Player"))
+        if (other.CompareTag("Building") || other.CompareTag("Player") || other.CompareTag("Core") || other.CompareTag("Unit"))
         {
             RemoveUnitOrBuilding(other.transform);
         }
