@@ -1,61 +1,78 @@
 using UnityEngine;
 
-public class EnterAreaUIController : MonoBehaviour
+public class ScreenUI : MonoBehaviour
 {
-    // 특정 UI 창을 연결하는 변수
-    public GameObject targetUI; // UI 창 (비활성 상태로 시작)
+    public GameObject tutoUI;
+    public GameObject stage1UI;
+    public GameObject stage2UI;
 
-    // 플레이어가 특정 지역에 있는지 여부를 저장하는 변수
-    private bool isPlayerInArea = false;
+    public Collider tutoCollider;
+    public Collider stage1Collider;
+    public Collider stage2Collider;
 
-    private void Start()
-    {
-        // 시작할 때 UI 창을 비활성화
-        targetUI.SetActive(false);
-    }
+    private GameObject currentUI;
+    private bool isScreenUIActive = false;
 
     private void Update()
     {
-        // 플레이어가 지역 안에 있을 때만 Enter 키로 UI 열기
-        if (isPlayerInArea && Input.GetKeyDown(KeyCode.Return)) // Enter 키
+        if (Input.GetKeyDown(KeyCode.Return)) // Enter 키
         {
-            OpenUI();
+            ShowScreenUI();
         }
 
-        // UI가 열린 상태에서 Esc 키로 닫기
-        if (targetUI.activeSelf && Input.GetKeyDown(KeyCode.Escape)) // Esc 키
+        if (Input.GetKeyDown(KeyCode.Escape)) // Esc 키
         {
-            CloseUI();
+            HideScreenUI();
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void ShowScreenUI()
     {
-        if (other.CompareTag("Player"))
+        if (isScreenUIActive)
+            return; // 이미 활성화된 경우 다시 실행하지 않음
+
+        // ScreenUI와 영역에 따른 자식 UI 활성화
+        gameObject.SetActive(true);
+        isScreenUIActive = true;
+
+        if (IsPlayerInCollider(tutoCollider))
         {
-            Debug.Log("Player entered the trigger area");
-            isPlayerInArea = true;
+            currentUI = tutoUI;
+        }
+        else if (IsPlayerInCollider(stage1Collider))
+        {
+            currentUI = stage1UI;
+        }
+        else if (IsPlayerInCollider(stage2Collider))
+        {
+            currentUI = stage2UI;
+        }
+
+        if (currentUI != null)
+        {
+            currentUI.SetActive(true);
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void HideScreenUI()
     {
-        if (other.CompareTag("Player"))
+        if (!isScreenUIActive)
+            return; // ScreenUI가 활성화 상태가 아니면 실행하지 않음
+
+        // ScreenUI와 자식 UI 비활성화
+        if (currentUI != null)
         {
-            Debug.Log("Player exited the trigger area");
-            isPlayerInArea = false;
+            currentUI.SetActive(false);
+            currentUI = null;
         }
+
+        gameObject.SetActive(false);
+        isScreenUIActive = false;
     }
 
-    private void OpenUI()
+    private bool IsPlayerInCollider(Collider collider)
     {
-        Debug.Log("UI Opened");
-        targetUI.SetActive(true);
-    }
-
-
-    private void CloseUI()
-    {
-        targetUI.SetActive(false);
+        // 플레이어가 해당 Collider 영역에 있는지 확인
+        return collider.bounds.Contains(GameObject.FindGameObjectWithTag("Player").transform.position);
     }
 }
