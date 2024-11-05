@@ -8,29 +8,6 @@ const TextEditorWithCustomImageUpload = () => {
     const [images, setImages] = useState([]); // Store images temporarily
 
     const getEditorImages = () => {
-<<<<<<< HEAD
-        // 에디터 내의 모든 이미지 선택
-        const imgs = editorRef.current.dom.select('img')
-        const files = [];
-        const reader = new FileReader();
-        imgs.forEach(img => {
-            const blobUrl = img.src;
-            // blob: 로 시작하는 URL만 처리
-            if (blobUrl.startsWith('blob:')) {
-                // Blob URL로부터 실제 File 객체 가져오기
-                fetch(blobUrl)
-                    .then(response => {
-                        console.log(response)
-                        return response.blob
-                    })
-                    .then(blob => {
-                        // reader.readAsDataURL(blob);
-                        // Blob을 File 객체로 변환
-                        const file = new File([blob], `image-${Date.now()}.jpg`, { type: blob.type });
-                        files.push(blob);
-                    });
-            }
-=======
         return new Promise((resolve, reject) => {
             const imgs = editorRef.current.dom.select('img');
             const files = [];
@@ -53,7 +30,6 @@ const TextEditorWithCustomImageUpload = () => {
             Promise.all(fetchPromises)
                 .then(() => resolve(files))
                 .catch(reject);
->>>>>>> fd10caf342dcd5f54918b0926316563263e99da6
         });
     };
 
@@ -61,7 +37,7 @@ const TextEditorWithCustomImageUpload = () => {
     const handleSubmit = async () => {
         const formData = new FormData();
         const editor = editorRef.current;
-
+        
         const rawHtml = editor.getContent({ format: 'raw' });
         formData.append("PostCreateRequest", JSON.stringify({
             title: document.getElementById("postTitle").value,
