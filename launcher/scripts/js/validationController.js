@@ -24,6 +24,13 @@ export function handleValidationControls(validation) {
         }
     });
 
+    // 게임 확인 메시지
+    validation.onSetMessage((message, color) => {
+        const updateStatus = document.getElementById('latest-game-version');
+        updateStatus.textContent = message;
+        updateStatus.style.color = color;
+    })
+
     // 유효성 검사 버튼
     const gameValidateBtn = document.getElementById('game-validate');
     gameValidateBtn.addEventListener('click', () => {

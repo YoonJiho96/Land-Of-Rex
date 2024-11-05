@@ -23,6 +23,7 @@ function handleIPC(mainWindow, exeDir) {
     // 게임 다운로드 IPC
     ipcMain.on('download-game', async () => {
         mainWindow.webContents.send('set-button-state', 'download-button', true);
+        mainWindow.webContents.send('set-message', '게임을 다운로드 중 입니다.', '#4CAF50');
         try {
             const defaultDownloadPath = path.join(exeDir, LOCAL_FOLDER);
             await downloadGame(defaultDownloadPath, mainWindow);
@@ -41,6 +42,7 @@ function handleIPC(mainWindow, exeDir) {
     // 게임 업데이트
     ipcMain.on('update-game', async () => {
         mainWindow.webContents.send('set-button-state', 'game-update-button', true);
+        mainWindow.webContents.send('set-message', '게임을 업데이트 중 입니다.', '#4CAF50');
         console.log("업데이트 시작");
         try {
             await doValidateGameVersion(exeDir, mainWindow);  // 서버 파일 다운로드
@@ -81,7 +83,7 @@ function handleIPC(mainWindow, exeDir) {
 
     // 게임 유효성 검사 IPC
     ipcMain.on('game-validate', async () => {
-
+        mainWindow.webContents.send('set-message', '게임 파일 검사 중 입니다.', '#4CAF50');
         try {
             // doValidateGame(exeDir, mainWindow);
             if (await checkInstalled(exeDir, mainWindow) == true) {

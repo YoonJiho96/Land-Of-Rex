@@ -41,5 +41,8 @@ contextBridge.exposeInMainWorld('validation', {
   onValidateGame: () => ipcRenderer.send('game-validate'),
 
   // 버튼 상태 변경 신호 수신
-  onSetButtonState: (callback) => ipcRenderer.on('set-button-state', (event, buttonId, isDisabled) => callback(buttonId, isDisabled))
+  onSetButtonState: (callback) => ipcRenderer.on('set-button-state', (event, buttonId, isDisabled) => callback(buttonId, isDisabled)),
+
+  // 런처 상태 메시지
+  onSetMessage: (callback) => ipcRenderer.on('set-message', (event, message, color) => callback(message, color)),
 });
