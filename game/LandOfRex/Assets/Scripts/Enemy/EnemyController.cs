@@ -56,6 +56,10 @@ public class EnemyController : MonoBehaviour
             {
                 agent.SetDestination(detectedTarget.position);
             }
+            else
+            {
+                agent.SetDestination(destination.position);
+            }
         }
         else if(agent.destination != destination.position)
         {
@@ -123,6 +127,7 @@ public class EnemyController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
+        transform.LookAt(enemy);
         GameObject projectile = Instantiate(attackPrefeb, attackStartPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, damage);
     }
