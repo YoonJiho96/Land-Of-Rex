@@ -2,15 +2,20 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 
+// S3 환경 변수
+const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const AWS_REGION = process.env.AWS_REGION;
+const S3_BUCKET = process.env.S3_BUCKET_NAME;
+const GAME_FOLDER = process.env.GAME_FOLDER_NAME;
+
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  region: AWS_REGION
 });
 
 const s3 = new AWS.S3();
-const S3_BUCKET = process.env.S3_BUCKET_NAME;
-const GAME_FOLDER = process.env.GAME_FOLDER_NAME;
 
 async function listGameObjects() {
   const params = {
