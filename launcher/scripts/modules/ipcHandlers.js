@@ -81,12 +81,14 @@ function handleIPC(mainWindow, exeDir) {
 
     // 게임 유효성 검사 IPC
     ipcMain.on('game-validate', async () => {
-        mainWindow.webContents.send('set-button-state', 'game-validate', true);
+
         try {
             // doValidateGame(exeDir, mainWindow);
             if (await checkInstalled(exeDir, mainWindow) == true) {
+                mainWindow.webContents.send('set-button-state', 'game-validate', true);
+                mainWindow.webContents.send('set-button-state', 'game-start-button', true);
+                mainWindow.webContents.send('set-button-state', 'game-update-button', true);
                 await doValidateGameVersion(exeDir, mainWindow);
-                mainWindow.webContents.send('set-button-state', 'game-validate', false);
             }
             else {
                 console.log("게임 설치 필요");
@@ -95,6 +97,9 @@ function handleIPC(mainWindow, exeDir) {
             mainWindow.webContents.send('validate-error', error.message);
         } finally {
             mainWindow.webContents.send('set-button-state', 'game-validate', false);
+            mainWindow.webContents.send('set-button-state', 'game-start-button', false);
+            mainWindow.webContents.send('set-button-state', 'game-update-button', false);
+            console.log("검사 완료");
         }
     });
 }

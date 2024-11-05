@@ -9,7 +9,7 @@ export function handleValidationControls(validation) {
             setActiveButton('game-update-button');
         } else {
             updateStatus.textContent = '게임이 최신 버전입니다.';
-            updateStatus.style.color = 'green';
+            updateStatus.style.color = '#4CAF50';
             setActiveButton('game-start-button');
         }
     });

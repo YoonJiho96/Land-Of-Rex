@@ -151,6 +151,7 @@ async function doValidateGameVersion(exeDir, mainWindow) {
     } else {
         console.log("업데이트가 필요한 파일이 있습니다.");
         mainWindow.webContents.send('update-required', true);
+        mainWindow.webContents.send('set-button-state', 'game-update-button', true);
 
         const defaultDownloadPath = path.join(exeDir, "land-of-rex-launcher", "LandOfRex");
 
