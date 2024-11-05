@@ -8,6 +8,7 @@ const TextEditorWithCustomImageUpload = () => {
     const [images, setImages] = useState([]); // Store images temporarily
 
     const getEditorImages = () => {
+<<<<<<< HEAD
         // 에디터 내의 모든 이미지 선택
         const imgs = editorRef.current.dom.select('img')
         const files = [];
@@ -29,41 +30,53 @@ const TextEditorWithCustomImageUpload = () => {
                         files.push(blob);
                     });
             }
+=======
+        return new Promise((resolve, reject) => {
+            const imgs = editorRef.current.dom.select('img');
+            const files = [];
+
+            const fetchPromises = imgs.map(img => {
+                const blobUrl = img.src;
+                if (blobUrl.startsWith('blob:')) {
+                    // Blob URL로부터 실제 File 객체 가져오기
+                    return fetch(blobUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const file = new File([blob], `image-${Date.now()}.jpg`, { type: blob.type });
+                            files.push(file);
+                        });
+                }
+                return null;
+            });
+
+            // 모든 fetch가 끝나면 resolve
+            Promise.all(fetchPromises)
+                .then(() => resolve(files))
+                .catch(reject);
+>>>>>>> fd10caf342dcd5f54918b0926316563263e99da6
         });
-        return files;
     };
 
     // 제출 시 사용
     const handleSubmit = async () => {
         const formData = new FormData();
-        const editor=editorRef.current;
+        const editor = editorRef.current;
 
         const rawHtml = editor.getContent({ format: 'raw' });
-        // console.log(rawHtml)
         formData.append("PostCreateRequest", JSON.stringify({
             title: document.getElementById("postTitle").value,
             content: rawHtml
         }));
 
         // 에디터의 이미지들을 가져와서 추가
-        const imageFiles = getEditorImages();
-        
-        console.log(imageFiles)
-        return
-        // for (let i = 0; i < imageFiles.length; i++) {
-        //     console.log('File:', imageFiles[i]);
-        //     formData.append('ImageFiles', imageFiles[i]);
-        // }
-        
+        const imageFiles = await getEditorImages(); // 모든 fetch가 완료될 때까지 기다림
         imageFiles.forEach((file, index) => {
-            console.log(file)
-            
-            formData.append(`ImageFiles`, file, `image_${index+1}.png`); // 이미지 파일 추가 (이름은 index로 구분)
+            console.log('File:', file);
+            formData.append('ImageFiles', file,`image_${index}.jpg`);
         });
 
-        // return
         try {
-            await axios.post(`${baseUrl}/api/v1/posts`, formData, {
+            axios.post(`${baseUrl}/api/v1/posts`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
