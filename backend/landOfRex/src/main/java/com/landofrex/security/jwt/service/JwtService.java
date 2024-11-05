@@ -208,21 +208,20 @@ public class JwtService {
         user.updateRefreshToken(refreshToken);
     }
 
-    public DecodedJWT verifyToken(Token token) {
+    public Optional<DecodedJWT> verifyToken(Token token) {
         try {
             // JWT 서명 알고리즘 설정
             Algorithm algorithm = Algorithm.HMAC512(secretKey);
 
-            return JWT.require(algorithm)
+            return Optional.of(JWT.require(algorithm)
                     .build() // 검증기 생성
-                    .verify(token.getTokenValue()); // 검증 성공 시 DecodedJWT 반환
+                    .verify(token.getTokenValue())); // 검증 성공 시 DecodedJWT 반환
         }catch(TokenExpiredException expiredException){
-               expiredException.printStackTrace();
-               return null;
+            log.info("TokenExpiredException:", expiredException);
+            return Optional.empty();
         }catch (JWTVerificationException tokenVerificationException) {
-            // 검증 실패 처리
-            tokenVerificationException.printStackTrace();
-            return null;
+            log.info("JWTVerificationException:", tokenVerificationException);
+            return Optional.empty();
         }
     }
 

@@ -2,6 +2,7 @@ package com.landofrex.user.entity;
 
 
 import com.landofrex.security.jwt.token.RefreshToken;
+import com.landofrex.user.controller.UserSignUpDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -80,6 +81,13 @@ public class User{
 
     public void updateRefreshToken(RefreshToken updateRefreshToken) {
         this.refreshToken = updateRefreshToken.getTokenValue();
+    }
+
+    public User(UserSignUpDto userSignUpDto) {
+        this.nickname= userSignUpDto.nickname();
+        this.email= userSignUpDto.username();
+        this.password = userSignUpDto.password();
+        this.role = Role.USER;
     }
 }
 

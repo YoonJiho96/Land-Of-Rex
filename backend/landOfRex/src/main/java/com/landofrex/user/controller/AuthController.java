@@ -3,8 +3,6 @@ package com.landofrex.user.controller;
 
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.security.jwt.service.JwtService;
-import com.landofrex.security.jwt.token.AccessToken;
-import com.landofrex.security.jwt.token.TokenType;
 import com.landofrex.user.AuthService;
 import com.landofrex.user.entity.User;
 import com.landofrex.user.repository.UserRepository;
@@ -17,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +27,8 @@ public class AuthController {
 
     @GetMapping("/email")
     public ResponseEntity<String> getEmail(HttpServletRequest request) {
-        AccessToken accessToken = (AccessToken) jwtService.extractByTokenType(request.getCookies(), TokenType.ACCESS)
-                .orElseThrow(NoSuchElementException::new);
 
-        String email=jwtService.extractEmail(jwtService.verifyToken(accessToken))
-                .orElseThrow(()->new NoSuchElementException("can not get email"));
+        String email=AuthenticationUtil.getUser().getEmail();
 
         return ResponseEntity.status(HttpStatus.OK).body(email);
     }
@@ -46,8 +40,14 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
+        authService.signUp(userSignUpDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/sign-up/oauth")
+    public ResponseEntity<Void> signUpOauth(@Valid @RequestBody UserOauthSignUpDto userOauthSignUpDto) {
         User user= AuthenticationUtil.getUser();
-        authService.OAuthSignUp(userSignUpDto,user);
+        authService.OAuthSignUp(userOauthSignUpDto,user);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

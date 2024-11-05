@@ -1,6 +1,7 @@
 package com.landofrex.user;
 
 
+import com.landofrex.user.controller.UserOauthSignUpDto;
 import com.landofrex.user.controller.UserSignUpDto;
 import com.landofrex.user.entity.User;
 import com.landofrex.user.repository.UserRepository;
@@ -23,20 +24,31 @@ public class AuthService {
     private static final Pattern NICKNAME_PATTERN = Pattern.compile(NICKNAME_REGEX);
 
 
-    public void OAuthSignUp(UserSignUpDto userSignUpDto, User user) {
+    public void OAuthSignUp(UserOauthSignUpDto userOauthSignUpDto, User user) {
 
+        valiateNickname(userOauthSignUpDto.nickname());
+
+        userRepository.findByNickname(userOauthSignUpDto.nickname()).ifPresent(userAlready -> {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname already exists");
+        });
+
+        //ROLE.USER인지 이미 필터에서 확인
+
+        user.updateNickname(userOauthSignUpDto.nickname());
+        user.updateRoleToUser();
+
+        userRepository.save(user);
+    }
+
+    public void signUp(UserSignUpDto userSignUpDto) {
         valiateNickname(userSignUpDto.nickname());
 
         userRepository.findByNickname(userSignUpDto.nickname()).ifPresent(userAlready -> {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname already exists");
         });
 
-        //ROLE.USER인지 이미 필터에서 확인
+        userRepository.save(new User(userSignUpDto));
 
-        user.updateNickname(userSignUpDto.nickname());
-        user.updateRoleToUser();
-
-        userRepository.save(user);
     }
 
     private void valiateNickname(String nickname) {

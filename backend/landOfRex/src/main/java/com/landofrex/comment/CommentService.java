@@ -2,6 +2,8 @@ package com.landofrex.comment;
 
 import com.landofrex.post.PostRepository;
 import com.landofrex.post.entity.Post;
+import com.landofrex.post.entity.PostStatus;
+import com.landofrex.user.entity.Role;
 import com.landofrex.user.entity.User;
 import com.landofrex.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ public class CommentService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        if(user.getRole().equals(Role.ADMIN)) post.updateStatus(PostStatus.CHECKED);
 
         Comment comment = request.toEntity(user, post);
 

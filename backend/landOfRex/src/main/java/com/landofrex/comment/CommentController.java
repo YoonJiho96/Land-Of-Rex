@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    @GetMapping
+    @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<List<CommentDto.Response>> getComments(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.getCommentsByPost(postId));
     }

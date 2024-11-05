@@ -1,6 +1,7 @@
 package com.landofrex.security.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.landofrex.security.jwt.filter.JwtFilter;
 import com.landofrex.security.jwt.service.JwtService;
 import com.landofrex.security.oauth2.handler.OAuth2LoginFailureHandler;
@@ -10,9 +11,11 @@ import com.landofrex.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,12 +30,15 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
@@ -52,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/v1/patches").hasRole("ADMIN")
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                         .requestMatchers("/api/v1/auth/sign-up","/api/v1/auth/email").hasRole("GUEST")
-                        .requestMatchers("/api/v1/**").hasRole("USER")
+                        .requestMatchers("/api/v1/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
@@ -104,17 +110,33 @@ public class SecurityConfig {
 
     @Bean
     protected AuthenticationEntryPoint customAuthenticationEntryPoint() {
-        return new CustomAuthenticationEntryPoint();
+        return new CustomAuthenticationEntryPoint(objectMapper);
     }
 
+    private final ObjectMapper objectMapper;
+
     private static class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+        private final ObjectMapper objectMapper;
+
+        private CustomAuthenticationEntryPoint(ObjectMapper objectMapper) {
+            this.objectMapper = objectMapper;
+        }
 
         @Override
         public void commence(HttpServletRequest request, HttpServletResponse response,
                              AuthenticationException authException) throws IOException{
             // 인증되지 않은 사용자가 접근할 때 처리하는 로직
             String requestUri=request.getRequestURI();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            log.info("AuthenticationException: ",authException);
+            //error 페이지로 이동
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            // response body 작성
+            objectMapper.writeValue(response.getWriter(), authException.getMessage());
             //http요청은 redirect해줄 수 있지만 fetch,axios 비동기 요청은 불가
            //response.sendRedirect("http://localhost:5500/login.html");
         }
