@@ -40,7 +40,6 @@ public class PostController {
             @RequestPart(value="PostCreateRequest") String postCreateRequestString,
             @RequestPart(value="ImageFiles",required = false) List<MultipartFile> imageFiles) throws IOException {
 
-
         User user= AuthenticationUtil.getUser();
 
         ObjectMapper objectMapper = new ObjectMapper();

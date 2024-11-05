@@ -31,6 +31,7 @@ public class Post extends AuditDateTime {
     @Column(nullable = false , length = 30)
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

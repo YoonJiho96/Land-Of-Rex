@@ -1,12 +1,14 @@
 package com.landofrex.image;
 
 
+import com.landofrex.aws.S3Service;
 import com.landofrex.gcs.GcsService;
 import com.landofrex.post.PostRepository;
 import com.landofrex.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,11 +20,13 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class ImageService {
     private final GcsService gcsService;
+    private final S3Service s3Service;
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
 
+    @Transactional
     public void uploadImagesToPost(Post post, List<MultipartFile> imageFiles) throws IOException {
-        CompletableFuture<List<String>> uploadFuture=gcsService.uploadImageFiles(imageFiles);
+        CompletableFuture<List<String>> uploadFuture=s3Service.uploadImageFiles(imageFiles);
         //imageFiles 일부만 들어온 경우?
         uploadFuture.thenAccept(urls->{
             for (int i=0;i<urls.size();i++) {
@@ -40,9 +44,4 @@ public class ImageService {
             return null;
         });
     }
-
-//    @Transactional
-//    public void uploadImage(MultipartFile imageFile) throws IOException {
-//
-//    }
 }
