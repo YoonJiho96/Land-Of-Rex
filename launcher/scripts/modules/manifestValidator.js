@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { downloadManifestFromS3 } = require('./s3Service');
+const { downloadManifestFromS3, downloadFile } = require('./s3Service');
 
 function calculateFileHash(filePath) {
     const hash = crypto.createHash('md5');
@@ -139,15 +139,44 @@ async function doValidateGame(exeDir, mainWindow) {
     }
 }
 
+// 게임 유효성 검사 및 다운로드
 async function doValidateGameVersion(exeDir, mainWindow) {
-    // 1. manifest 서버와 비교
-    const checkedList = checkcheck(exeDir, mainWindow);
+    const GAME_FOLDER = "game/client/LandOfRex";
+    // 1. 서버와 다른 파일 목록을 가져옴
+    const differingFiles = await checkcheck(exeDir, mainWindow);
 
-    if (checkedList.length == 0) {
-        // 업데이트 할 필요가 없음
-        console.log("파일이 모두 최신 버전 입니다.");
+    if (differingFiles.length === 0) {
+        console.log("모든 파일이 최신 버전입니다.");
+        mainWindow.webContents.send('update-required', false);
     } else {
-        console.log("갱신 필요한 파일 있음");
+        console.log("업데이트가 필요한 파일이 있습니다.");
+        mainWindow.webContents.send('update-required', true);
+
+        const defaultDownloadPath = path.join(exeDir, "land-of-rex-launcher", "LandOfRex");
+
+        for (const file of differingFiles) {
+            const downloadPath = path.join(defaultDownloadPath, file.path);
+            const s3Key = `${GAME_FOLDER}/${file.path}`.replace(/\\/g, '/'); // 백슬래시를 슬래시로 변환
+
+            // 디렉토리 구조를 생성하여 저장 경로를 준비함
+            fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
+
+            console.log(`업데이트 파일 다운로드 중: ${s3Key}`); // S3 키 확인용 로그
+            try {
+                await downloadFile(s3Key, downloadPath);
+            } catch (error) {
+                console.error(`파일 다운로드 실패: ${s3Key}. 오류 메시지: ${error.message}`);
+                mainWindow.webContents.send('download-error', { file: s3Key, message: error.message });
+                continue; // 오류 발생 시 다음 파일로 이동
+            }
+
+            // 진행 상황을 UI에 업데이트
+            const progress = ((differingFiles.indexOf(file) + 1) / differingFiles.length) * 100;
+            mainWindow.webContents.send('download-game-progress', { percent: progress.toFixed(2) });
+        }
+
+        mainWindow.webContents.send('download-complete');
+        console.log("모든 업데이트가 다운로드되었습니다.");
     }
 }
 

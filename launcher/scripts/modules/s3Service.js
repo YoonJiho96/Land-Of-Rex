@@ -75,4 +75,4 @@ async function downloadManifestFromS3() {
   return JSON.parse(manifestJson);
 }
 
-module.exports = { downloadGame, downloadManifestFromS3 };
+module.exports = { downloadGame, downloadManifestFromS3, downloadFile };
