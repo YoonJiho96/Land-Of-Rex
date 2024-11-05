@@ -1,70 +1,234 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import "./PostDetailPage.css"; // CSS 파일 연결
+// PostDetailPage.js
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import './PostDetailPage.css';
 
-const PostDetailPage = () => {
-  const [post, setPost] = useState(null);
-  const [error, setError] = useState("");
-  const { postId } = useParams(); // URL의 id 파라미터 가져오기
-  const navigate = useNavigate();
-  const baseUrl = "http://localhost:8080"; // 또는 프로덕션 URL을 사용할 수 있습니다.
+// 댓글 입력 컴포넌트
+const CommentForm = ({ postId, onCommentAdded }) => {
+  const [content, setContent] = useState('');
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
 
-  useEffect(() => {
-    fetchPostDetails(postId);
-  }, [postId]);
-
-  const fetchPostDetails = async (postId) => {
     try {
-      const response = await fetch(`${baseUrl}/api/v1/posts/${postId}`, {
-        credentials: "include",
+      const response = await fetch(`http://localhost:8080/api/v1/posts/${postId}/comments`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content }),
       });
 
-      if (!response.ok) {
-        throw new Error("게시글을 찾을 수 없습니다.");
-      }
+      if (!response.ok) throw new Error('댓글 작성에 실패했습니다.');
 
-      const postData = await response.json();
-      setPost(postData);
-    } catch (err) {
-      console.error("Error fetching post details:", err);
-      setError(err.message);
+      const newComment = await response.json();
+      onCommentAdded(newComment);
+      setContent('');
+    } catch (error) {
+      console.error('Error posting comment:', error);
+      alert('댓글 작성에 실패했습니다.');
     }
   };
 
+  return (
+    <form onSubmit={handleSubmit} className="comment-form">
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="댓글을 입력하세요"
+        className="comment-input"
+      />
+      <button type="submit" className="comment-submit">댓글 작성</button>
+    </form>
+  );
+};
+
+// 댓글 목록 컴포넌트
+const CommentList = ({ comments }) => {
+  return (
+    <div className="comments-list">
+      {comments.map(comment => (
+        <div key={comment.id} className="comment-item">
+          <div className="comment-header">
+            <span className="comment-author">{comment.authorNickname}</span>
+            <span className="comment-date">
+              {new Date(comment.createdAt).toLocaleString()}
+            </span>
+          </div>
+          <div className="comment-content">{comment.content}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// 메인 페이지 컴포넌트
+const PostDetailPage = () => {
+  const { postId } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 게시글과 댓글 데이터 fetch
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!postId) {
+        setError("게시글 ID가 없습니다.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // 게시글 데이터 fetch
+        const postResponse = await fetch(`http://localhost:8080/api/v1/posts/${postId}`, {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // 댓글 데이터 fetch
+        const commentsResponse = await fetch(`http://localhost:8080/api/v1/posts/${postId}/comments`, {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!postResponse.ok || !commentsResponse.ok) {
+          throw new Error('데이터를 불러오는데 실패했습니다.');
+        }
+
+        const postData = await postResponse.json();
+        const commentsData = await commentsResponse.json();
+
+        setPost(postData);
+        setComments(commentsData);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [postId]);
+
+  // 게시글 내용 렌더링
+  const renderPostContent = () => {
+    if (!post?.text) return null;
+
+    const contentDiv = document.createElement('div');
+    contentDiv.innerHTML = post.text;
+
+    if (post.postImages) {
+      const imgs = contentDiv.getElementsByTagName('img');
+      Array.from(imgs).forEach((img, index) => {
+        if (post.postImages[index]) {
+          img.src = post.postImages[index].urlCloud;
+        }
+      });
+    }
+
+    return <div dangerouslySetInnerHTML={{ __html: contentDiv.innerHTML }} />;
+  };
+
+  // 새 댓글 추가 핸들러
+  const handleCommentAdded = (newComment) => {
+    setComments(prevComments => [...prevComments, newComment]);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="container">
+        <div className="loading">로딩 중...</div>
+      </div>
+    );
+  }
+
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <div className="container">
+        <div className="error-container">
+          <p className="error-message">{error}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="back-button"
+          >
+            뒤로가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="container">
+        <h2 className="text-xl">게시글을 찾을 수 없습니다</h2>
+        <button
+          onClick={() => navigate(-1)}
+          className="back-button"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
   }
 
   return (
     <div className="container">
-      {post ? (
-        <>
-          <h1>{post.title}</h1>
-          <p>
-            <strong>작성자:</strong> {post.authorNickname}
-          </p>
-          <p>
-            <strong>상태:</strong> {post.status}
-          </p>
-          <p>
-            <strong>작성일:</strong> {new Date(post.createdAt).toLocaleString()}
-          </p>
-          <div
-            id="post-content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          ></div>
-          {post.postImages && (
-            <div>
-              {post.postImages.map((image, index) => (
-                <img key={index} src={image.urlCloud} alt={`Post Image ${index}`} />
-              ))}
-            </div>
-          )}
-          <button onClick={() => navigate(-1)}>뒤로가기</button>
-        </>
-      ) : (
-        <p>로딩 중...</p>
-      )}
+      {/* 게시글 섹션 */}
+      <div className="post-section">
+        <div className="post-title-section">
+          <h1 className="post-title">{post.title}</h1>
+        </div>
+        
+        <div className="post-meta">
+          <div className="meta-item">
+            <span className="meta-label">작성자</span>
+            <span className="meta-value">{post.authorNickname}</span>
+          </div>
+          <div className="meta-item">
+            <span className="meta-label">상태</span>
+            <span className="meta-value">{post.status}</span>
+          </div>
+          <div className="meta-item">
+            <span className="meta-label">작성일</span>
+            <span className="meta-value">
+              {new Date(post.createdAt).toLocaleString()}
+            </span>
+          </div>
+        </div>
+        
+        <div className="post-content">
+          <div className="content-header">게시글 내용</div>
+          <div className="content-body">
+            {renderPostContent()}
+          </div>
+        </div>
+      </div>
+
+      {/* 댓글 섹션 */}
+      <div className="comments-section">
+        <h2 className="comments-title">댓글</h2>
+        <CommentForm postId={postId} onCommentAdded={handleCommentAdded} />
+        <CommentList comments={comments} />
+      </div>
+      
+      <button
+        onClick={() => navigate(-1)}
+        className="back-button"
+      >
+        뒤로가기
+      </button>
     </div>
   );
 };
