@@ -7,6 +7,7 @@ import UserManagement from './components/adminPage/userManagement/UserManagement
 import DashboardPage from './components/adminPage/dashboardPage/DashboardPage'
 import LoginPage from './components/auth/login';
 import RegisterPage from './components/auth/register';
+import PostDetailPage from './components/postDetailPage/PostDetailPage';
 
 
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/dashboardPage" element={<DashboardPage />} />
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/register" element={<RegisterPage/>}/>
+        <Route path="/post-detail/:postId" element={<PostDetailPage/>}/>
 
       </Routes>
     </Router>

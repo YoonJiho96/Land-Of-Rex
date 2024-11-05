@@ -62,6 +62,25 @@ const TextEditorWithCustomImageUpload = () => {
             console.error('Error:', error);
         }
     };
+    const handleImageUploadWithFileExplorer=(callback, value, meta) => {
+        if (meta.filetype === 'image') {
+          const input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', 'image/*');
+          
+          input.onchange = function () {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function () {
+              const base64 = reader.result;
+              callback(base64, { title: file.name });
+            };
+            reader.readAsDataURL(file);
+          };
+  
+          input.click();
+        }
+      }
 
     return (
         <div>
@@ -80,9 +99,10 @@ const TextEditorWithCustomImageUpload = () => {
                 init={{
                     height: 500,
                     menubar: false,
-                    plugins: 'image code link',
-                    toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image link | save',
+                    plugins: 'image code link media',
+                    toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image | save',
                     content_style: 'p, span, .space { font-family: inherit; font-size: inherit; }', // Ensure consistent font style
+                    file_picker_callback: handleImageUploadWithFileExplorer,
                     setup: (editor) => {
                         editor.ui.registry.addButton('save', {
                             text: '등록',
