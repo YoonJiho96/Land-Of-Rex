@@ -23,8 +23,9 @@ contextBridge.exposeInMainWorld('api', {
   onDownloadGameProgress: (callback) => ipcRenderer.on('download-game-progress', (event, progress) => callback(progress)),
   onDownloadGameComplete: (callback) => ipcRenderer.on('download-complete', () => callback()),
   onDownloadError: (callback) => ipcRenderer.on('download-error', (event, error) => callback(error)),
-  minimizeWindow: () => ipcRenderer.send('minimize-window'),
-  closeWindow: () => ipcRenderer.send('close-window'),
+
+  // 업데이트 추가
+  updateGame: () => ipcRenderer.send('update-game'),
 });
 
 // 게임 시작
@@ -38,4 +39,7 @@ contextBridge.exposeInMainWorld('validation', {
   onUpdateRequired: (callback) => ipcRenderer.on('update-required', (event, requireUpdate) => callback(requireUpdate)),
   onInstallRequired: (callback) => ipcRenderer.on('installation-required', (event, requireInstall) => callback(requireInstall)),
   onValidateGame: () => ipcRenderer.send('game-validate'),
+
+  // 버튼 상태 변경 신호 수신
+  onSetButtonState: (callback) => ipcRenderer.on('set-button-state', (event, buttonId, isDisabled) => callback(buttonId, isDisabled))
 });

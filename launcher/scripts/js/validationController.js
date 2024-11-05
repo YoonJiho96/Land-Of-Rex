@@ -48,4 +48,17 @@ export function handleValidationControls(validation) {
             }
         });
     }
+
+    // 버튼 임시 블락
+    function setBlockButton(buttonId, isDisabled) {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.disabled = isDisabled;
+        }
+    }
+
+    // 버튼 상태 변경 수신
+    validation.onSetButtonState((buttonId, isDisabled) => {
+        setBlockButton(buttonId, isDisabled);
+    });
 }

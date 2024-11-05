@@ -176,6 +176,7 @@ async function doValidateGameVersion(exeDir, mainWindow) {
         }
 
         mainWindow.webContents.send('download-complete');
+        mainWindow.webContents.send('update-required', false);
         console.log("모든 업데이트가 다운로드되었습니다.");
     }
 }
