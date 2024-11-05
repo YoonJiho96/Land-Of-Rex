@@ -125,6 +125,19 @@ button {
     font-weight: bold;
 }
 
+/* 진행바 색 */
+progress {
+    -webkit-appearance: none;
+}
+
+::-webkit-progress-bar {
+    background-color: rgb(255, 255, 255);
+}
+
+::-webkit-progress-value {
+    background-color: #4CAF50;
+}
+
 /* 상단 바 스타일 */
 #top-bar {
     top: 0;
@@ -258,4 +271,15 @@ button {
 .validate-info {
     display: flex;
     justify-content: flex-end;
+}
+
+/* 버튼 동작 중. 막기 */
+button:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+    color: #999;
+}
+
+button:disabled:hover {
+    background-color: #d3d3d3;
 }

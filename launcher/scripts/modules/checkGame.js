@@ -40,7 +40,7 @@ async function checkInstalled(exeDir, mainWindow) {
             // 설치 필요
             console.log("게임 폴더 없음");
             mainWindow.webContents.send('installation-required', true);
-            return;
+            return false;
         }
 
         // 버전 확인
@@ -55,7 +55,7 @@ async function checkInstalled(exeDir, mainWindow) {
             // 버전 확인이 안됨 => 새로 설치 필요
             console.log("version.json 없음. 설치 필요");
             mainWindow.webContents.send('installation-required', true);
-            return;
+            return false;
         } else {
             const versionComparison = compareVersions(localVersion, latestVersion);
             if (versionComparison < 0) {
@@ -67,6 +67,8 @@ async function checkInstalled(exeDir, mainWindow) {
                 mainWindow.webContents.send('update-required', false);
             }
         }
+
+        return true;
     } catch (error) {
         mainWindow.webContents.send('game-start-error', error.message);
     }

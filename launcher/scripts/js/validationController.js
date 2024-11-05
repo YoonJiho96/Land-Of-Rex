@@ -9,7 +9,7 @@ export function handleValidationControls(validation) {
             setActiveButton('game-update-button');
         } else {
             updateStatus.textContent = '게임이 최신 버전입니다.';
-            updateStatus.style.color = 'green';
+            updateStatus.style.color = '#4CAF50';
             setActiveButton('game-start-button');
         }
     });
@@ -23,6 +23,13 @@ export function handleValidationControls(validation) {
             setActiveButton('download-button');
         }
     });
+
+    // 게임 확인 메시지
+    validation.onSetMessage((message, color) => {
+        const updateStatus = document.getElementById('latest-game-version');
+        updateStatus.textContent = message;
+        updateStatus.style.color = color;
+    })
 
     // 유효성 검사 버튼
     const gameValidateBtn = document.getElementById('game-validate');
@@ -48,4 +55,17 @@ export function handleValidationControls(validation) {
             }
         });
     }
+
+    // 버튼 임시 블락
+    function setBlockButton(buttonId, isDisabled) {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.disabled = isDisabled;
+        }
+    }
+
+    // 버튼 상태 변경 수신
+    validation.onSetButtonState((buttonId, isDisabled) => {
+        setBlockButton(buttonId, isDisabled);
+    });
 }
