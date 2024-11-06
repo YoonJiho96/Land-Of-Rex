@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -30,27 +31,31 @@ public class RankingService {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // 해당 유저의 해당 스테이지 랭킹 정보 확인
+            // 새로운 스테이지 정보 저장
+            StageInfo newStageInfo = StageInfo.of(user, request);
+            stageInfoRepository.save(newStageInfo);
+
+            // 해당 유저의 해당 스테이지 최고 점수 StageInfo 찾기
+            List<StageInfo> userStageInfos = stageInfoRepository.findByUserAndStage(user, request.getStage());
+            StageInfo highestScoreStageInfo = userStageInfos.stream()
+                    .max(Comparator.comparing(StageInfo::getScore))
+                    .orElse(newStageInfo);
+
+            // 랭킹 정보 처리
             Optional<Ranking> existingRanking = rankingRepository.findByUserAndStageInfoStage(user, request.getStage());
 
             if (existingRanking.isPresent()) {
-                // 기존 기록이 있는 경우
-                StageInfo existingStageInfo = existingRanking.get().getStageInfo();
-                if (existingStageInfo.getScore() >= request.getScore()) {
-                    // 기존 점수가 더 높거나 같으면 기존 데이터 유지
-                    return createRankingResponse(true, getRankingDtoList(request.getStage()),
-                            "Existing score is higher or equal");
+                // 기존 랭킹이 있는 경우, 최고 점수로 업데이트
+                Ranking ranking = existingRanking.get();
+                if (highestScoreStageInfo.getScore() > ranking.getStageInfo().getScore()) {
+                    ranking.setStageInfo(highestScoreStageInfo);
+                    rankingRepository.save(ranking);
                 }
-                // 새로운 점수가 더 높으면 StageInfo 업데이트
-                updateStageInfo(existingStageInfo, request);
             } else {
-                // 새로운 기록 생성
-                StageInfo newStageInfo = StageInfo.of(user, request);
-                stageInfoRepository.save(newStageInfo);
-
+                // 새로운 랭킹 생성
                 Ranking newRanking = new Ranking();
                 newRanking.setUser(user);
-                newRanking.setStageInfo(newStageInfo);
+                newRanking.setStageInfo(highestScoreStageInfo);
                 rankingRepository.save(newRanking);
             }
 
@@ -62,6 +67,22 @@ public class RankingService {
         } catch (Exception e) {
             return createRankingResponse(false, null, "Error submitting score: " + e.getMessage());
         }
+    }
+
+    @Transactional
+    private void updateRankings(Integer stage) {
+        List<Ranking> rankings = rankingRepository.findByStageInfoStageOrderByRanking(stage);
+
+        // Score 기준으로 정렬
+        rankings.sort((r1, r2) ->
+                Integer.compare(r2.getStageInfo().getScore(), r1.getStageInfo().getScore()));
+
+        // 순위 업데이트
+        for (int i = 0; i < rankings.size(); i++) {
+            rankings.get(i).setRanking(i + 1);
+        }
+
+        rankingRepository.saveAll(rankings);
     }
 
     @Transactional(readOnly = true)
@@ -88,29 +109,6 @@ public class RankingService {
         }
 
         return rankingDtos;
-    }
-
-    private void updateRankings(Integer stage) {
-        List<Ranking> rankings = rankingRepository.findByStageInfoStageOrderByRanking(stage);
-
-        // Score 기준으로 정렬
-        rankings.sort((r1, r2) ->
-                Integer.compare(r2.getStageInfo().getScore(), r1.getStageInfo().getScore()));
-
-        // 순위 업데이트
-        for (int i = 0; i < rankings.size(); i++) {
-            rankings.get(i).setRanking(i + 1);
-        }
-
-        rankingRepository.saveAll(rankings);
-    }
-
-    private void updateStageInfo(StageInfo stageInfo, StageInfoRequestDto request) {
-        stageInfo.setEarnGold(request.getEarnGold());
-        stageInfo.setSpendGold(request.getSpendGold());
-        stageInfo.setClearTime(request.getClearTime());
-        stageInfo.setDeathCount(request.getDeathCount());
-        stageInfo.setScore(request.getScore());
     }
 
     private RankingResponseDto createRankingResponse(boolean success, List<RankingDto> data, String message) {

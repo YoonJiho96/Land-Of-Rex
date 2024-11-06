@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface StageInfoRepository extends JpaRepository<StageInfo, Long> {
     List<StageInfo> findByStageOrderByScoreDesc(Integer stage);
-    Optional<StageInfo> findByUserAndStage(User user, Integer stage);
+    List<StageInfo> findByUserAndStage(User user, Integer stage);
 }
