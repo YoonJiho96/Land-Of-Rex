@@ -8,7 +8,6 @@ import com.landofrex.post.PostService;
 import com.landofrex.post.entity.Post;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.user.entity.User;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

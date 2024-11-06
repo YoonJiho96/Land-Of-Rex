@@ -1,7 +1,6 @@
 package com.landofrex.post;
 
 
-import com.landofrex.gcs.GcsService;
 import com.landofrex.post.controller.PostCreateRequest;
 import com.landofrex.post.controller.PostUpdateRequest;
 import com.landofrex.post.entity.Post;

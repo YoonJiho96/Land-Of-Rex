@@ -44,6 +44,18 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/usernames/exists")
+    public ResponseEntity<String> checkUsernameExists(@RequestBody UsernameDto usernameDto) {
+        authService.checkUsernameExists(usernameDto.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(usernameDto.getUsername());
+    }
+
+    @GetMapping("/nicknames/exists")
+    public ResponseEntity<String> checkNickname(@RequestBody NicknameDto nicknameDto) {
+        authService.checkNicknameExists(nicknameDto.getNickname());
+        return ResponseEntity.status(HttpStatus.OK).body(nicknameDto.getNickname());
+    }
+
     @PostMapping("/sign-up/oauth")
     public ResponseEntity<Void> signUpOauth(@Valid @RequestBody UserOauthSignUpDto userOauthSignUpDto) {
         User user= AuthenticationUtil.getUser();

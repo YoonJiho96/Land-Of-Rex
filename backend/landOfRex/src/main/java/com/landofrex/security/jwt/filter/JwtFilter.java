@@ -5,7 +5,6 @@ package com.landofrex.security.jwt.filter;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.security.jwt.service.JwtService;
-import com.landofrex.security.jwt.token.AccessToken;
 import com.landofrex.security.jwt.token.Token;
 import com.landofrex.security.jwt.token.TokenType;
 import com.landofrex.user.entity.User;
@@ -17,8 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -45,7 +42,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepo;
 
-    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getRequestURI().equals("/api/v1/auth/sign-up") &&
+                request.getMethod().equals("POST");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -53,6 +54,11 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         log.info("RequestURI:{}",request.getRequestURI());
+
+        if(request.getRequestURI().equals("/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         Optional<Token> accessToken = jwtService.extractByTokenType(request.getCookies(), TokenType.ACCESS);
         if (accessToken.isPresent()) {
