@@ -10,6 +10,6 @@ public class Notice extends BaseEntity {
     @Column(name="notice_id")
     private Long id;
 
-    private
+
 
 }
