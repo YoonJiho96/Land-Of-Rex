@@ -11,7 +11,7 @@ public class PlayerArrangeController : MonoBehaviour
     public Collider arrangeCollider;
     public List<Transform> unitList = new List<Transform>();
 
-    private string[] unitType = { "", "Infantry", "Archer", "Spearman", "Mage", "Cavalry", ""};
+    private string[] unitType = { "", "Infantry", "Archer", "Spearman", "Mage", "Cavalry", "Special"};
 
     private void Awake()
     {
