@@ -1,11 +1,11 @@
 package com.landofrex.post;
 
 
-import com.landofrex.gcs.GcsService;
 import com.landofrex.post.controller.PostCreateRequest;
 import com.landofrex.post.controller.PostUpdateRequest;
 import com.landofrex.post.entity.Post;
 import com.landofrex.post.entity.PostStatus;
+import com.landofrex.security.sanitizer.HtmlSanitizerService;
 import com.landofrex.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final GcsService gcsService;
+    private final HtmlSanitizerService htmlSanitizerService;
 
 //    public void initPost(User user){
 //        Post post=new Post(user);
@@ -32,6 +32,7 @@ public class PostService {
 //    }
 
     public Post createPost(User user, PostCreateRequest postCreateRequest) throws IOException {
+        htmlSanitizerService.sanitizeWithImages(postCreateRequest.content());
         Post post = new Post(user,postCreateRequest);
         return postRepository.save(post);
     }

@@ -8,7 +8,6 @@ import com.landofrex.post.PostService;
 import com.landofrex.post.entity.Post;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.user.entity.User;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +36,8 @@ public class PostController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Long> createPost(
-            @Valid @RequestPart(value="PostCreateRequest") String postCreateRequestString,
+            @RequestPart(value="PostCreateRequest") String postCreateRequestString,
             @RequestPart(value="ImageFiles",required = false) List<MultipartFile> imageFiles) throws IOException {
-
 
         User user= AuthenticationUtil.getUser();
 
@@ -70,13 +68,13 @@ public class PostController {
     @PatchMapping("/{postId}")
     public ResponseEntity<Long> updatePost(@PathVariable Long postId,
                                            @RequestParam("title") String title,
-                                           @RequestParam("text") String text,
+                                           @RequestParam("content") String content,
                                            @RequestParam("images") List<MultipartFile> imageFiles
                                            ){
         User user= AuthenticationUtil.getUser();
         PostUpdateRequest postUpdateRequest=PostUpdateRequest.builder()
                 .postId(postId)
-                .text(text)
+                .content(content)
                 .title(title)
                 .build();
         Post post=postService.updatePost(user,postUpdateRequest);
