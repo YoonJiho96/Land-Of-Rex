@@ -13,10 +13,16 @@ public class PlayerArrangeController : MonoBehaviour
 
     private string[] unitType = { "", "Infantry", "Archer", "Spearman", "Mage", "Cavalry", ""};
 
-    void Start()
+    private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
         arrangeCollider = GetComponent<Collider>();
+
+        gameObject.SetActive(false);
+    }
+
+    void Start()
+    {
         lineRenderer.positionCount = segments + 1; // 원의 시작점과 끝점 연결
         lineRenderer.useWorldSpace = false; // 로컬 좌표 사용
 
