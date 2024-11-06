@@ -33,6 +33,22 @@ public class PlayerController : MonoBehaviour
 
     public Animator horseAnimator;
 
+    // 먼지 이펙트
+    public GameObject dustEffectPrefab;
+    public Transform dustSpawnPoint;
+
+    public float dustEffectInterval = 0.25f; // 먼지 이펙트 발생 간격 (초 단위)
+    private float lastDustEffectTime = 0f;   // 마지막 먼지 이펙트 생성 시간
+
+    void CreateDustEffect()
+    {
+        if (Time.time - lastDustEffectTime >= dustEffectInterval)
+        {
+            Instantiate(dustEffectPrefab, dustSpawnPoint.position, Quaternion.identity);
+            lastDustEffectTime = Time.time; // 마지막 생성 시간 업데이트
+        }
+    }
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -126,6 +142,9 @@ public class PlayerController : MonoBehaviour
             {
                 horseAnimator.SetBool("Gallop", true);
             }
+
+            // 먼지 이펙트 생성
+            CreateDustEffect();
 
             // CharacterController를 사용하여 이동 처리
             controller.Move(moveDirection * moveSpeed * Time.deltaTime);
