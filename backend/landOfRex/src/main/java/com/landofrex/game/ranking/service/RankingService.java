@@ -10,24 +10,19 @@ import com.landofrex.game.ranking.repository.StageInfoRepository;
 import com.landofrex.user.entity.User;
 import com.landofrex.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class RankingService {
-    private final RedisTemplate<String, Object> redisTemplate;
     private final RankingRepository rankingRepository;
     private final StageInfoRepository stageInfoRepository;
     private final UserRepository userRepository;
-
-    private static final String RANKING_KEY_PREFIX = "ranking:stage:";
 
     @Transactional
     public RankingResponseDto submitScore(Long userId, StageInfoRequestDto request) {
@@ -35,123 +30,87 @@ public class RankingService {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Redis에 점수 저장
-            String rankingKey = RANKING_KEY_PREFIX + request.getStage();
-            ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
+            // 해당 유저의 해당 스테이지 랭킹 정보 확인
+            Optional<Ranking> existingRanking = rankingRepository.findByUserAndStageInfoStage(user, request.getStage());
 
-            // 기존 스테이지 정보 확인
-            Optional<StageInfo> existingStageInfo = stageInfoRepository.findByUserAndStage(user, request.getStage());
+            if (existingRanking.isPresent()) {
+                // 기존 기록이 있는 경우
+                StageInfo existingStageInfo = existingRanking.get().getStageInfo();
+                if (existingStageInfo.getScore() >= request.getScore()) {
+                    // 기존 점수가 더 높거나 같으면 기존 데이터 유지
+                    return createRankingResponse(true, getRankingDtoList(request.getStage()),
+                            "Existing score is higher or equal");
+                }
+                // 새로운 점수가 더 높으면 StageInfo 업데이트
+                updateStageInfo(existingStageInfo, request);
+            } else {
+                // 새로운 기록 생성
+                StageInfo newStageInfo = StageInfo.of(user, request);
+                stageInfoRepository.save(newStageInfo);
 
-            if (existingStageInfo.isPresent() && existingStageInfo.get().getScore() >= request.getScore()) {
-                // 기존 점수가 더 높으면 새로운 점수를 저장하지 않음
-                return createRankingResponse(false, Collections.emptyList(), "Existing score is higher");
+                Ranking newRanking = new Ranking();
+                newRanking.setUser(user);
+                newRanking.setStageInfo(newStageInfo);
+                rankingRepository.save(newRanking);
             }
 
-            // 새로운 스테이지 정보 저장
-            StageInfo stageInfo = StageInfo.of(user, request);
-            stageInfoRepository.save(stageInfo);
+            // 랭킹 순위 업데이트
+            updateRankings(request.getStage());
 
-            // Redis에 점수 업데이트
-            zSetOps.add(rankingKey, user.getNickname(), request.getScore());
-
-            // 현재 랭킹 정보 조회
-            Set<ZSetOperations.TypedTuple<Object>> rankings = zSetOps.reverseRangeWithScores(rankingKey, 0, -1);
-            List<RankingDto> rankingDtos = convertToRankingDtoList(rankings);
-
-            return createRankingResponse(true, rankingDtos, "Score submitted successfully");
+            return createRankingResponse(true, getRankingDtoList(request.getStage()),
+                    "Score submitted successfully");
         } catch (Exception e) {
-            return createRankingResponse(false, Collections.emptyList(), "Error submitting score: " + e.getMessage());
+            return createRankingResponse(false, null, "Error submitting score: " + e.getMessage());
         }
     }
 
     @Transactional(readOnly = true)
     public RankingResponseDto getRankings(Integer stage) {
         try {
-            String rankingKey = RANKING_KEY_PREFIX + stage;
-            ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
-            Set<ZSetOperations.TypedTuple<Object>> rankings = zSetOps.reverseRangeWithScores(rankingKey, 0, -1);
-
-            if (rankings == null || rankings.isEmpty()) {
-                // Redis에 데이터가 없으면 DB에서 조회
-                List<Ranking> dbRankings = rankingRepository.findByStageInfoStageOrderByRanking(stage);
-                List<RankingDto> rankingDtos = dbRankings.stream()
-                        .map(this::convertToRankingDto)
-                        .collect(Collectors.toList());
-                return createRankingResponse(true, rankingDtos, "Rankings retrieved from database");
-            }
-
-            List<RankingDto> rankingDtos = convertToRankingDtoList(rankings);
-            return createRankingResponse(true, rankingDtos, "Rankings retrieved successfully");
+            List<RankingDto> rankings = getRankingDtoList(stage);
+            return createRankingResponse(true, rankings, "Rankings retrieved successfully");
         } catch (Exception e) {
-            return createRankingResponse(false, Collections.emptyList(), "Error retrieving rankings: " + e.getMessage());
+            return createRankingResponse(false, null, "Error retrieving rankings: " + e.getMessage());
         }
     }
 
-//    @Scheduled(fixedRate = 12 * 60 * 60 * 1000) // 12시간마다 실행
-    @Scheduled(fixedRate = 5000) // 5초마다 실행
-    @Transactional
-    public void syncRankingsToDatabase() {
-        Set<String> keys = redisTemplate.keys(RANKING_KEY_PREFIX + "*");
-        if (keys == null) return;
-
-        for (String key : keys) {
-            Integer stage = Integer.parseInt(key.replace(RANKING_KEY_PREFIX, ""));
-            ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
-            Set<ZSetOperations.TypedTuple<Object>> rankings = zSetOps.reverseRangeWithScores(key, 0, -1);
-
-            if (rankings == null) continue;
-
-            int rank = 1;
-            for (ZSetOperations.TypedTuple<Object> rankingTuple : rankings) {
-                String nickname = (String) rankingTuple.getValue();
-                Double score = rankingTuple.getScore();
-                if (nickname == null || score == null) continue;
-
-                User user = userRepository.findByNickname(nickname)
-                        .orElseThrow(() -> new RuntimeException("User not found: " + nickname));
-
-                Optional<Ranking> existingRanking = rankingRepository.findByUserAndStageInfoStage(user, stage);
-
-                if (existingRanking.isPresent()) {
-                    Ranking ranking = existingRanking.get();
-                    ranking.setRanking(rank);
-                    rankingRepository.save(ranking);
-                } else {
-                    Optional<StageInfo> stageInfo = stageInfoRepository.findByUserAndStage(user, stage);
-                    if (stageInfo.isPresent()) {
-                        Ranking newRanking = new Ranking();
-                        newRanking.setUser(user);
-                        newRanking.setStageInfo(stageInfo.get());
-                        newRanking.setRanking(rank);
-                        rankingRepository.save(newRanking);
-                    }
-                }
-                rank++;
-            }
-        }
-    }
-
-    private RankingDto convertToRankingDto(Ranking ranking) {
-        RankingDto dto = new RankingDto();
-        dto.setNickname(ranking.getUser().getNickname());
-        dto.setScore(ranking.getStageInfo().getScore());
-        dto.setRanking(ranking.getRanking());
-        dto.setCreatedAt(ranking.getStageInfo().getCreatedAt());
-        return dto;
-    }
-
-    private List<RankingDto> convertToRankingDtoList(Set<ZSetOperations.TypedTuple<Object>> rankings) {
+    private List<RankingDto> getRankingDtoList(Integer stage) {
+        List<Ranking> rankings = rankingRepository.findByStageInfoStageOrderByRanking(stage);
         List<RankingDto> rankingDtos = new ArrayList<>();
-        int rank = 1;
-        for (ZSetOperations.TypedTuple<Object> rankingTuple : rankings) {
+
+        for (Ranking ranking : rankings) {
             RankingDto dto = new RankingDto();
-            dto.setNickname((String) rankingTuple.getValue());
-            dto.setScore(rankingTuple.getScore().intValue());
-            dto.setRanking(rank++);
-            dto.setCreatedAt(null); // Redis에는 생성 시간 정보가 없으므로 null로 설정
+            dto.setNickname(ranking.getUser().getNickname());
+            dto.setScore(ranking.getStageInfo().getScore());
+            dto.setRanking(ranking.getRanking());
+            dto.setCreatedAt(ranking.getStageInfo().getCreatedAt());
             rankingDtos.add(dto);
         }
+
         return rankingDtos;
+    }
+
+    private void updateRankings(Integer stage) {
+        List<Ranking> rankings = rankingRepository.findByStageInfoStageOrderByRanking(stage);
+
+        // Score 기준으로 정렬
+        rankings.sort((r1, r2) ->
+                Integer.compare(r2.getStageInfo().getScore(), r1.getStageInfo().getScore()));
+
+        // 순위 업데이트
+        for (int i = 0; i < rankings.size(); i++) {
+            rankings.get(i).setRanking(i + 1);
+        }
+
+        rankingRepository.saveAll(rankings);
+    }
+
+    private void updateStageInfo(StageInfo stageInfo, StageInfoRequestDto request) {
+        stageInfo.setEarnGold(request.getEarnGold());
+        stageInfo.setSpendGold(request.getSpendGold());
+        stageInfo.setClearTime(request.getClearTime());
+        stageInfo.setDeathCount(request.getDeathCount());
+        stageInfo.setScore(request.getScore());
     }
 
     private RankingResponseDto createRankingResponse(boolean success, List<RankingDto> data, String message) {
