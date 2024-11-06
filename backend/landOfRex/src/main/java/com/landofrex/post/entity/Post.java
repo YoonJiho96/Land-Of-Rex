@@ -1,7 +1,5 @@
 package com.landofrex.post.entity;
 
-
-import com.landofrex.audit.AuditDateTime;
 import com.landofrex.image.PostImage;
 import com.landofrex.post.controller.PostCreateRequest;
 import com.landofrex.post.controller.PostUpdateRequest;
@@ -19,8 +17,9 @@ import java.util.List;
 @Table(name="post")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends AuditDateTime {
+public class Post extends AbstractPost {
     @Id
+    @Column(name="post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -31,7 +30,8 @@ public class Post extends AuditDateTime {
     @Column(nullable = false , length = 30)
     private String title;
 
-    private String text;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
@@ -46,9 +46,9 @@ public class Post extends AuditDateTime {
 
     public Post(@NonNull User user, PostCreateRequest postCreateRequest) {
         this.title= postCreateRequest.title();
-        this.type = postCreateRequest.postType();
+//        this.type = postCreateRequest.postType();
         this.author = user;
-        this.text = postCreateRequest.text();
+        this.content = postCreateRequest.content();
         this.status=PostStatus.UNCHEKCED;
     }
 
@@ -64,7 +64,7 @@ public class Post extends AuditDateTime {
 
     public void updateTitleAndText(PostUpdateRequest postUpdateRequest) {
         this.title=postUpdateRequest.title();
-        this.text=postUpdateRequest.text();
+        this.content=postUpdateRequest.content();
     }
     public void updateStatus(PostStatus status) {
         this.status=status;

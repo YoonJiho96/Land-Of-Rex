@@ -58,12 +58,9 @@ public class GcsService {
 
         storage.create(blobInfo, imageFile.getBytes());
 
-        StringBuilder fileUrlBuilder=new StringBuilder();
-
-        fileUrlBuilder.append(baseUrl)
-                .append(bucketName)
-                .append("/")
-                .append(fileName);
-        return fileUrlBuilder.toString();
+        return baseUrl +
+                bucketName +
+                "/" +
+                fileName;
     }
 }

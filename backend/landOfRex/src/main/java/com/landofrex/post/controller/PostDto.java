@@ -38,7 +38,7 @@ public class PostDto {
         this.type = post.getType();
         this.authorNickname=post.getAuthor().getNickname();
         this.title = post.getTitle();
-        this.text = post.getText();
+        this.text = post.getContent();
         this.status = post.getStatus();
 
         this.postImages =post.getPostImages().stream().map(PostImageDto::new).toList();

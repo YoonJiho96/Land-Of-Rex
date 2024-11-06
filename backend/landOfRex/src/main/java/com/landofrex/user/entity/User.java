@@ -2,7 +2,9 @@ package com.landofrex.user.entity;
 
 
 import com.landofrex.security.jwt.token.RefreshToken;
+import com.landofrex.user.controller.UserSignUpDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,19 +17,27 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false, length = 30)
+    @Size(min = ValidationConsts.USERNAME_MIN_LENGTH, max = ValidationConsts.USERNAME_MAX_LENGTH, message = ValidationConsts.USERNAME_SIZE_MESSAGE)
+    @Column(nullable = false, length = ValidationConsts.USERNAME_MAX_LENGTH)
+    private String username;
+
+    @Column(length = 30)
     private String email; // 이메일
-    @Column(length = 20)
+
+    @Column(nullable = false, length = 60)
     private String password; // 비밀번호
-    @Column(nullable = false, length = 12)
+
+    @Size(min = ValidationConsts.USERNAME_MIN_LENGTH, max = ValidationConsts.USERNAME_MAX_LENGTH, message = ValidationConsts.NICKNAME_MESSAGE)
+    @Column(nullable = false, length = ValidationConsts.NICKNAME_MAX_LENGTH)
     private String nickname; // 닉네임
+
     @Column(length = 100)
     private String imageUrl; // 프로필 이미지
 
@@ -37,7 +47,7 @@ public class User{
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String socialId; // 로그인한 소셜 타입의 식별자 값
 
     private String refreshToken; // 리프레시 토큰
@@ -80,6 +90,13 @@ public class User{
 
     public void updateRefreshToken(RefreshToken updateRefreshToken) {
         this.refreshToken = updateRefreshToken.getTokenValue();
+    }
+
+    public User(UserSignUpDto userSignUpDto,PasswordEncoder passwordEncoder) {
+        this.nickname= userSignUpDto.nickname();
+        this.username= userSignUpDto.username();
+        this.password = passwordEncoder.encode(userSignUpDto.password());
+        this.role = Role.USER;
     }
 }
 

@@ -25,12 +25,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        throw new UnsupportedOperationException("Only oauth no password");
+        return user.getPassword();
+//        throw new UnsupportedOperationException("Only oauth no password");
     }
 
     @Override
     public String getUsername() {
-        return this.user.getEmail();
+        return this.user.getUsername();
     }
 
     public CustomUserDetails(User user, String... roles) {
