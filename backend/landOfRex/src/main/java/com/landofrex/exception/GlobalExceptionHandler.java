@@ -1,5 +1,7 @@
 package com.landofrex.exception;
 
+import com.landofrex.game.ranking.dto.RankingResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,4 +74,21 @@ public class GlobalExceptionHandler {
         log.error("exception: ",e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예기치 못한 에러 관리자 문의 필요");
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<RankingResponseDto> handleEntityNotFoundException(EntityNotFoundException e) {
+        RankingResponseDto response = new RankingResponseDto();
+        response.setSuccess(false);
+        response.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<RankingResponseDto> handleValidationExceptions(MethodArgumentNotValidException e) {
+//        RankingResponseDto response = new RankingResponseDto();
+//        response.setSuccess(false);
+//        response.setMessage("Validation failed: " +
+//                e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+//    }
 }
