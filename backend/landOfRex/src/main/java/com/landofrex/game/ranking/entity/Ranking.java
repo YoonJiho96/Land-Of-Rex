@@ -1,6 +1,6 @@
 package com.landofrex.game.ranking.entity;
 
-import com.landofrex.audit.AuditDateTime;
+import com.landofrex.audit.BaseTimeEntity;
 import com.landofrex.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "ranking")
 @Getter
 @Setter
-public class Ranking extends AuditDateTime{
+public class Ranking extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
