@@ -5,6 +5,7 @@ public class PlayerAttackController : MonoBehaviour
 {
     public GameObject playerAttack;
     public Transform attackPoint;
+    public Animator animator;
     public float attackInterval = 3f;
     public int playerDamage = 10;
 
@@ -82,6 +83,7 @@ public class PlayerAttackController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
+        animator.SetTrigger("Attack");
         GameObject projectile = Instantiate(playerAttack, attackPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, playerDamage);
     }
