@@ -1,6 +1,6 @@
 package com.landofrex.comment;
 
-import com.landofrex.audit.AuditDateTime;
+import com.landofrex.audit.BaseTimeEntity;
 import com.landofrex.post.entity.Post;
 import com.landofrex.user.entity.User;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends AuditDateTime {
+public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

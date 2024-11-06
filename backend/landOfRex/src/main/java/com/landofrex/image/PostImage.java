@@ -1,7 +1,7 @@
 package com.landofrex.image;
 
 
-import com.landofrex.audit.AuditDateTime;
+import com.landofrex.audit.BaseTimeEntity;
 import com.landofrex.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 @Entity
 @Table(name="post_images")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostImage extends AuditDateTime {
+public class PostImage extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="post_image_id")

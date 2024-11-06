@@ -1,7 +1,5 @@
 package com.landofrex.post.entity;
 
-
-import com.landofrex.audit.AuditDateTime;
 import com.landofrex.image.PostImage;
 import com.landofrex.post.controller.PostCreateRequest;
 import com.landofrex.post.controller.PostUpdateRequest;
@@ -19,8 +17,9 @@ import java.util.List;
 @Table(name="post")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends AuditDateTime {
+public class Post extends AbstractPost {
     @Id
+    @Column(name="post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
