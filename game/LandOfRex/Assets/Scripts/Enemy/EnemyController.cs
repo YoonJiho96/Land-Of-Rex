@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
     public Transform destination; // 최종 목적지
     public GameObject attackPrefeb;
     public bool isAerial = false;
+    public bool isMimic = false;
+    public bool isQueenWorm = false;
 
     public Animator animator;
 
@@ -29,6 +31,11 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+
+        if(isMimic)
+        {
+            destination = transform;
+        }
     }
 
     void Update()
@@ -48,8 +55,17 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-        agent.isStopped = false;
-        animator.SetBool("Forward", true);
+        if(isMimic && agent.remainingDistance < 5f)
+        {
+            animator.SetBool("Rest", true);
+            animator.SetBool("Forward", false);
+        }
+        else 
+        {
+            agent.isStopped = false;
+            animator.SetBool("Forward", true);
+            animator.SetBool("Rest", false);
+        }
 
         if (detectedTargets.Count > 0)
         {
