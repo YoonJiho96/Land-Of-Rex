@@ -1,8 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import './NavBar.css';
+import './NavBar-new.css';
+import { useAuth } from '../../context/AuthContext'
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = ({ activeSection, scrollToSection, sections }) => {
+  const { isLoggedIn, logout } = useAuth();  // AuthContext 사용
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate('/');  // 로그아웃 후 메인 페이지로 이동
+  };
+
   return (
     <nav className="navbar">
       <div className="logo">E102</div>
@@ -20,9 +29,18 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
       </ul>
 
       <div className="auth-buttons">
-        <Link to="/login">
-          <button className="login-button">로그인</button>
-        </Link>
+        {isLoggedIn ? (
+          <button 
+            className="login-button" 
+            onClick={handleLogout}
+          >
+            로그아웃
+          </button>
+        ) : (
+          <Link to="/login">
+            <button className="login-button">로그인</button>
+          </Link>
+        )}
       </div>
 
 
