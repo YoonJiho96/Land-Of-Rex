@@ -5,6 +5,7 @@ public class AttackController : MonoBehaviour
     public float speed = 20f;
     public int damage = 10;
     public Transform target;
+    public float closeDistance = 3f;
 
     public void Initialize(Transform enemy, int damage)
     {
@@ -29,7 +30,7 @@ public class AttackController : MonoBehaviour
         transform.position += transform.forward * speed * Time.deltaTime;
 
         // 목표 적에 가까워지면 충돌로 간주하고 공격을 제거
-        if (Vector3.Distance(transform.position, target.position) < 0.2f)
+        if (Vector3.Distance(transform.position, target.position) < closeDistance)
         {
             // 적에게 피해를 입히는 코드 (적 스크립트에 맞게 조정)
             if (target.CompareTag("Player"))
