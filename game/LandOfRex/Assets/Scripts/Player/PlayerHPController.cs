@@ -52,11 +52,11 @@ public class PlayerHPController : MonoBehaviour
             isDead = true;
             deadBody = Instantiate(deadBodyPrefeb, transform.position, transform.rotation);
             StartCoroutine(Respawn());
-            
+
             // 사망 이펙트 출력
             if (deadEffectPrefab != null)
             {
-                Instantiate(deadEffectPrefab, deadEffectSpawnPoint != null ? deadEffectSpawnPoint.position : transform.position, Quaternion.identity);
+                Instantiate(deadEffectPrefab, deadEffectSpawnPoint != null ? deadEffectSpawnPoint.position : transform.position, Quaternion.identity, transform);
             }
         }
 
@@ -94,7 +94,7 @@ public class PlayerHPController : MonoBehaviour
         // 피격 이펙트 출력
         if (damageEffectPrefab != null)
         {
-            Instantiate(damageEffectPrefab, effectSpawnPoint != null ? effectSpawnPoint.position : transform.position, Quaternion.identity);
+            Instantiate(damageEffectPrefab, effectSpawnPoint != null ? effectSpawnPoint.position : transform.position, Quaternion.identity, transform);
         }
     }
 
@@ -118,7 +118,7 @@ public class PlayerHPController : MonoBehaviour
         // 부활 이펙트 출력
         if (reviveEffectPrefab != null)
         {
-            Instantiate(reviveEffectPrefab, reviveEffectSpawnPoint != null ? reviveEffectSpawnPoint.position : transform.position, Quaternion.identity);
+            Instantiate(reviveEffectPrefab, reviveEffectSpawnPoint != null ? reviveEffectSpawnPoint.position : transform.position, Quaternion.identity, transform);
         }
     }
 }
