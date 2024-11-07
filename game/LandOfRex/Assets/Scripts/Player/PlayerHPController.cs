@@ -22,6 +22,15 @@ public class PlayerHPController : MonoBehaviour
 
     public Slider hpSlider; // HP 슬라이더 참조
 
+    public GameObject damageEffectPrefab;   // 피격 이펙트
+    public Transform effectSpawnPoint;  // 피격 포인트 위치
+
+    public GameObject deadEffectPrefab; // 사망 이펙트
+    public Transform deadEffectSpawnPoint;
+
+    public GameObject reviveEffectPrefab;   // 부활 이펙트
+    public Transform reviveEffectSpawnPoint;
+
     private void Start()
     {
         maxHealth = health;
@@ -43,6 +52,12 @@ public class PlayerHPController : MonoBehaviour
             isDead = true;
             deadBody = Instantiate(deadBodyPrefeb, transform.position, transform.rotation);
             StartCoroutine(Respawn());
+            
+            // 사망 이펙트 출력
+            if (deadEffectPrefab != null)
+            {
+                Instantiate(deadEffectPrefab, deadEffectSpawnPoint != null ? deadEffectSpawnPoint.position : transform.position, Quaternion.identity);
+            }
         }
 
         if (hpSlider != null)
@@ -75,6 +90,12 @@ public class PlayerHPController : MonoBehaviour
             hpSlider.gameObject.SetActive(health < maxHealth);
             hpSlider.value = health; // 슬라이더 값 업데이트
         }
+
+        // 피격 이펙트 출력
+        if (damageEffectPrefab != null)
+        {
+            Instantiate(damageEffectPrefab, effectSpawnPoint != null ? effectSpawnPoint.position : transform.position, Quaternion.identity);
+        }
     }
 
     public void RevivePlayer()
@@ -92,6 +113,12 @@ public class PlayerHPController : MonoBehaviour
         {
             hpSlider.value = health; // 체력 복구 시 슬라이더 최대값으로 설정
             hpSlider.gameObject.SetActive(false); // 최대 체력에서는 HP 바 숨기기
+        }
+
+        // 부활 이펙트 출력
+        if (reviveEffectPrefab != null)
+        {
+            Instantiate(reviveEffectPrefab, reviveEffectSpawnPoint != null ? reviveEffectSpawnPoint.position : transform.position, Quaternion.identity);
         }
     }
 }
