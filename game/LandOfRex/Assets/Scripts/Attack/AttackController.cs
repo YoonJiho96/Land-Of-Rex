@@ -20,9 +20,13 @@ public class AttackController : MonoBehaviour
             return;
         }
 
-        // 적 방향으로 이동
+        // 적을 향하도록 회전
         Vector3 direction = (target.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+
+        // 적 방향으로 이동
+        transform.position += transform.forward * speed * Time.deltaTime;
 
         // 목표 적에 가까워지면 충돌로 간주하고 공격을 제거
         if (Vector3.Distance(transform.position, target.position) < 0.2f)
