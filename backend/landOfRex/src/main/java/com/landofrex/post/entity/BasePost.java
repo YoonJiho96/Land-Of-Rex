@@ -14,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@Table(name="Post")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class BasePost extends BaseTimeEntity {
     @Id
