@@ -71,8 +71,12 @@ public class FixedCameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        // X, Z 값은 캐릭터를 따라가되, Y 값은 고정
-        Vector3 newPosition = new Vector3(target.position.x + offset.x, fixedY, target.position.z + offset.z);
+        // X, Z 값은 캐릭터를 따라가되, Y 값은 캐릭터 높이에 따라 Y 위치 조정
+        Vector3 newPosition = new Vector3(
+            target.position.x + offset.x,
+            target.position.y + fixedY,
+            target.position.z + offset.z
+        );
         transform.position = newPosition;
 
         // 기존 카메라의 회전 각도 (X: 45, Y: 45)를 유지
