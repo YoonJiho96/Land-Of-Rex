@@ -1,8 +1,9 @@
-package com.landofrex.image;
+package com.landofrex.image.entity;
 
 
 import com.landofrex.audit.BaseTimeEntity;
-import com.landofrex.post.entity.Post;
+import com.landofrex.image.ImageStatus;
+import com.landofrex.post.entity.GeneralPost;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,16 +25,16 @@ public class PostImage extends BaseTimeEntity {
     @ManyToOne
     @NonNull
     @JoinColumn(name="post_id")
-    Post post;
+    GeneralPost generalPost;
 
     private String urlCloud;
 
     @Enumerated(EnumType.STRING)
     private ImageStatus status;
 
-    public PostImage(@NonNull Post post, String urlCloud, String fileName) {
+    public PostImage(@NonNull GeneralPost generalPost, String urlCloud, String fileName) {
         this.urlCloud = urlCloud;
-        this.post = post;
+        this.generalPost = generalPost;
         this.fileName=fileName;
         this.status=ImageStatus.UPLOAD_SUCCESS;
     }

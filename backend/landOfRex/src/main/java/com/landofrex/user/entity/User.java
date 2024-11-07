@@ -34,7 +34,7 @@ public class User {
     @Column(nullable = false, length = 60)
     private String password; // 비밀번호
 
-    @Size(min = ValidationConsts.USERNAME_MIN_LENGTH, max = ValidationConsts.USERNAME_MAX_LENGTH, message = ValidationConsts.NICKNAME_MESSAGE)
+    @Size(min = ValidationConsts.NICKNAME_MIN_LENGTH, max = ValidationConsts.NICKNAME_MAX_LENGTH, message = ValidationConsts.NICKNAME_MESSAGE)
     @Column(nullable = false, length = ValidationConsts.NICKNAME_MAX_LENGTH)
     private String nickname; // 닉네임
 

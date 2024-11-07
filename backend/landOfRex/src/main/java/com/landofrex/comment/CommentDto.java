@@ -1,6 +1,7 @@
 package com.landofrex.comment;
 
-import com.landofrex.post.entity.Post;
+import com.landofrex.post.entity.BasePost;
+import com.landofrex.post.entity.GeneralPost;
 import com.landofrex.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -19,7 +20,7 @@ public class CommentDto {
         @NotBlank(message = "댓글 내용을 입력해주세요")
         private String content;
 
-        public Comment toEntity(User author, Post post) {
+        public Comment toEntity(User author, BasePost post) {
             return Comment.builder()
                     .content(content)
                     .author(author)
