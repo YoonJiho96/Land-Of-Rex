@@ -1,23 +1,37 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HPController : MonoBehaviour
 {
-    public int health;
-    public bool isBuilding;
+    public int health; // 현재 체력
+    public bool isBuilding; // 건물 여부
+    public Slider hpBarSlider;  // HP 바 슬라이더 참조
 
-    private int maxHealth;
+    private int maxHealth; // 최대 체력
 
     public static event Action<Transform> OnEntityDestroyed;
 
     private void Start()
     {
         maxHealth = health;
+
+        if (hpBarSlider != null)
+        {
+            hpBarSlider.maxValue = maxHealth;
+            hpBarSlider.value = health;
+            hpBarSlider.gameObject.SetActive(false); // 초기에는 HP 바 숨기기
+        }
     }
 
     void Update()
     {
-        if(health <= 0)
+        if (health < maxHealth && hpBarSlider != null && !hpBarSlider.gameObject.activeSelf)
+        {
+            hpBarSlider.gameObject.SetActive(true); // 체력이 깎이면 HP 바 보이기
+        }
+
+        if (health <= 0) // 체력이 0 이하일 때
         {
             OnEntityDestroyed?.Invoke(transform);
 
@@ -28,17 +42,19 @@ public class HPController : MonoBehaviour
             }
             else
             {
-                // 최상위 부모를 찾아서 파괴
                 Transform rootParent = GetRootParent(transform);
                 Destroy(rootParent.gameObject);
             }
         }
+
+        if (hpBarSlider != null)
+        {
+            hpBarSlider.value = health; // 체력에 따라 슬라이더 값 업데이트
+        }
     }
 
-    // 루트 부모 찾기 (자기 자신이 루트 오브젝트라면 자기 자신을 반환)
     private Transform GetRootParent(Transform current)
     {
-        // 부모가 없다면, 현재 오브젝트가 루트 오브젝트이므로 그 자신을 반환
         while (current.parent != null)
         {
             current = current.parent;
@@ -49,11 +65,22 @@ public class HPController : MonoBehaviour
     public void GetDamage(int damage)
     {
         health -= damage;
+
+        if (hpBarSlider != null)
+        {
+            hpBarSlider.value = health; // 슬라이더 값 업데이트
+        }
     }
 
     public void ReviveBuilding()
     {
         health = maxHealth;
         gameObject.SetActive(true);
+
+        if (hpBarSlider != null)
+        {
+            hpBarSlider.value = health;
+            hpBarSlider.gameObject.SetActive(false); // 체력이 최대일 때 HP 바 숨기기
+        }
     }
 }
