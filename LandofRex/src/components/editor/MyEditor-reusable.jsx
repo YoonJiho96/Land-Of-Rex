@@ -52,7 +52,7 @@ const TextEditorWithCustomImageUpload = ({
         });
 
         try {
-            await axios.post(`${baseUrl}${apiEndpoint}`, formData, {
+            await axios.post(`${apiEndpoint}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
@@ -85,15 +85,17 @@ const TextEditorWithCustomImageUpload = ({
     }
 
     return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="mb-4 w-full">
-        <input
-          type="text"
-          id="postTitle"
-          placeholder="제목을 입력하세요"
-          className="w-full p-2 border border-gray-300 rounded"
+      <div style={{ 
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <input 
+          type="text" 
+          id="postTitle" 
+          placeholder="제목을 입력하세요" 
+          style={{ width: '100%', padding: '10px', marginBottom: '10px',boxSizing: 'border-box' }} // style 객체로 수정
         />
-      </div>
       <Editor
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
         onInit={(evt, editor) => {

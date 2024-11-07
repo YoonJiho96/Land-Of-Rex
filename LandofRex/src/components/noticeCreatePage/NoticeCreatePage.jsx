@@ -1,7 +1,7 @@
 // NoticeCreatePage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TextEditorWithCustomImageUpload from '../../components/editor/MyEditor-tiny';
+import TextEditorWithCustomImageUpload from '../../components/editor/MyEditor-reusable';
 import './NoticeCreatePage.css';
 
 const NoticeCreatePage = () => {

@@ -31,7 +31,7 @@ const App = () => {
           <Route path="/posts/:postId" element={<PostDetailPage/>}/>
           <Route path="/posts" element={<PostPage/>}/>
 
-          <Route path="/admin/notices" element={<NoticeList />} />
+          <Route path="/notices" element={<NoticeList />} />
           <Route path="/admin/notices/create" element={<NoticeCreatePage />} />
           <Route path="/admin/notices/:id/edit" element={<NoticeEditPage />} />
           <Route path="/admin/notices/:id" element={<NoticeDetailPage />} />

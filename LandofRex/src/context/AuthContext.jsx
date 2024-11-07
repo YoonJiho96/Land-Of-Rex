@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   // 인증 상태 확인 함수
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/v1/my/info`, {
+      const response = await fetch(`/api/v1/my/info`, {
         credentials: 'include',  // 쿠키를 포함하여 요청을 보냄
       });
       
