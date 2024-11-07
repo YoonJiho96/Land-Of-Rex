@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
 
     private PlayerHPController playerHPController;
 
+    public Animator horseAnimator;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -120,12 +122,24 @@ public class PlayerController : MonoBehaviour
         // 캐릭터가 움직이고 있을 때
         if (moveDirection.magnitude > 0)
         {
+            if (horseAnimator != null && !horseAnimator.GetBool("Gallop"))
+            {
+                horseAnimator.SetBool("Gallop", true);
+            }
+
             // CharacterController를 사용하여 이동 처리
             controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
             // 이동 방향으로 캐릭터 회전
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            if(horseAnimator != null && horseAnimator.GetBool("Gallop"))
+            {
+                horseAnimator.SetBool("Gallop", false);
+            }
         }
 
         // 중력 적용

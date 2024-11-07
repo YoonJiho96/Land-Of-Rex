@@ -59,9 +59,12 @@ public class UnitController : MonoBehaviour
     {
         // 컴포넌트 초기화
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
+        if(animator != null)
+        {
+            animator.SetTrigger("Raise Front Legs");
+        }
 
         // NavMeshAgent 설정
         if (agent != null)
@@ -234,6 +237,8 @@ public class UnitController : MonoBehaviour
 
     private void HandleCombat() // 적과의 거리가 일정 수준 이하면 공격함.
     {
+        if (animator != null && animator.GetBool("Gallop")) animator.SetBool("Gallop", false);
+
         if (!isMage && currentTarget == null) return;
 
         if (isMage && targetPosition == Vector3.zero) return;
@@ -245,13 +250,13 @@ public class UnitController : MonoBehaviour
         if (distanceToTarget <= attackRange)
         {
             AttackTarget();
-            if (animator != null) animator.SetBool("IsMoving", false);
+            if (animator != null) animator.SetBool("Gallop", false);
         }
         else if (distanceToTarget > detectionRange)
         {
             currentTarget = null;
             targetPosition = Vector3.zero;
-            if (animator != null) animator.SetBool("IsMoving", false);
+            if (animator != null) animator.SetBool("Gallop", false);
         }
         else
         {
@@ -264,7 +269,7 @@ public class UnitController : MonoBehaviour
             {
                 agent.SetDestination(targetPosition);
             }
-            if (animator != null) animator.SetBool("IsMoving", true);
+            if (animator != null) animator.SetBool("Gallop", true);
         }
     }
 
@@ -275,8 +280,6 @@ public class UnitController : MonoBehaviour
             // 타겟 방향으로 회전
             transform.LookAt(currentTarget);
 
-            // 공격 애니메이션 실행
-            if (animator != null) animator.SetTrigger("Attack");
             if (!isMage && currentTarget != null)
             {
                 EnemyController enemyController = currentTarget.GetComponent<EnemyController>();
@@ -314,7 +317,7 @@ public class UnitController : MonoBehaviour
         if (distanceToPlayer > followDistance)
         {
             agent.SetDestination(destination);
-            if (animator != null) animator.SetBool("IsMoving", true);
+            if (animator != null) animator.SetBool("Gallop", true);
         }
         else
         {
@@ -331,7 +334,7 @@ public class UnitController : MonoBehaviour
                 agent.speed = moveSpeed;
 
                 // 따라가기 중단할 때 효과 추가 가능
-                if (animator != null) animator.SetTrigger("StopFollow");
+                if (animator != null) animator.SetBool("Gallop", false);
                 agent.ResetPath();
             }
         }
@@ -339,8 +342,6 @@ public class UnitController : MonoBehaviour
 
     public void Die()
     {
-        if (animator != null) animator.SetTrigger("Die");
-
         if (targetUpdateCoroutine != null)
         {
             StopCoroutine(targetUpdateCoroutine);
@@ -367,7 +368,7 @@ public class UnitController : MonoBehaviour
             currentTarget = null;
             targetPosition = Vector3.zero;
             // 따라가기 시작할 때 효과 추가 가능
-            if (animator != null) animator.SetTrigger("StartFollow");
+            if (animator != null) animator.SetBool("Gallop", true);
         }
         else
         {

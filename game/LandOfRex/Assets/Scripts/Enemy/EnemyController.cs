@@ -7,6 +7,10 @@ public class EnemyController : MonoBehaviour
     public Transform destination; // 최종 목적지
     public GameObject attackPrefeb;
     public bool isAerial = false;
+    public bool isMimic = false;
+    public bool isQueenWorm = false;
+
+    public Animator animator;
 
     public Transform attackStartPoint;
 
@@ -27,12 +31,18 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+
+        if(isMimic)
+        {
+            destination = transform;
+        }
     }
 
     void Update()
     {
         if(checkIsAttacking())
         {
+            animator.SetBool("Forward", false);
             if (Time.time >= lastAttackTime + attackInterval)
             {
                 if (detectedTarget != null)
@@ -45,7 +55,17 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-        agent.isStopped = false;
+        if(isMimic && agent.remainingDistance < 5f)
+        {
+            animator.SetBool("Rest", true);
+            animator.SetBool("Forward", false);
+        }
+        else 
+        {
+            agent.isStopped = false;
+            animator.SetBool("Forward", true);
+            animator.SetBool("Rest", false);
+        }
 
         if (detectedTargets.Count > 0)
         {
@@ -56,8 +76,12 @@ public class EnemyController : MonoBehaviour
             {
                 agent.SetDestination(detectedTarget.position);
             }
+            else
+            {
+                agent.SetDestination(destination.position);
+            }
         }
-        else
+        else if(agent.destination != destination.position)
         {
             // 리스트가 비어있다면 최종 목적지로 이동
             agent.SetDestination(destination.position);
@@ -123,6 +147,8 @@ public class EnemyController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
+        animator.SetTrigger("Attack");
+        transform.LookAt(enemy);
         GameObject projectile = Instantiate(attackPrefeb, attackStartPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, damage);
     }

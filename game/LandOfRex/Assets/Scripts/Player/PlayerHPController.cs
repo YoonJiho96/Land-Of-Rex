@@ -17,7 +17,8 @@ public class PlayerHPController : MonoBehaviour
     public static event Action<Transform> OnEntityDestroyed;
 
     public Material deadMaterial;
-    public Material liveMaterial;
+    public Material[] liveMaterials;
+    public Renderer[] renderers;
 
     private void Start()
     {
@@ -38,7 +39,10 @@ public class PlayerHPController : MonoBehaviour
 
     IEnumerator Respawn()
     {
-        GetComponent<Renderer>().material = deadMaterial;
+        foreach(Renderer renderer in renderers)
+        {
+            renderer.material = deadMaterial;
+        }
 
         yield return new WaitForSeconds(respawnTime);
 
@@ -56,6 +60,10 @@ public class PlayerHPController : MonoBehaviour
         health = maxHealth;
         tag = "Player";
         isDead = false;
-        GetComponent<Renderer>().material = liveMaterial;
+
+        for(int i=0; i<renderers.Length; i++)
+        {
+            renderers[i].material = liveMaterials[i];
+        }
     }
 }
