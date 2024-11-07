@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Time.time - lastDustEffectTime >= dustEffectInterval)
         {
-            Instantiate(dustEffectPrefab, dustSpawnPoint.position, Quaternion.identity);
+            Instantiate(dustEffectPrefab, dustSpawnPoint.position, Quaternion.identity, transform);
             lastDustEffectTime = Time.time; // 마지막 생성 시간 업데이트
         }
     }
