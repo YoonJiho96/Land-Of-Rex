@@ -1,10 +1,7 @@
-// PostDetailPage.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './PostDetailPage.css';
+import '../postDetailPage/PostDetailPage.css';
 import { baseUrl } from '../../config/url';
-import { useAuth } from '../../context/AuthContext';
-
 
 // 댓글 입력 컴포넌트
 const CommentForm = ({ postId, onCommentAdded }) => {
@@ -68,10 +65,9 @@ const CommentList = ({ comments }) => {
 };
 
 // 메인 페이지 컴포넌트
-const PostDetailPage = () => {
+const NoticeDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
-  const { user,isAuthor } = useAuth();
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +84,7 @@ const PostDetailPage = () => {
 
       try {
         // 게시글 데이터 fetch
-        const postResponse = await fetch(`${baseUrl}/api/v1/posts/${postId}`, {
+        const postResponse = await fetch(`${baseUrl}/api/v1/notices/${postId}`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
@@ -114,7 +110,6 @@ const PostDetailPage = () => {
 
         setPost(postData);
         setComments(commentsData);
-
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -137,6 +132,7 @@ const PostDetailPage = () => {
       const imgs = contentDiv.getElementsByTagName('img');
       Array.from(imgs).forEach((img, index) => {
         if (post.images[index]) {
+          // console.log(post.images[index])
           img.src = post.images[index].urlCloud;
         }
       });
@@ -188,10 +184,6 @@ const PostDetailPage = () => {
     );
   }
 
-  const handleEdit = () => {
-    window.location.href = `${baseUrl}/posts/${post.id}/edit`;
-  };
-
   return (
     <div className="container">
       {/* 게시글 섹션 */}
@@ -205,10 +197,7 @@ const PostDetailPage = () => {
             <span className="meta-label">작성자</span>
             <span className="meta-value">{post.authorNickname}</span>
           </div>
-          <div className="meta-item">
-            <span className="meta-label">상태</span>
-            <span className="meta-value">{post.status}</span>
-          </div>
+
           <div className="meta-item">
             <span className="meta-label">작성일</span>
             <span className="meta-value">
@@ -218,19 +207,7 @@ const PostDetailPage = () => {
         </div>
         
         <div className="post-content">
-          <div className="content-header">
-            <span className="content-title">게시글 내용</span>
-            {isAuthor(post.authorNickname) && (
-              <div className="author-actions">
-                <button className="edit-button" onClick={handleEdit}>
-                  수정
-                </button>
-                <button className="delete-button" >
-                  삭제
-                </button>
-              </div>
-            )}
-          </div>
+          <div className="content-header">게시글 내용</div>
           <div className="content-body">
             {renderPostContent()}
           </div>
@@ -254,4 +231,4 @@ const PostDetailPage = () => {
   );
 };
 
-export default PostDetailPage;
+export default NoticeDetailPage;

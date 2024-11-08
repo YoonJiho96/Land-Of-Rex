@@ -1,4 +1,4 @@
-const localUrl = "http://localhost:8080";
+const localUrl = "";
 const prodUrl = "https://k11e102.p.ssafy.io";
 
 // Determine the environment

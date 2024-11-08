@@ -83,12 +83,16 @@ const TextEditorWithCustomImageUpload = () => {
       }
 
     return (
-        <div>
+        <div style={{ 
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
             <input 
                 type="text" 
                 id="postTitle" 
                 placeholder="제목을 입력하세요" 
-                style={{ width: '100%', padding: '10px', marginBottom: '10px' }} // style 객체로 수정
+                style={{ width: '100%', padding: '10px', marginBottom: '10px',boxSizing: 'border-box' }} // style 객체로 수정
             />
             <Editor
                 apiKey = {import.meta.env.VITE_TINYMCE_API_KEY}  // Vite

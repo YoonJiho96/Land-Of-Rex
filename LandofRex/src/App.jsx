@@ -1,31 +1,45 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import MainPage from './components/mainPage/MainPage';
 import AdminPage from './components/adminPage/AdminPage';
 import InquiryPage from './components/adminPage/inquiryPage/InquiryPage';
 import UserManagement from './components/adminPage/userManagement/UserManagement'
 import DashboardPage from './components/adminPage/dashboardPage/DashboardPage'
-import LoginPage from './components/auth/login';
-import RegisterPage from './components/auth/register';
+import LoginPage from './components/auth/LoginPage';
+import SignupPage from './components/auth/SignupPage';
 import PostDetailPage from './components/postDetailPage/PostDetailPage';
-
+import PostPage from './components/postListPage/PostListPage';
+import PostCreatePage from './components/postCreatePage/PostCreatePage'
+import NoticeList from './components/noticeListPage/NoticeListPage';
+import NoticeCreatePage from './components/noticeCreatePage/NoticeCreatePage'
+import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
+import NoticeDetailPage from './components/noticeDetailPage/NoticeDetailPage'
+import { AuthProvider } from './context/AuthContext';
 
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/adminPage" element={<AdminPage />} />
-        <Route path="/inquiryPage" element={<InquiryPage />} />
-        <Route path="/userManagement" element={<UserManagement />} />
-        <Route path="/dashboardPage" element={<DashboardPage />} />
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/register" element={<RegisterPage/>}/>
-        <Route path="/post-detail/:postId" element={<PostDetailPage/>}/>
-
-      </Routes>
-    </Router>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/adminPage" element={<AdminPage />} />
+          <Route path="/inquiryPage" element={<InquiryPage />} />
+          <Route path="/userManagement" element={<UserManagement />} />
+          <Route path="/dashboardPage" element={<DashboardPage />} />
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/posts/create" element={<PostCreatePage/>}/>
+          <Route path="/posts/:postId" element={<PostDetailPage/>}/>
+          {/* <Route path="/posts/:postId" element={<PostEditPage/>}/> */}
+          <Route path="/posts" element={<PostPage/>}/>
+          <Route path="/notices" element={<NoticeList />} />
+          <Route path="/admin/notices/create" element={<NoticeCreatePage />} />
+          <Route path="/admin/notices/:id/edit" element={<NoticeEditPage />} />
+          <Route path="/notices/:postId" element={<NoticeDetailPage />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 };
 
