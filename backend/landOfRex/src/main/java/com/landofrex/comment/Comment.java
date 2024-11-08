@@ -1,7 +1,8 @@
 package com.landofrex.comment;
 
 import com.landofrex.audit.BaseTimeEntity;
-import com.landofrex.post.entity.Post;
+import com.landofrex.post.entity.BasePost;
+import com.landofrex.post.entity.GeneralPost;
 import com.landofrex.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,10 +28,10 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    private BasePost post;
 
     @Builder
-    public Comment(String content, User author, Post post) {
+    public Comment(String content, User author, BasePost post) {
         this.content = content;
         this.author = author;
         this.post = post;

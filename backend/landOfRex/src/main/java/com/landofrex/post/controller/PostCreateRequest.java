@@ -1,25 +1,31 @@
 package com.landofrex.post.controller;
 
 
+
+import com.landofrex.notice.NoticeImportance;
+import com.landofrex.post.entity.PostType;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
 
-/**
- *
- * @param title
-// * @param text
-// * @param postType
- * @param imageFiles
- */
-public record PostCreateRequest(@NotBlank String title,
-//                                @NotBlank PostType postType,
-                                String content,
-                                List<MultipartFile> imageFiles) {
-    @Builder
-    public PostCreateRequest {
-    }
+@Getter
+@MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
+public class PostCreateRequest {
+    @NotBlank(message = "제목은 필수입니다")
+    private String title;
+
+    @NotBlank(message = "내용은 필수입니다")
+    private String content;
+
+    private Boolean isPinned;
+
+    private NoticeImportance importance;
+
+    private PostType postType;
 
 }

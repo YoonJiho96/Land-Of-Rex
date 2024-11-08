@@ -38,25 +38,25 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/signup")
     public ResponseEntity<Void> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
         authService.signUp(userSignUpDto);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/usernames/exists")
+    @PostMapping("/username/exists")
     public ResponseEntity<String> checkUsernameExists(@RequestBody UsernameDto usernameDto) {
         authService.checkUsernameExists(usernameDto.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(usernameDto.getUsername());
     }
 
-    @GetMapping("/nicknames/exists")
-    public ResponseEntity<String> checkNickname(@RequestBody NicknameDto nicknameDto) {
-        authService.checkNicknameExists(nicknameDto.getNickname());
-        return ResponseEntity.status(HttpStatus.OK).body(nicknameDto.getNickname());
+    @GetMapping("/nickname/{nickname}/exists")
+    public ResponseEntity<String> checkNickname(@PathVariable String nickname) {
+        authService.checkNicknameExists(nickname);
+        return ResponseEntity.status(HttpStatus.OK).body(nickname);
     }
 
-    @PostMapping("/sign-up/oauth")
+    @PostMapping("/signup/oauth")
     public ResponseEntity<Void> signUpOauth(@Valid @RequestBody UserOauthSignUpDto userOauthSignUpDto) {
         User user= AuthenticationUtil.getUser();
         authService.OAuthSignUp(userOauthSignUpDto,user);

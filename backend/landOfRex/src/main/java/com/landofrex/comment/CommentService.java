@@ -1,8 +1,9 @@
 package com.landofrex.comment;
 
-import com.landofrex.post.PostRepository;
-import com.landofrex.post.entity.Post;
-import com.landofrex.post.entity.PostStatus;
+import com.landofrex.post.BasePostRepository;
+import com.landofrex.post.entity.BasePost;
+import com.landofrex.post.entity.GeneralPost;
+import com.landofrex.post.entity.InquiryStatus;
 import com.landofrex.user.entity.Role;
 import com.landofrex.user.entity.User;
 import com.landofrex.user.repository.UserRepository;
@@ -20,7 +21,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final BasePostRepository basePostRepository;
 
     // 댓글 생성
     @Transactional
@@ -28,12 +29,12 @@ public class CommentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        Post post = postRepository.findById(postId)
+        BasePost generalPost = basePostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
-        if(user.getRole().equals(Role.ADMIN)) post.updateStatus(PostStatus.CHECKED);
+//        if(user.getRole().equals(Role.ADMIN)) generalPost.updateInquiryStatus(InquiryStatus.CHECKED);
 
-        Comment comment = request.toEntity(user, post);
+        Comment comment = request.toEntity(user, generalPost);
 
         Comment savedComment = commentRepository.save(comment);
         return new CommentDto.Response(savedComment);

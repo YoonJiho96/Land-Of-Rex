@@ -1,14 +1,14 @@
-package com.landofrex.post.entity;
+package com.landofrex.notice;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PostStatus {
-    ACTIVE("활성"),
-    HIDDEN("숨김"),
-    DELETED("삭제됨");
+public enum NoticeImportance {
+    URGENT("긴급"),
+    HIGH("중요"),
+    NORMAL("일반");
 
     private final String description;
 }

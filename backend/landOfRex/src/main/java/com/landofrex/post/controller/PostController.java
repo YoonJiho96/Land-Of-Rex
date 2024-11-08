@@ -4,13 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.landofrex.gcs.GcsService;
 import com.landofrex.image.ImageService;
-import com.landofrex.post.PostService;
-import com.landofrex.post.entity.Post;
+import com.landofrex.post.BasePostRepository;
+import com.landofrex.post.GeneralPostService;
+import com.landofrex.post.entity.GeneralPost;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +26,10 @@ import java.util.List;
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
-    private final PostService postService;
+    private final GeneralPostService generalPostService;
     private final ImageService imageService;
     private final GcsService gcsService;
+    private final BasePostRepository basePostRepository;
 
 //    @PostMapping("/init")
 //    public ResponseEntity<Long> initPost() {
@@ -44,25 +47,25 @@ public class PostController {
         ObjectMapper objectMapper = new ObjectMapper();
         PostCreateRequest postCreateRequest = objectMapper.readValue(postCreateRequestString, PostCreateRequest.class);
 
-        Post post=postService.createPost(user,postCreateRequest);
+        GeneralPost generalPost = generalPostService.createPost(user,postCreateRequest);
         if(imageFiles!=null){
-            imageService.uploadImagesToPost(post,imageFiles);
+            imageService.uploadImagesToPost(generalPost,imageFiles);
         }
-        return ResponseEntity.ok(post.getId());
+        return ResponseEntity.ok(generalPost.getId());
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
-        Pageable pageable=PageRequest.of(page, size);
-        List<PostDto> postDtos=postService.getAllPosts(pageable).stream()
-                .map(PostDto::new).toList();
+    public ResponseEntity<GeneralPostDto.PageResponse> getPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
+        Pageable pageable=PageRequest.of(page, size, Sort.by("createdAt").descending());
+        GeneralPostDto.PageResponse posts= generalPostService.getAllPosts(pageable);
 
-        return ResponseEntity.ok(postDtos);
+        return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDto> getPost(@PathVariable Long postId) {
-        return ResponseEntity.ok(new PostDto(postService.getPost(postId)));
+    public ResponseEntity<GeneralPostDto.DetailResponse> getPost(@PathVariable Long postId) {
+        GeneralPostDto.DetailResponse response=new GeneralPostDto.DetailResponse(generalPostService.getPost(postId));
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{postId}")
@@ -77,8 +80,9 @@ public class PostController {
                 .content(content)
                 .title(title)
                 .build();
-        Post post=postService.updatePost(user,postUpdateRequest);
 
-        return ResponseEntity.ok(post.getId());
+        GeneralPost generalPost = generalPostService.updatePost(user,postUpdateRequest);
+
+        return ResponseEntity.ok(generalPost.getId());
     }
 }
