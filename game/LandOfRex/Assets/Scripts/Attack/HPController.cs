@@ -120,10 +120,10 @@ public class HPController : MonoBehaviour
             Instantiate(deadEffectPrefab, deadEffectSpawnPoint != null ? deadEffectSpawnPoint.position : transform.position, Quaternion.identity);
         }
 
-        // 루트 부모 객체 가져오기
-        Transform rootParent = GetRootParent(transform);
+        // 부모 객체 가져오기
+        Transform parent = transform.parent;
 
-        // 루트 부모 오브젝트 삭제
-        Destroy(rootParent.gameObject);
+        // 부모 오브젝트 삭제
+        Destroy(parent.gameObject);
     }
 }
