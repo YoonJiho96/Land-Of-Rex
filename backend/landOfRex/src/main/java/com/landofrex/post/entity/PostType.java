@@ -13,5 +13,4 @@ public enum PostType {
 
     private final String description;
     private final boolean inquiryType;  // 문의/답변이 필요한 타입인지
-
 }

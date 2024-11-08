@@ -26,6 +26,9 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.s3.bucket-url}")
+    private String bucketUrl;
+
     public CompletableFuture<List<String>> uploadImageFiles(List<MultipartFile> ImageFiles) throws IOException{
         List<String> fileUrls = new ArrayList<>();
         for(MultipartFile imageFile : ImageFiles) {
@@ -38,7 +41,6 @@ public class S3Service {
     private String uploadImageFile(MultipartFile file) {
         try {
             String fileName = createFileName(file.getOriginalFilename());
-            String fileUrl = "";
 
             // 파일 형식 검증
             ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -48,11 +50,9 @@ public class S3Service {
             // S3에 업로드
             amazonS3Client.putObject(
                     new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead)
             );
 
-            fileUrl = amazonS3Client.getUrl(bucket, fileName).toString();
-            return fileUrl;
+            return amazonS3Client.getUrl(bucket, fileName).toString();
 
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드에 실패했습니다.", e);

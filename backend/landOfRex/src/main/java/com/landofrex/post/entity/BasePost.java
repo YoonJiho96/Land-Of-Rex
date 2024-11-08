@@ -7,7 +7,6 @@ import com.landofrex.post.controller.PostUpdateRequest;
 import com.landofrex.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,4 +56,5 @@ public abstract class BasePost extends BaseTimeEntity {
     public void addImage(PostImage postImage) {
         this.postImages.add(postImage);
     }
+
 }

@@ -21,10 +21,10 @@ public class NoticePostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createNotice(Long userId, PostCreateRequest postCreateRequest) {
+    public NoticePost createNotice(Long userId, PostCreateRequest postCreateRequest) {
         User user=userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         NoticePost notice=new NoticePost(postCreateRequest,user);
-        noticePostRepository.save(notice);
+        return noticePostRepository.save(notice);
     }
 
     public NoticePostDto.PageResponse getAllNotices(Pageable pageable) {

@@ -21,6 +21,7 @@ public class GeneralPost extends BasePost {
 
     public GeneralPost(User user,PostCreateRequest postCreateRequest) {
         super(postCreateRequest,user);
+        this.postType=postCreateRequest.getPostType();
         if(postCreateRequest.getPostType().isInquiryType()){
             inquiryStatus=InquiryStatus.UNCHECKED;
         }

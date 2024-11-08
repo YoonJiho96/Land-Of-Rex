@@ -1,6 +1,8 @@
 package com.landofrex.post.controller;
 
 import com.landofrex.post.entity.GeneralPost;
+import com.landofrex.post.entity.InquiryStatus;
+import com.landofrex.post.entity.PostStatus;
 import com.landofrex.post.entity.PostType;
 import lombok.Builder;
 import lombok.Getter;
@@ -62,6 +64,7 @@ public class GeneralPostDto {
         private final LocalDateTime updatedAt;
         private final List<PostImageDto> images;
         private final PostType postType;
+        private final InquiryStatus status;
 
         @Builder
         public DetailResponse(GeneralPost generalPost) {
@@ -75,6 +78,7 @@ public class GeneralPostDto {
                     .map(PostImageDto::new)
                     .collect(Collectors.toList());
             this.postType= generalPost.getPostType();
+            this.status=generalPost.getInquiryStatus();
         }
     }
 }

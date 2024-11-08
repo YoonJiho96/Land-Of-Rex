@@ -16,16 +16,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class PostService {
+public class GeneralPostService {
 
-    private final PostRepository postRepository;
+    private final GeneralPostRepository generalPostRepository;
     private final HtmlSanitizerService htmlSanitizerService;
 
 //    public void initPost(User user){
@@ -36,22 +35,22 @@ public class PostService {
     public GeneralPost createPost(User user, PostCreateRequest postCreateRequest) throws IOException {
         htmlSanitizerService.sanitizeWithImages(postCreateRequest.getContent());
         GeneralPost generalPost = new GeneralPost(user,postCreateRequest);
-        return postRepository.save(generalPost);
+        return generalPostRepository.save(generalPost);
     }
 
     public GeneralPostDto.PageResponse getAllPosts(Pageable pageable){
-        Page<GeneralPost> generalPosts=postRepository.findAll(pageable);
+        Page<GeneralPost> generalPosts= generalPostRepository.findAll(pageable);
         return new GeneralPostDto.PageResponse(generalPosts);
     }
     public GeneralPost getPost(Long postId){
-        return postRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+        return generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
     }
 
     public GeneralPost updatePost(User user, PostUpdateRequest postUpdateRequest) {
-        GeneralPost generalPost =postRepository.findById(postUpdateRequest.postId()).orElseThrow(NoSuchElementException::new);
+        GeneralPost generalPost = generalPostRepository.findById(postUpdateRequest.postId()).orElseThrow(NoSuchElementException::new);
         if(generalPost.getAuthor().equals(user)){
             generalPost.updateTitleAndText(postUpdateRequest);
-            return postRepository.save(generalPost);
+            return generalPostRepository.save(generalPost);
         }else{
             throw new NoSuchElementException();
         }
@@ -59,10 +58,10 @@ public class PostService {
     public Long updatePostStatus(Long postId, PostStatus postStatus) {
         GeneralPost generalPost =getPost(postId);
         generalPost.updateStatus(postStatus);
-        return postRepository.save(generalPost).getId();
+        return generalPostRepository.save(generalPost).getId();
     }
     public void deletePost(Long postId) {
-        postRepository.deleteById(postId);
+        generalPostRepository.deleteById(postId);
     }
 
 }
