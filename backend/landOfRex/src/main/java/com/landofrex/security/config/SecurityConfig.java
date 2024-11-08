@@ -72,6 +72,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize->authorize
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/sign-up").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/patches/latest").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/patches").permitAll()
                         .requestMatchers("/api/v1/auth/usernames/{username}/exists").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/auth/nicknames/{nickname}/exists").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/patches").hasRole("ADMIN")
