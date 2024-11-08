@@ -1,4 +1,3 @@
-// PostDetailPage.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../postDetailPage/PostDetailPage.css';
@@ -13,7 +12,7 @@ const CommentForm = ({ postId, onCommentAdded }) => {
     if (!content.trim()) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/posts/${postId}/comments`, {
+      const response = await fetch(`${baseUrl}/api/v1/posts/${postId}/comments`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -94,7 +93,7 @@ const NoticeDetailPage = () => {
         });
 
         // 댓글 데이터 fetch
-        const commentsResponse = await fetch(`${baseUrl}/api/v1/notices/${postId}/comments`, {
+        const commentsResponse = await fetch(`${baseUrl}/api/v1/posts/${postId}/comments`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
@@ -124,16 +123,17 @@ const NoticeDetailPage = () => {
 
   // 게시글 내용 렌더링
   const renderPostContent = () => {
-    if (!post?.text) return null;
+    if (!post?.content) return null;
 
     const contentDiv = document.createElement('div');
-    contentDiv.innerHTML = post.text;
+    contentDiv.innerHTML = post.content;
 
-    if (post.postImages) {
+    if (post.images) {
       const imgs = contentDiv.getElementsByTagName('img');
       Array.from(imgs).forEach((img, index) => {
-        if (post.postImages[index]) {
-          img.src = post.postImages[index].urlCloud;
+        if (post.images[index]) {
+          // console.log(post.images[index])
+          img.src = post.images[index].urlCloud;
         }
       });
     }
@@ -197,10 +197,7 @@ const NoticeDetailPage = () => {
             <span className="meta-label">작성자</span>
             <span className="meta-value">{post.authorNickname}</span>
           </div>
-          <div className="meta-item">
-            <span className="meta-label">상태</span>
-            <span className="meta-value">{post.status}</span>
-          </div>
+
           <div className="meta-item">
             <span className="meta-label">작성일</span>
             <span className="meta-value">

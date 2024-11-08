@@ -8,7 +8,8 @@ import DashboardPage from './components/adminPage/dashboardPage/DashboardPage'
 import LoginPage from './components/auth/LoginPage';
 import SignupPage from './components/auth/SignupPage';
 import PostDetailPage from './components/postDetailPage/PostDetailPage';
-import PostPage from './components/postDetailPage/PostDetailPage';
+import PostPage from './components/postListPage/PostListPage';
+import PostCreatePage from './components/postCreatePage/PostCreatePage'
 import NoticeList from './components/noticeListPage/NoticeListPage';
 import NoticeCreatePage from './components/noticeCreatePage/NoticeCreatePage'
 import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
@@ -18,8 +19,8 @@ import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/adminPage" element={<AdminPage />} />
@@ -28,17 +29,17 @@ const App = () => {
           <Route path="/dashboardPage" element={<DashboardPage />} />
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/posts/create" element={<PostCreatePage/>}/>
           <Route path="/posts/:postId" element={<PostDetailPage/>}/>
+          {/* <Route path="/posts/:postId" element={<PostEditPage/>}/> */}
           <Route path="/posts" element={<PostPage/>}/>
-
           <Route path="/notices" element={<NoticeList />} />
           <Route path="/admin/notices/create" element={<NoticeCreatePage />} />
           <Route path="/admin/notices/:id/edit" element={<NoticeEditPage />} />
-          <Route path="/admin/notices/:id" element={<NoticeDetailPage />} />
+          <Route path="/notices/:postId" element={<NoticeDetailPage />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-    
+      </AuthProvider>
+    </BrowserRouter>
   );
 };
 

@@ -1,8 +1,45 @@
-.editor-section {
-    height: 100vh; /* 화면 높이를 100% 채우도록 설정 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 20px;
-    border-bottom: 1px solid #ddd;
+
+
+  .editor-section {
+    padding: 2rem 1rem;
+    background-color: #f8fafc;
+  }
+  
+  .editor-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+  }
+  
+  .type-selector {
+    margin-bottom: 1.5rem;
+  }
+  
+  .type-select {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .type-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .editor-section {
+      padding: 1rem 0.5rem;
+    }
+    
+    .editor-container {
+      padding: 1rem;
+    }
   }

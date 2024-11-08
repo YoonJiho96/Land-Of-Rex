@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './PostDetailPage.css';
+import { baseUrl } from '../../config/url';
+import { useAuth } from '../../context/AuthContext';
+
 
 // 댓글 입력 컴포넌트
 const CommentForm = ({ postId, onCommentAdded }) => {
@@ -12,7 +15,7 @@ const CommentForm = ({ postId, onCommentAdded }) => {
     if (!content.trim()) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/posts/${postId}/comments`, {
+      const response = await fetch(`${baseUrl}/api/v1/posts/${postId}/comments`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -68,6 +71,7 @@ const CommentList = ({ comments }) => {
 const PostDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
+  const { user,isAuthor } = useAuth();
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,7 +88,7 @@ const PostDetailPage = () => {
 
       try {
         // 게시글 데이터 fetch
-        const postResponse = await fetch(`http://localhost:8080/api/v1/posts/${postId}`, {
+        const postResponse = await fetch(`${baseUrl}/api/v1/posts/${postId}`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
@@ -93,7 +97,7 @@ const PostDetailPage = () => {
         });
 
         // 댓글 데이터 fetch
-        const commentsResponse = await fetch(`http://localhost:8080/api/v1/posts/${postId}/comments`, {
+        const commentsResponse = await fetch(`${baseUrl}/api/v1/posts/${postId}/comments`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
@@ -110,6 +114,7 @@ const PostDetailPage = () => {
 
         setPost(postData);
         setComments(commentsData);
+
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -123,16 +128,16 @@ const PostDetailPage = () => {
 
   // 게시글 내용 렌더링
   const renderPostContent = () => {
-    if (!post?.text) return null;
+    if (!post?.content) return null;
 
     const contentDiv = document.createElement('div');
-    contentDiv.innerHTML = post.text;
+    contentDiv.innerHTML = post.content;
 
-    if (post.postImages) {
+    if (post.images) {
       const imgs = contentDiv.getElementsByTagName('img');
       Array.from(imgs).forEach((img, index) => {
-        if (post.postImages[index]) {
-          img.src = post.postImages[index].urlCloud;
+        if (post.images[index]) {
+          img.src = post.images[index].urlCloud;
         }
       });
     }
@@ -183,6 +188,10 @@ const PostDetailPage = () => {
     );
   }
 
+  const handleEdit = () => {
+    window.location.href = `${baseUrl}/posts/${post.id}/edit`;
+  };
+
   return (
     <div className="container">
       {/* 게시글 섹션 */}
@@ -209,7 +218,19 @@ const PostDetailPage = () => {
         </div>
         
         <div className="post-content">
-          <div className="content-header">게시글 내용</div>
+          <div className="content-header">
+            <span className="content-title">게시글 내용</span>
+            {isAuthor(post.authorNickname) && (
+              <div className="author-actions">
+                <button className="edit-button" onClick={handleEdit}>
+                  수정
+                </button>
+                <button className="delete-button" >
+                  삭제
+                </button>
+              </div>
+            )}
+          </div>
           <div className="content-body">
             {renderPostContent()}
           </div>

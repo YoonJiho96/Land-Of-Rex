@@ -24,9 +24,9 @@ const NoticeCreatePage = () => {
       
       <TextEditorWithCustomImageUpload 
         apiEndpoint="/api/v1/notices"
-        requestKey="NoticeCreateRequest"
+        requestKey="PostCreateRequest"
         additionalFields={{ isPinned }}
-        onSubmitSuccess={() => navigate('/admin/notices')}
+        onSubmitSuccess={() => navigate('/notices')}
       />
     </div>
   );

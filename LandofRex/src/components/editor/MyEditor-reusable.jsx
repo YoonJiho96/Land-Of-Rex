@@ -106,7 +106,7 @@ const TextEditorWithCustomImageUpload = ({
           menubar: false,
           plugins: 'image code link media',
           toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image | save',
-          content_style: 'p, span, .space { font-family: inherit; font-size: inherit; }',
+          content_style: `p, span, .space { font-family: inherit; font-size: inherit; }`,
           file_picker_callback: handleImageUploadWithFileExplorer,
           width: '100%',
           setup: (editor) => {
