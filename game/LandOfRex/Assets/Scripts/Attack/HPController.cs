@@ -53,8 +53,7 @@ public class HPController : MonoBehaviour
 
             if (isBuilding)
             {
-                Transform rootParent = GetRootParent(transform);
-                rootParent.gameObject.SetActive(false);
+                StartCoroutine(PlayBuildingDeathEffect());
             }
             else
             {
@@ -66,6 +65,34 @@ public class HPController : MonoBehaviour
         {
             hpBarSlider.value = health; // 체력에 따라 슬라이더 값 업데이트
         }
+    }
+
+    private IEnumerator PlayBuildingDeathEffect()
+    {
+        // 사망 이펙트 생성
+        GameObject deathEffectInstance = null;
+        if (deadEffectPrefab != null)
+        {
+            deathEffectInstance = Instantiate(deadEffectPrefab, deadEffectSpawnPoint != null ? deadEffectSpawnPoint.position : transform.position, Quaternion.identity, transform);
+        }
+
+        // 이펙트의 지속 시간 동안 대기
+        if (deathEffectInstance != null)
+        {
+            ParticleSystem particleSystem = deathEffectInstance.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                yield return new WaitForSeconds(particleSystem.main.duration);
+            }
+            else
+            {
+                yield return new WaitForSeconds(2.0f); // 기본 대기 시간 (애니메이션 등 다른 경우)
+            }
+        }
+
+        // 빌딩 비활성화
+        Transform rootParent = GetRootParent(transform);
+        rootParent.gameObject.SetActive(false);
     }
 
     private Transform GetRootParent(Transform current)
