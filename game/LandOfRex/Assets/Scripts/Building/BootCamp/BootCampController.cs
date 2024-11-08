@@ -4,6 +4,7 @@ using System.Collections;
 public class BootCampController : MonoBehaviour
 {
     [Header("Building Settings")]
+    [SerializeField] public int bootcampId = -1; // 현재 레벨
     [SerializeField] public int currentLevel = 1; // 현재 레벨
     [SerializeField] public int maxLevel = 3; // 최대 업그레이드 가능 레벨
     [SerializeField] public float interactionRange = 3f; // 플레이어와의 상호작용 범위

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, ObjectController
 {
     public Transform destination; // 최종 목적지
     public GameObject attackPrefeb;
@@ -42,12 +42,18 @@ public class EnemyController : MonoBehaviour
     {
         if(checkIsAttacking())
         {
-            animator.SetBool("Forward", false);
+            if (animator != null)
+            {
+                animator.SetBool("Forward", false);
+            }
             if (Time.time >= lastAttackTime + attackInterval)
             {
                 if (detectedTarget != null)
                 {
-                    agent.isStopped = true;
+                    if (agent != null)
+                    {
+                        agent.isStopped = true;
+                    }
                     Attack(detectedTarget);
                     lastAttackTime = Time.time;
                 }
@@ -55,16 +61,33 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-        if(isMimic && agent.remainingDistance < 5f)
+        if(isMimic && agent != null && agent.remainingDistance < 5f)
         {
-            animator.SetBool("Rest", true);
-            animator.SetBool("Forward", false);
+            if (animator != null)
+            {
+                animator.SetBool("Rest", true);
+                animator.SetBool("Forward", false);
+            }
         }
         else 
         {
-            agent.isStopped = false;
-            animator.SetBool("Forward", true);
-            animator.SetBool("Rest", false);
+            if (agent != null)
+            {
+                agent.isStopped = false;
+            }
+
+            if (animator != null)
+            {
+                animator.SetBool("Forward", true);
+            }
+
+            if (isMimic)
+            {
+                if (animator != null)
+                {
+                    animator.SetBool("Rest", false);
+                }
+            }
         }
 
         if (detectedTargets.Count > 0)
@@ -74,14 +97,20 @@ public class EnemyController : MonoBehaviour
 
             if (detectedTarget != null)
             {
-                agent.SetDestination(detectedTarget.position);
+                if (agent != null)
+                {
+                    agent.SetDestination(detectedTarget.position);
+                }
             }
             else
             {
-                agent.SetDestination(destination.position);
+                if (agent != null)
+                {
+                    agent.SetDestination(destination.position);
+                }
             }
         }
-        else if(agent.destination != destination.position)
+        else if(agent != null && agent.destination != destination.position)
         {
             // 리스트가 비어있다면 최종 목적지로 이동
             agent.SetDestination(destination.position);
@@ -147,9 +176,17 @@ public class EnemyController : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
-        animator.SetTrigger("Attack");
+        if (animator != null)
+        {
+            animator.SetTrigger("Attack");
+        }
         transform.LookAt(enemy);
         GameObject projectile = Instantiate(attackPrefeb, attackStartPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, damage);
+    }
+
+    public void die()
+    {
+        throw new System.NotImplementedException();
     }
 }
