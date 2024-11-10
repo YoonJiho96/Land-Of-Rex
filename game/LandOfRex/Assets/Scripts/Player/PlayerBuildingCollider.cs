@@ -12,6 +12,8 @@ public class PlayerBuildingCollider : MonoBehaviour
     private float interactCooldown = 0.5f; // 상호작용 쿨타임
     private float lastInteractTime = 0f; // 마지막 상호작용 시간 기록
 
+    public DataManager dataManager;
+
     private void Awake()
     {
         // Input Actions를 가져와서 액션을 초기화
@@ -35,11 +37,14 @@ public class PlayerBuildingCollider : MonoBehaviour
         float isInteracted = interactAction.ReadValue<float>();
         if (isInteracted > 0 && Time.time - lastInteractTime > interactCooldown)
         {
-            if (nearestBuilding != null && !isInteracting) // 상호작용 중이 아니고 건물이 가까이 있을 때
+            if (nearestBuilding != null && !isInteracting && dataManager.gold >= nearestBuilding.GetNeedGold()) // 상호작용 중이 아니고 건물이 가까이 있을 때
             {
                 isInteracting = true; // 상호작용 시작
                 nearestBuilding.CompleteBuilding(); // 건물 설치
                 lastInteractTime = Time.time; // 마지막 상호작용 시간 기록
+
+                dataManager.gold -= nearestBuilding.GetNeedGold();
+                dataManager.usedGold += nearestBuilding.GetNeedGold();
 
                 Invoke(nameof(ResetInteraction), interactCooldown); // 쿨타임 후 상호작용 플래그 초기화
             }

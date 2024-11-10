@@ -31,7 +31,7 @@ public class PlayerAttackController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && !enemiesInRange.Contains(other.transform))
         {
             enemiesInRange.Add(other.transform);
         }

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,11 +23,22 @@ public class GameManager : MonoBehaviour
     public Transform[] enemySpawnPoints;
     public EnemyData[] enemyCount;
     public GameObject[] enemayPrefabs;
+    public int maxStage;
+
+    private Stopwatch gameTimer; // 전체 시간을 측정할 Stopwatch
+    private float totalElapsedTime; // 측정된 총 시간을 저장할 변수
+    public int[] stageGold;
 
     void Awake()
     {
         var playerActions = input.FindActionMap("Player");
         nextAction = playerActions.FindAction("NextWave");
+        gameTimer = new Stopwatch(); // Stopwatch 초기화
+    }
+
+    private void Start()
+    {
+        gameTimer.Start();
     }
 
     private void OnEnable()
@@ -44,16 +56,22 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float nextInput = nextAction.ReadValue<float>();
-        if(dataManager.isDay)
+        CheckCastle();
+
+        if (currentWave == maxStage && gameTimer.IsRunning)
         {
+            ClearStage();
+        }
+        else if(dataManager.isDay)
+        {
+            float nextInput = nextAction.ReadValue<float>();
             // 키가 눌린 상태로 일정 시간 지속되면 작업 실행
             if (nextInput > 0)
             {
                 holdTime += Time.deltaTime;
                 if (holdTime >= requiredHoldTime)
                 {
-                    dataManager.isDay = !dataManager.isDay;
+                    dataManager.isDay = false;
                     StartCoroutine(RotateForDuration());
                     holdTime = 0f;  // 동작 후 holdTime 초기화
                 }
@@ -63,17 +81,27 @@ public class GameManager : MonoBehaviour
                 holdTime = 0f;  // 입력이 중단되면 초기화
             }
         }
-        else
+        else if(!dataManager.isDay)
         {
             if(isWaveCleared)
             {
                 isWaveCleared = false;
-                SpawnEnemys();
+                StartCoroutine(SpawnEnemys());
+            }
+            else
+            {
+                if(dataManager.enemys.Count == 0)
+                {
+                    isWaveCleared = true;
+                    dataManager.isDay = true;
+                    currentWave++;
+                    StartCoroutine(RotateForDuration());
+                    StartCoroutine(CheckGold());
+                }
             }
         }
     }
     
-
     IEnumerator RotateForDuration()
     {
         rotationTimeElapsed = 0f;
@@ -94,7 +122,7 @@ public class GameManager : MonoBehaviour
         sunLight.transform.rotation = targetRotation; // 최종적으로 정확히 180도 회전
     }
 
-    void SpawnEnemys()
+    IEnumerator SpawnEnemys()
     {
         for(int i=0; i<enemySpawnPoints.Length; i++)
         {
@@ -104,9 +132,9 @@ public class GameManager : MonoBehaviour
                 enemyCount[i].crow[currentWave],
                 enemyCount[i].reaper[currentWave]};
 
-            for(int j=0; j<5; j++)
+            for (int j = 0; j < 5; j++)
             {
-                for(int k=0; k<waveEnemyCounts[j]; k++)
+                for (int k = 0; k < waveEnemyCounts[j]; k++)
                 {
                     GameObject enemy = Instantiate(enemayPrefabs[j],
                         enemySpawnPoints[i].position,
@@ -114,7 +142,69 @@ public class GameManager : MonoBehaviour
 
                     enemy.transform.Find("Body").GetComponent<EnemyController>().destination = destination;
                 }
+
+                yield return null;
             }
         }
+    }
+
+    IEnumerator CheckGold()
+    {
+        dataManager.totalGold += stageGold[currentWave - 1];
+        dataManager.gold += stageGold[currentWave - 1];
+
+        foreach(Transform building in dataManager.buildings)
+        {
+            if(building.gameObject.activeInHierarchy)
+            {
+                HouseData data = building.gameObject.GetComponent<HouseData>();
+
+                if(data != null)
+                {
+                    dataManager.totalGold += data.gold;
+                    dataManager.gold += data.gold;
+                }
+            }
+
+            building.gameObject.GetComponent<HPController>().ReviveBuilding();
+        }
+
+        yield return null;
+    }
+
+    private void CheckCastle()
+    {
+        foreach(Transform building in dataManager.buildings)
+        {
+            if(building.CompareTag("Core"))
+            {
+                if (building.gameObject.activeInHierarchy)
+                {
+                    return;
+                }
+                else
+                {
+                    FailStage();
+                }
+            }
+        }
+    }
+
+    private void FailStage()
+    {
+        UnityEngine.Debug.Log("Failed...");
+    }
+
+    private void ClearStage()
+    {
+        gameTimer.Stop(); // 스테이지 클리어 시 타이머 정지
+        totalElapsedTime = (float)gameTimer.Elapsed.TotalSeconds; // 시간을 초 단위로 저장
+
+        UnityEngine.Debug.Log($"Clear!! {totalElapsedTime}초");
+    }
+
+    public float GetTotalElapsedTime()
+    {
+        return totalElapsedTime; // 다른 스크립트에서 호출하여 경과 시간을 가져올 수 있음
     }
 }
