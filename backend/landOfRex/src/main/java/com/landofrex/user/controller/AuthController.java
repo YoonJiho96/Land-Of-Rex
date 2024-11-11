@@ -1,6 +1,7 @@
 package com.landofrex.user.controller;
 
 
+import com.landofrex.response.ApiResponse;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.security.jwt.service.JwtService;
 import com.landofrex.user.AuthService;
@@ -42,9 +43,9 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
+    public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
         authService.signUp(userSignUpDto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @PostMapping("/username/exists")
