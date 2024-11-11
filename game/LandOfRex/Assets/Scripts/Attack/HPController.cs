@@ -15,6 +15,7 @@ public class HPController : MonoBehaviour
     public bool isHidden; // 히든 여부
     public Slider hpBarSlider;  // HP 바 슬라이더 참조
     public DataManager dataManager;
+    public GateManager gateManager;
 
     private int maxHealth; // 최대 체력
     private bool isDead; // 사망 여부 확인
@@ -33,6 +34,7 @@ public class HPController : MonoBehaviour
     private void Awake()
     {
         dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+        gateManager = GameObject.Find("GateManager").GetComponent<GateManager>();
     }
 
     private void Start()
@@ -63,7 +65,11 @@ public class HPController : MonoBehaviour
             {
                 if(isHidden)
                 {
-
+                    if(!gateManager.hiddens.Contains(transform))
+                    {
+                        gateManager.hiddens.Add(transform);
+                        gateManager.isStart = true;
+                    }
                 }
                 else
                 {
@@ -95,7 +101,7 @@ public class HPController : MonoBehaviour
             {
                 if(isHidden)
                 {
-
+                    gateManager.hiddens.Remove(transform);
                 }
                 else
                 {
