@@ -4,7 +4,6 @@ package com.landofrex.image.entity;
 import com.landofrex.audit.BaseTimeEntity;
 import com.landofrex.image.ImageStatus;
 import com.landofrex.post.entity.BasePost;
-import com.landofrex.post.entity.GeneralPost;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,14 +29,23 @@ public class PostImage extends BaseTimeEntity {
 
     private String urlCloud;
 
+    @NonNull
+    private Integer seqence;
+
     @Enumerated(EnumType.STRING)
     private ImageStatus status;
 
-    public PostImage(@NonNull BasePost post, String urlCloud, String fileName) {
+
+    public PostImage(@NonNull BasePost post, String urlCloud, String fileName,Integer seqence) {
         this.urlCloud = urlCloud;
         this.post = post;
         this.fileName=fileName;
         this.status=ImageStatus.UPLOAD_SUCCESS;
+        this.seqence=seqence;
+    }
+
+    public void updateSequence(Integer seqence) {
+        this.seqence=seqence;
     }
 
 }

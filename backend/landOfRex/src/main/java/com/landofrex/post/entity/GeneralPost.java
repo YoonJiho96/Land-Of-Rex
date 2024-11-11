@@ -3,16 +3,14 @@ package com.landofrex.post.entity;
 import com.landofrex.post.controller.PostCreateRequest;
 import com.landofrex.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 @Getter
 @DiscriminatorValue("GENERAL")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GeneralPost extends BasePost {
+
     @Enumerated(EnumType.STRING)
     private PostType postType;
 
@@ -25,6 +23,10 @@ public class GeneralPost extends BasePost {
         if(postCreateRequest.getPostType().isInquiryType()){
             inquiryStatus=InquiryStatus.UNCHECKED;
         }
+    }
+
+    public void setPostType(PostType postType) {
+        this.postType = postType;
     }
 
     public void updateInquiryStatus(InquiryStatus inquiryStatus) {
