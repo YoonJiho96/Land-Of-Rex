@@ -82,6 +82,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/v1/patches").hasRole("ADMIN")
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                         .requestMatchers("/api/v1/auth/sign-up/oauth","/api/v1/auth/email").hasRole("GUEST")
+                        .requestMatchers("/api/v1/auth/password/reset").hasRole("ADMIN")
                         .requestMatchers("/api/v1/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
