@@ -64,7 +64,7 @@ public class BootCampController : MonoBehaviour
             float inputSelect = selectAction.ReadValue<float>();
 
             // 플레이어가 상호작용 범위 내에 있고 E 키를 눌렀을 때 업그레이드
-            if (!playerHPController.isDead && playerInRange && inputSelect > 0f)
+            if (!playerHPController.isDead && dataManager.isDay && playerInRange && inputSelect > 0f)
             {
                 isSelecting = true;
                 StartBootCampUI();
