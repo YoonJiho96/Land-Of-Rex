@@ -38,7 +38,7 @@ public class NoticeController {
 
         NoticePost noticePost=noticePostService.createNotice(user.getId(),postCreateRequest);
         if(imageFiles!=null){
-            imageService.uploadImagesToPost(noticePost,imageFiles);
+            imageService.uploadImages(noticePost,imageFiles);
         }
         return ResponseEntity.noContent().build();
     }

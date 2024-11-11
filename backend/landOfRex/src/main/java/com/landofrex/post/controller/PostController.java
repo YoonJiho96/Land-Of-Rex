@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +41,8 @@ public class PostController {
     @PostMapping(consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Long> createPost(
             @RequestPart(value="PostCreateRequest") String postCreateRequestString,
-            @RequestPart(value="ImageFiles",required = false) List<MultipartFile> imageFiles) throws IOException {
+            @RequestPart(value="ImageFiles",required = false) List<MultipartFile> imageFiles
+            ) throws IOException {
 
         User user= AuthenticationUtil.getUser();
 
@@ -48,9 +50,9 @@ public class PostController {
         PostCreateRequest postCreateRequest = objectMapper.readValue(postCreateRequestString, PostCreateRequest.class);
 
         GeneralPost generalPost = generalPostService.createPost(user,postCreateRequest);
-        if(imageFiles!=null){
-            imageService.uploadImagesToPost(generalPost,imageFiles);
-        }
+
+        imageService.uploadImages(generalPost, imageFiles);
+
         return ResponseEntity.ok(generalPost.getId());
     }
 
@@ -68,20 +70,31 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping(
+            value = "/{postId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Long> updatePost(@PathVariable Long postId,
-                                           @RequestParam("title") String title,
-                                           @RequestParam("content") String content,
-                                           @RequestParam("images") List<MultipartFile> imageFiles
-                                           ){
+                                           @RequestParam(value="PostUpdateRequest") String postUpdateRequestString,
+                                           @RequestParam(value="ImageFiles",required = false) List<MultipartFile> imageFiles,
+                                           @RequestParam(value="ImageOrders",required = false)List<String> newImageOrders
+                                           ) throws IOException {
         User user= AuthenticationUtil.getUser();
-        PostUpdateRequest postUpdateRequest=PostUpdateRequest.builder()
-                .postId(postId)
-                .content(content)
-                .title(title)
-                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        PostUpdateRequest postUpdateRequest = objectMapper.readValue(postUpdateRequestString, PostUpdateRequest.class);
 
-        GeneralPost generalPost = generalPostService.updatePost(user,postUpdateRequest);
+        if (postUpdateRequest.imageOrders() != null) {
+            imageService.updateImageOrders(postId,postUpdateRequest.imageOrders());
+        }
+
+        if (imageFiles != null && newImageOrders != null) {
+            List<Integer> orders = newImageOrders.stream()
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            imageService.uploadImages(postId, imageFiles, orders);
+        }
+
+        GeneralPost generalPost = generalPostService.updatePost(user,postId,postUpdateRequest);
 
         return ResponseEntity.ok(generalPost.getId());
     }

@@ -46,10 +46,11 @@ public class GeneralPostService {
         return generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
     }
 
-    public GeneralPost updatePost(User user, PostUpdateRequest postUpdateRequest) {
-        GeneralPost generalPost = generalPostRepository.findById(postUpdateRequest.postId()).orElseThrow(NoSuchElementException::new);
-        if(generalPost.getAuthor().equals(user)){
+    public GeneralPost updatePost(User user,Long postId, PostUpdateRequest postUpdateRequest) {
+        GeneralPost generalPost = generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+        if(generalPost.getAuthor().getId().equals(user.getId())){
             generalPost.updateTitleAndText(postUpdateRequest);
+            generalPost.setPostType(postUpdateRequest.postType());
             return generalPostRepository.save(generalPost);
         }else{
             throw new NoSuchElementException();
@@ -62,6 +63,11 @@ public class GeneralPostService {
     }
     public void deletePost(Long postId) {
         generalPostRepository.deleteById(postId);
+    }
+
+    public Page<GeneralPost> getMyPosts(Long authorId,Pageable pageable){
+        Page<GeneralPost> myPosts=generalPostRepository.findByAuthor_Id(authorId,pageable);
+        return myPosts;
     }
 
 }
