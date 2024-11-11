@@ -5,10 +5,10 @@ const EditorSection = React.forwardRef((props, ref) => {
   const [selectedType, setSelectedType] = useState('FREE');
 
   const postTypes = [
-    { value: 'INQUIRY', label: '문의사항' },
-    { value: 'QUESTION', label: '질문' },
-    { value: 'FREE', label: '자유게시글' },
-    { value: 'SUGGESTION', label: '건의사항' },
+    { value: 'ACCOUNT_ISSUE', label: '계정 문제' },
+    { value: 'BUG_REPORT', label: '버그 신고' },
+    { value: 'SUGGESTION', label: '건의 사항' },
+    { value: 'GAME_FEEDBACK', label: '게임 피드백' },
   ];
 
   return (
@@ -20,7 +20,7 @@ const EditorSection = React.forwardRef((props, ref) => {
             onChange={(e) => setSelectedType(e.target.value)}
             className="type-select"
           >
-            <option value="">게시글 유형을 선택해주세요</option>
+            <option value="">문의 유형을 선택해주세요</option>
             {postTypes.map((type) => (
               <option key={type.value} value={type.value}>
                 {type.label}
