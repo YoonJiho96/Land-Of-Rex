@@ -148,7 +148,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5500",
                 "http://localhost:5173",
-                "https://j11e103.p.ssafy.io",
+                "https://k11e102.p.ssafy.io",
                 "http://local.p.ssafy.io:5500",
                 "http://local.p.ssafy.io:5173"
         ));
