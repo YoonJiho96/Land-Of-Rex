@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public Transform[] enemySpawnPoints;
     public EnemyData[] enemyCount;
     public GameObject[] enemayPrefabs;
+    public Transform bossSpawnPoint;
+    public GameObject bossPrefab;
     public int maxStage;
 
     private Stopwatch gameTimer; // 전체 시간을 측정할 Stopwatch
@@ -146,6 +148,17 @@ public class GameManager : MonoBehaviour
                 yield return null;
             }
         }
+
+        if (currentWave == 6)
+        {
+            GameObject boss = Instantiate(bossPrefab,
+                bossSpawnPoint.position,
+                Quaternion.identity);
+
+            boss.transform.Find("Body").GetComponent<EnemyController>().destination = destination;
+        }
+
+        yield return null;
     }
 
     IEnumerator CheckGold()
