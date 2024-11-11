@@ -10,6 +10,7 @@ import SignupPage from './components/auth/SignupPage';
 import PostDetailPage from './components/postDetailPage/PostDetailPage';
 import PostPage from './components/postListPage/PostListPage';
 import PostCreatePage from './components/postCreatePage/PostCreatePage'
+import PostEditPage  from './components/postEditPage/PostEditPage';
 import NoticeList from './components/noticeListPage/NoticeListPage';
 import NoticeCreatePage from './components/noticeCreatePage/NoticeCreatePage'
 import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
