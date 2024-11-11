@@ -35,7 +35,7 @@ public class PlayerBuildingCollider : MonoBehaviour
     {
         // 상호작용 입력 처리
         float isInteracted = interactAction.ReadValue<float>();
-        if (isInteracted > 0 && Time.time - lastInteractTime > interactCooldown)
+        if (isInteracted > 0 && Time.time - lastInteractTime > interactCooldown && dataManager.isDay)
         {
             if (nearestBuilding != null && !isInteracting && dataManager.gold >= nearestBuilding.GetNeedGold()) // 상호작용 중이 아니고 건물이 가까이 있을 때
             {
@@ -61,7 +61,7 @@ public class PlayerBuildingCollider : MonoBehaviour
         if (other.CompareTag("BuildingInteraction"))
         {
             BuildingController currentBuilding = other.GetComponent<BuildingController>();
-            if (currentBuilding != null)
+            if (currentBuilding != null && dataManager.isDay)
             {
                 // 기존 건물 프리뷰 숨기기
                 if (nearestBuilding != null)
@@ -94,7 +94,7 @@ public class PlayerBuildingCollider : MonoBehaviour
         if (other.CompareTag("BuildingInteraction"))
         {
             BuildingController currentBuilding = other.GetComponent<BuildingController>();
-            if (currentBuilding != null)
+            if (currentBuilding != null && dataManager.isDay)
             {
                 // 거리 계산
                 float distanceToCurrentBuilding = Vector3.Distance(transform.position, currentBuilding.transform.position);
