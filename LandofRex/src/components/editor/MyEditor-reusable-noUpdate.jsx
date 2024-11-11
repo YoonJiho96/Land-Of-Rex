@@ -1,4 +1,4 @@
-import React, { useRef, useState,useEffect ,useCallback} from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import axios from 'axios';
 import {baseUrl} from '../../config/url.js'
@@ -15,14 +15,6 @@ const TextEditorWithCustomImageUpload = ({
     const [title, setTitle] = useState('');
     const [initialContent, setInitialContent] = useState('');
     const [isEditorReady, setIsEditorReady] = useState(false);
-    const [existingImages, setExistingImages] = useState(new Map());
-    const additionalFieldsRef = useRef(additionalFields);
-
-    console.log('TextEditor - Received additionalFields:', additionalFields); // props로 받은 값
-
-    useEffect(() => {
-      additionalFieldsRef.current = additionalFields;
-  }, [additionalFields]);
 
 
     // 초기 데이터가 있을 경우 (수정 모드) 데이터 설정
@@ -37,18 +29,11 @@ const TextEditorWithCustomImageUpload = ({
 
             if (initialData.images) {
                 const imgs = contentDiv.getElementsByTagName('img');
-                const imagesMap = new Map();
                 Array.from(imgs).forEach((img, index) => {
-                  if (initialData.images[index]) {
-                      const imageUrl = initialData.images[index].urlCloud;
-                      const imageId = initialData.images[index].id; // 이미지 ID 저장
-                      img.src = imageUrl;
-                      img.setAttribute('data-image-id', imageId); // 이미지 요소에 ID 저장
-                      imagesMap.set(imageUrl, imageId);
-                  }
+                    if (initialData.images[index]) {
+                        img.src = initialData.images[index].urlCloud;
+                    }
                 });
-
-                setExistingImages(imagesMap);
             }
 
             setInitialContent(contentDiv.innerHTML);
@@ -64,83 +49,49 @@ const TextEditorWithCustomImageUpload = ({
       }
     }, [isEditorReady, initialContent]);
 
-    // 에디터 내의 모든 이미지 순서 정보 추출
-    const getImageOrderInfo = () => {
-      const imgs = editorRef.current.dom.select('img');
-      const orderInfo = {
-          existingImages: [], // { id: number, order: number }
-          newImages: []      // { tempUrl: string, order: number }
-      };
+    const getEditorImages = () => {
+        return new Promise((resolve, reject) => {
+            const imgs = editorRef.current.dom.select('img');
+            const files = [];
 
-      Array.from(imgs).forEach((img, index) => {
-          const imageId = img.getAttribute('data-image-id');
-          if (imageId) {
-              // 기존 이미지
-              orderInfo.existingImages.push({
-                  id: parseInt(imageId),
-                  order: index
-              });
-          } else if (img.src.startsWith('blob:')) {
-              // 새로운 이미지
-              orderInfo.newImages.push({
-                  tempUrl: img.src,
-                  order: index
-              });
-          }
-      });
+            const fetchPromises = imgs.map(img => {
+                const imgSrc = img.src;
+                if (imgSrc.startsWith('blob:')) {
+                    return fetch(blobUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const file = new File([blob], `image-${Date.now()}.jpg`, { type: blob.type });
+                            files.push(file);
+                        });
+                }
+                return null;
+            });
 
-      return orderInfo;
+            Promise.all(fetchPromises)
+                .then(() => resolve(files))
+                .catch(reject);
+        });
     };
 
-    const getEditorImages = async () => {
-      const imageOrderInfo = getImageOrderInfo();
-      const files = [];
 
-      const fetchPromises = imageOrderInfo.newImages.map(async ({ tempUrl, order }) => {
-          try {
-              const response = await fetch(tempUrl);
-              const blob = await response.blob();
-              const file = new File([blob], `image-${Date.now()}-${order}.jpg`, { type: blob.type });
-              files.push({
-                  file,
-                  order
-              });
-          } catch (error) {
-              console.error('Error fetching image:', error);
-          }
-      });
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        const editor = editorRef.current;
+        
+        const rawHtml = editor.getContent({ format: 'raw' });
+        formData.append(requestKey, JSON.stringify({
+            title: document.getElementById("postTitle").value,
+            content: rawHtml,
+            ...additionalFields  // 추가 필드 병합
+        }));
 
-      await Promise.all(fetchPromises);
-      return files;
-    };
+        const imageFiles = await getEditorImages();
+        imageFiles.forEach((file, index) => {
+            formData.append('ImageFiles', file, `image_${index}.jpg`);
+        });
 
-    
-
-    const handleSubmit = useCallback(async () => {
-      const formData = new FormData();
-      const editor = editorRef.current;
-      
-      const rawHtml = editor.getContent({ format: 'raw' });
-
-      // console.log('Submit Data Check:', {
-      //       initialData,
-      //       additionalFields: additionalFieldsRef.current // ref 값 출력
-      //   });
-
-      formData.append(requestKey, JSON.stringify({
-          title: document.getElementById("postTitle").value,
-          content: rawHtml,
-          ...additionalFieldsRef.current
-      }));
-
-      const newImages = await getEditorImages();
-      newImages.forEach(({ file, order }) => {
-          formData.append('ImageFiles', file);
-          formData.append('ImageOrders', order.toString());
-      });
-
-      try {
-          await axios({
+        try {
+            await axios({
               method: method,
               url: apiEndpoint,
               data: formData,
@@ -148,12 +99,12 @@ const TextEditorWithCustomImageUpload = ({
                   'Content-Type': 'multipart/form-data'
               },
               withCredentials: true
-          });
-          if (onSubmitSuccess) onSubmitSuccess();
-      } catch (error) {
-          console.error('Error:', error);
-      }
-  }, [additionalFields, apiEndpoint, method, onSubmitSuccess, requestKey]);
+            });
+            if (onSubmitSuccess) onSubmitSuccess();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     const handleImageUploadWithFileExplorer = (callback, value, meta) => {
         if (meta.filetype === 'image') {

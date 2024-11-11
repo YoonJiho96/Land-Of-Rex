@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TextEditorWithCustomImageUpload from '../../components/editor/MyEditor-reusable';
 import './PostCreatePage.css';
 
-const NoticeCreatePage = () => {
+const PostCreatePage = () => {
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState('FREE');
 
@@ -41,4 +41,4 @@ const NoticeCreatePage = () => {
   );
 };
 
-export default NoticeCreatePage;
+export default PostCreatePage;

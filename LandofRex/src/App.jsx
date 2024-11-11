@@ -14,6 +14,7 @@ import NoticeList from './components/noticeListPage/NoticeListPage';
 import NoticeCreatePage from './components/noticeCreatePage/NoticeCreatePage'
 import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
 import NoticeDetailPage from './components/noticeDetailPage/NoticeDetailPage'
+import PostEditPage from './components/postEditPage/PostEditPage'
 import { AuthProvider } from './context/AuthContext';
 
 
@@ -31,7 +32,7 @@ const App = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/posts/create" element={<PostCreatePage/>}/>
           <Route path="/posts/:postId" element={<PostDetailPage/>}/>
-          {/* <Route path="/posts/:postId" element={<PostEditPage/>}/> */}
+          <Route path="/posts/:postId/edit" element={<PostEditPage/>}/>
           <Route path="/posts" element={<PostPage/>}/>
           <Route path="/notices" element={<NoticeList />} />
           <Route path="/admin/notices/create" element={<NoticeCreatePage />} />
