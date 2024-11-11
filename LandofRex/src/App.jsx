@@ -14,7 +14,7 @@ import NoticeList from './components/noticeListPage/NoticeListPage';
 import NoticeCreatePage from './components/noticeCreatePage/NoticeCreatePage'
 import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
 import NoticeDetailPage from './components/noticeDetailPage/NoticeDetailPage'
-import PostEditPage from './components/postEditPage/PostEditPage'
+import EditorSection from './components/editor/EditorSection';
 import { AuthProvider } from './context/AuthContext';
 
 
@@ -38,6 +38,7 @@ const App = () => {
           <Route path="/admin/notices/create" element={<NoticeCreatePage />} />
           <Route path="/admin/notices/:id/edit" element={<NoticeEditPage />} />
           <Route path="/notices/:postId" element={<NoticeDetailPage />} />
+          <Route path="/editorPage" element={<EditorSection/>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

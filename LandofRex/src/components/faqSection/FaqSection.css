@@ -1,0 +1,73 @@
+.faq-section {
+  padding: 40px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.faq-section h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #007bff;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 16px; /* 패딩을 줄여 더 깔끔한 느낌으로 */
+  background-color: #e0f7fa;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+.faq-question:hover {
+  background-color: #d0e8e8;
+}
+
+.toggle-icon {
+  font-size: 24px;
+  color: #333;
+}
+
+.faq-answer {
+  padding: 0px 16px; /* 답변 패딩을 줄여서 깔끔하게 */
+  font-size: 15px;
+  color: #333;
+  background-color: #fff;
+  text-align: left;
+}
+
+
+.inquiry-button {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.inquiry-button:hover {
+  background-color: #0056b3;
+}

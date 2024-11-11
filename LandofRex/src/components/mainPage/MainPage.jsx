@@ -4,7 +4,7 @@ import IntroSection from '../introSection/IntroSection.jsx';
 import NoticeSection from '../noticeSection/NoticeSection.jsx';
 import RankingSection from '../rankingSection/RankingSection.jsx';
 import InquirySection from '../inquirySection/InquirySection.jsx';
-import EditorSection from '../editor/EditorSection.jsx';
+import FaqSection from '../faqSection/FaqSection.jsx';
 import Footer from '../footer/Footer.jsx';
 import './MainPage.css';
 
@@ -15,7 +15,8 @@ const MainPage = () => {
   const noticesRef = useRef(null);
   const rankingRef = useRef(null);
   const inquiryRef = useRef(null);
-  const editorRef  = useRef(null);
+  const faqRef = useRef(null);
+
 
   // 현재 활성화된 섹션을 관리하는 상태
   const [activeSection, setActiveSection] = useState('intro');
@@ -26,7 +27,7 @@ const MainPage = () => {
     { name: 'notices', ref: noticesRef, label: '공지사항' },
     { name: 'ranking', ref: rankingRef, label: '랭킹' },
     // { name: 'inquiry', ref: inquiryRef, label: '1:1 문의' },
-    { name: 'editor', ref: editorRef, label: '문의' },
+    { name: 'faq', ref: faqRef, label: '문의하기' },
   ];
 
   // Intersection Observer를 사용해 스크롤 위치에 따라 활성화된 섹션을 변경
@@ -65,9 +66,8 @@ const MainPage = () => {
       <IntroSection ref={introRef} />
       <NoticeSection ref={noticesRef} />
       <RankingSection ref={rankingRef} />
-      <EditorSection ref={editorRef}/>
       {/* <InquirySection ref={inquiryRef} /> */}
-      
+      <FaqSection ref={faqRef} />
       {/* 페이지 하단의 Footer */}
       <Footer />
     </div>

@@ -14,7 +14,7 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
 
   return (
     <nav className="navbar">
-      <div className="logo">E102</div>
+      <div className="logo">Land Of Rex</div>
       
       <ul className="nav-links">
         {sections.map((section) => (
@@ -41,11 +41,6 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
             <button className="login-button">로그인</button>
           </Link>
         )}
-      </div>
-
-
-      <div className="language-options">
-        <span>런처 다운로드</span>
       </div>
     </nav>
   );
