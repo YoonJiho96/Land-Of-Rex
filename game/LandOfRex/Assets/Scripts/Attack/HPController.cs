@@ -10,7 +10,11 @@ public class HPController : MonoBehaviour
 {
     public int health; // 현재 체력
     public bool isBuilding; // 건물 여부
+    public bool isUnit; // 유닛 여부
+    public bool isEnemy; // 적 여부
+    public bool isHidden; // 히든 여부
     public Slider hpBarSlider;  // HP 바 슬라이더 참조
+    public DataManager dataManager;
 
     private int maxHealth; // 최대 체력
     private bool isDead; // 사망 여부 확인
@@ -26,6 +30,11 @@ public class HPController : MonoBehaviour
     public GameObject reviveEffectPrefab;   // 부활 이펙트
     public Transform reviveEffectSpawnPoint;
 
+    private void Awake()
+    {
+        dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+    }
+
     private void Start()
     {
         maxHealth = health;
@@ -36,6 +45,63 @@ public class HPController : MonoBehaviour
             hpBarSlider.maxValue = maxHealth;
             hpBarSlider.value = health;
             hpBarSlider.gameObject.SetActive(false); // 초기에는 HP 바 숨기기
+        }
+    }
+
+    private void OnEnable()
+    {
+        if(dataManager != null)
+        {
+            if (isBuilding)
+            {
+                if (!dataManager.buildings.Contains(transform))
+                {
+                    dataManager.buildings.Add(transform);
+                }
+            }
+            else if(isEnemy)
+            {
+                if(isHidden)
+                {
+
+                }
+                else
+                {
+                    if(!dataManager.enemys.Contains(transform))
+                    {
+                        dataManager.enemys.Add(transform);
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (dataManager != null)
+        {
+            if (isBuilding)
+            {
+                dataManager.buildings.Remove(transform);
+            }
+            else if(isUnit && !isHidden)
+            {
+                foreach(int bootCamp in dataManager.units.Keys)
+                {
+                    dataManager.units[bootCamp].Remove(GetRootParent(transform));
+                }
+            }
+            else if(isEnemy)
+            {
+                if(isHidden)
+                {
+
+                }
+                else
+                {
+                    dataManager.enemys.Remove(transform);
+                }
+            }
         }
     }
 
@@ -124,7 +190,9 @@ public class HPController : MonoBehaviour
     {
         health = maxHealth;
         isDead = false; // 부활 시 다시 살아 있는 상태로 변경
-        gameObject.SetActive(true);
+
+        Transform rootParent = GetRootParent(transform);
+        rootParent.gameObject.SetActive(true);
 
         if (hpBarSlider != null)
         {
@@ -148,7 +216,7 @@ public class HPController : MonoBehaviour
         }
 
         // 부모 객체 가져오기
-        Transform parent = transform.parent;
+        Transform parent = GetRootParent(transform);
 
         // 부모 오브젝트 삭제
         Destroy(parent.gameObject);

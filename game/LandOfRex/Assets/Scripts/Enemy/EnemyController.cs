@@ -119,7 +119,10 @@ public class EnemyController : MonoBehaviour, ObjectController
 
     public void AddDetectedTarget(Transform target)
     {
-        detectedTargets.Add(target);
+        if (!detectedTargets.Contains(target))
+        {
+            detectedTargets.Add(target);
+        }
     }
 
     public void RemoveDetectedTarget(Transform target)
@@ -129,7 +132,10 @@ public class EnemyController : MonoBehaviour, ObjectController
 
     public void AddAttackTarget(Transform target)
     {
-        attackTargets.Add(target);
+        if (!attackTargets.Contains(target))
+        {
+            attackTargets.Add(target);
+        }
     }
 
     public void RemoveAttackTarget(Transform target)

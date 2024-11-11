@@ -14,6 +14,8 @@ public class PlayerHPController : MonoBehaviour
     public GameObject deadBodyPrefeb;
     private GameObject deadBody;
 
+    public DataManager dataManager;
+
     public static event Action<Transform> OnEntityDestroyed;
 
     public Material deadMaterial;
@@ -58,6 +60,8 @@ public class PlayerHPController : MonoBehaviour
             {
                 Instantiate(deadEffectPrefab, deadEffectSpawnPoint != null ? deadEffectSpawnPoint.position : transform.position, Quaternion.identity, transform);
             }
+
+            dataManager.playerDeadCount++;
         }
 
         if (hpSlider != null)

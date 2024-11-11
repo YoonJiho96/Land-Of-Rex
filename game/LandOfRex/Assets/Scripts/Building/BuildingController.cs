@@ -13,6 +13,13 @@ public class BuildingController : MonoBehaviour
     public Material priviewRangeMaterial;
     public Material CompleteRangeMaterial;
 
+    public DataManager dataManager;
+
+    private void Awake()
+    {
+        dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+    }
+
     public void ShowPreview()
     {
         if(attackRangeObject != null)
@@ -40,12 +47,58 @@ public class BuildingController : MonoBehaviour
         }
     }
 
+    public int GetNeedGold()
+    {
+        HouseData houseData = previewBuilding.GetComponent<HouseData>();
+
+        if(houseData != null)
+        {
+            return houseData.gold;
+        }
+
+        return 10000;
+    }
+
     public void CompleteBuilding()
     {
         if (previewBuilding != null)
         {
             SetMaterial(CompleteMaterial, CompleteRangeMaterial);
             SetCollider();
+
+            BootCampController nextBootCamp = previewBuilding.transform.Find("Completed").GetComponent<BootCampController>();
+
+            if (nextBootCamp != null)
+            {
+                int bootCampId;
+                int selectedUnit = -1;
+
+                Transform completed = GetRootParent(transform).Find("Completed");
+                if (completed != null)
+                {
+                    bootCampId = completed.GetComponent<BootCampController>().bootcampId;
+                    selectedUnit = completed.GetComponent<BootCampController>().selectedUnit;
+                }
+                else
+                {
+                    bootCampId = dataManager.units.Count;
+                }
+
+                nextBootCamp.bootcampId = bootCampId;
+                nextBootCamp.selectedUnit = selectedUnit;
+
+                if (!dataManager.units.ContainsKey(bootCampId))
+                {
+                    dataManager.units[bootCampId] = new List<Transform>();
+                }
+
+                nextBootCamp.isTraining = false;
+
+                if(selectedUnit < 0)
+                {
+                    nextBootCamp.StartBootCampUI();
+                }
+            }
 
             // 최상위 부모를 찾아서 파괴
             Transform rootParent = GetRootParent(transform);

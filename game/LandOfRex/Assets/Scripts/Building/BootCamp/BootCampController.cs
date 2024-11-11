@@ -1,80 +1,78 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class BootCampController : MonoBehaviour
 {
     [Header("Building Settings")]
-    [SerializeField] public int bootcampId = -1; // 현재 레벨
-    [SerializeField] public int currentLevel = 1; // 현재 레벨
-    [SerializeField] public int maxLevel = 3; // 최대 업그레이드 가능 레벨
-    [SerializeField] public float interactionRange = 3f; // 플레이어와의 상호작용 범위
+    [SerializeField] public int bootcampId = -1;
+    [SerializeField] public int lLevel = 1;
+    [SerializeField] public int selectedUnit = -1;
+    [SerializeField] public float interactionRange = 5f; // 플레이어와의 상호작용 범위
 
     [Header("Unit Production")]
     [SerializeField] public float spawnInterval = 2f; // 유닛 스폰 시간
     [SerializeField] public Transform spawnPoint; // 스폰 할 위치
-    [SerializeField] public GameObject unitPrefab; // 스폰 할 유닛
+    [SerializeField] public GameObject[] unitPrefabs; // 스폰 할 유닛
 
     [Header("Level Settings")] // 레벨별 최대 유닛 수 설정
     // 레벨별 최대 생산 되는 유닛 수
-    // 레벨 1: 4유닛, 레벨 2: 8유닛, 레벨 3: 12유닛
-    [SerializeField] public int[] maxUnitsPerLevel = { 4, 8, 12 };
+    [SerializeField] public int maxUnit = 4;
 
-
-    public int currentUnitCount = 0; // 이 건물이 생산한 현재 유닛 수
-    public bool isTraining = false; // 유닛이 생산중인지 나타냄
+    public bool isTraining = true; // 유닛이 생산중인지 나타냄
     public bool playerInRange = false; // 현재 업그레이드 가능한지
 
-    public void Start()
+    public InputActionAsset inputAsset;
+    private InputAction selectAction;
+
+    public DataManager dataManager;
+    public Transform player;
+    public bool isSelecting = false;
+    private float selectCooldown = 0.5f;
+    private float lastSelectTime = 0f;
+
+    private void Awake()
     {
-        // static  Action<Transform> 이벤트 구독
-        HPController.OnEntityDestroyed += HandleUnitDestroyed;
-        StartTraining(); // 시작할 때 자동으로 유닛 생산 시작
+        dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+        player = GameObject.FindWithTag("Player").transform;
+
+        var playerActions = inputAsset.FindActionMap("Player"); // PlayerInputActions는 Input Actions Asset의 이름
+        selectAction = playerActions.FindAction("Select");
+    }
+
+    private void OnEnable()
+    {
+        selectAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        selectAction.Disable();
     }
 
     // 건물 업그레이드
     public void Update()
     {
-        // 플레이어가 상호작용 범위 내에 있고 E 키를 눌렀을 때 업그레이드
-        if (playerInRange && Input.GetKeyDown(KeyCode.E) && currentLevel < maxLevel)
+        // 플레이어와의 거리 계산
+        if (player != null && !isSelecting && Time.time - lastSelectTime >= selectCooldown)
         {
-            UpgradeBuilding();
-        }
-    }
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            playerInRange = distanceToPlayer <= interactionRange;
 
-    // 플레이어가 트리거 영역에 들어왔을 때
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = true;
-            // UI 표시 등의 추가 작업 가능
-        }
-    }
+            PlayerHPController playerHPController = player.GetComponent<PlayerHPController>();
 
-    // 플레이어가 트리거 영역에서 나갔을 때
-    public void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
-            // UI 숨기기 등의 추가 작업 가능
-        }
-    }
+            float inputSelect = selectAction.ReadValue<float>();
 
-    // 건물 업그레이드
-    public void UpgradeBuilding()
-    {
-        if (currentLevel < maxLevel)
-        {
-            currentLevel++;
-            Debug.Log($"Bootcamp upgraded to level {currentLevel}!");
-
-            // 유닛 생산이 중지되어 있었다면 다시 시작
-            if (!isTraining)
+            // 플레이어가 상호작용 범위 내에 있고 E 키를 눌렀을 때 업그레이드
+            if (!playerHPController.isDead && playerInRange && inputSelect > 0f)
             {
-                StartTraining();
+                isSelecting = true;
+                StartBootCampUI();
+                lastSelectTime = Time.time;
             }
         }
+
+        StartTraining();
     }
 
     // 유닛 생산 시작
@@ -91,65 +89,51 @@ public class BootCampController : MonoBehaviour
     {
         while (isTraining)
         {
-            // 현재 레벨에서의 최대 유닛 수를 가져옴
-            int maxUnits = maxUnitsPerLevel[currentLevel - 1];
-
+            int currentUnitCount = dataManager.units[bootcampId].Count;
 
             // 현재 유닛 수가 최대 유닛 수보다 적을 때만 생산
-            if (currentUnitCount < maxUnits)
+            if (currentUnitCount < maxUnit)
             {
-
-                if (unitPrefab == null)
+                if (selectedUnit < 0 || selectedUnit >= unitPrefabs.Length)
                 {
-                    Debug.LogError("Unit Prefab is not set!");
+                    Debug.LogError("Unit is not selelected!");
+                    isTraining = false;
                     yield break;
                 }
 
                 if (spawnPoint == null)
                 {
                     Debug.LogError("Spawn Point is not set!");
+                    isTraining = false;
                     yield break;
                 }
 
                 // 유닛 생성
-                GameObject newUnit = Instantiate(unitPrefab, spawnPoint.position, Quaternion.identity);
+                GameObject newUnit = Instantiate(unitPrefabs[selectedUnit], spawnPoint.position, Quaternion.identity);
 
-                if (newUnit == null)
+                if(newUnit != null)
                 {
-                    Debug.LogError("Failed to instantiate unit!");
-                }
-                else
-                {
-                    Debug.Log($"Unit created! Current count: {currentUnitCount + 1}");
-                    currentUnitCount++;
+                    dataManager.units[bootcampId].Add(newUnit.transform);
                 }
             }
             yield return new WaitForSeconds(spawnInterval);
+
+            isTraining = false;
         }
     }
 
-    // 유닛이 파괴될때마다 처리됨
-    public void HandleUnitDestroyed(Transform destroyedUnit)
+    public void StartBootCampUI()
     {
-        currentUnitCount--;
-        if (!isTraining && currentUnitCount < maxUnitsPerLevel[currentLevel - 1])
-        {
-            StartTraining();
-        }
-    }
-
-    public void OnDestroy()
-    {
-        // static  Action<Transform> 이벤트 구독 해제
-        HPController.OnEntityDestroyed -= HandleUnitDestroyed;
-        StopAllCoroutines();
+        // UI 생성
+        Debug.Log("1111111111");
+        isSelecting = false;
     }
 
     // 기즈모를 통한 시각적 디버깅
     public void OnDrawGizmosSelected()
     {
-        // 상호작용 범위 표시 (초록색)
-        Gizmos.color = Color.green;
+        // 상호작용 범위 표시 (빨간색)
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }
