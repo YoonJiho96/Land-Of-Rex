@@ -73,11 +73,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/password/reset")
-    public ResponseEntity<Void> resetPassword(@RequestBody UsernameDto usernameDto){
+    @PostMapping("/password/find")
+    public ResponseEntity<String> resetPassword(@RequestBody UsernameDto usernameDto){
         User user=userRepository.findByUsername(usernameDto.getUsername()).orElseThrow(()->new UsernameNotFoundException(usernameDto.getUsername()));
-        user.resetPassword(passwordEncoder);
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok(user.getPassword());
     }
 }

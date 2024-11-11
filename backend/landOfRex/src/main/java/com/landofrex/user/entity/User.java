@@ -92,10 +92,10 @@ public class User {
         this.refreshToken = updateRefreshToken.getTokenValue();
     }
 
-    public User(UserSignUpDto userSignUpDto,PasswordEncoder passwordEncoder) {
+    public User(UserSignUpDto userSignUpDto) {
         this.nickname= userSignUpDto.nickname();
         this.username= userSignUpDto.username();
-        this.password = passwordEncoder.encode(userSignUpDto.password());
+        this.password = userSignUpDto.password();
         this.role = Role.USER;
     }
 }

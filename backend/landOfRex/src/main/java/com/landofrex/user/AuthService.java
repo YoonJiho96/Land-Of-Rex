@@ -50,7 +50,7 @@ public class AuthService {
 
         checkUsernameExists(userSignUpDto.username());
 
-        userRepository.save(new User(userSignUpDto,passwordEncoder));
+        userRepository.save(new User(userSignUpDto));
 
     }
 
