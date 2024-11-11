@@ -75,8 +75,8 @@ public class User {
     }
 
     // 비밀번호 암호화 메소드
-    public void passwordEncode(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
+    public void resetPassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.username);
     }
 
     //== 유저 필드 업데이트 ==//
@@ -92,10 +92,10 @@ public class User {
         this.refreshToken = updateRefreshToken.getTokenValue();
     }
 
-    public User(UserSignUpDto userSignUpDto,PasswordEncoder passwordEncoder) {
+    public User(UserSignUpDto userSignUpDto) {
         this.nickname= userSignUpDto.nickname();
         this.username= userSignUpDto.username();
-        this.password = passwordEncoder.encode(userSignUpDto.password());
+        this.password = userSignUpDto.password();
         this.role = Role.USER;
     }
 }

@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -50,11 +51,17 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+)
 @Slf4j
 public class SecurityConfig {
     private final LoginSuccessHandler loginSuccessHandler;
     private final LoginFailureHandler loginFailureHandler;
     private final ObjectMapper objectMapper;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
@@ -82,6 +89,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/v1/patches").hasRole("ADMIN")
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                         .requestMatchers("/api/v1/auth/sign-up/oauth","/api/v1/auth/email").hasRole("GUEST")
+                        .requestMatchers("/api/v1/auth/password/find").permitAll()
                         .requestMatchers("/api/v1/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

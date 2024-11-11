@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/email")
     public ResponseEntity<String> getEmail(HttpServletRequest request) {
@@ -68,5 +71,11 @@ public class AuthController {
         jwtService.setAccessTokenExpired(response);
         jwtService.setRefreshTokenExpired(response);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/password/find")
+    public ResponseEntity<String> resetPassword(@RequestBody UsernameDto usernameDto){
+        User user=userRepository.findByUsername(usernameDto.getUsername()).orElseThrow(()->new UsernameNotFoundException(usernameDto.getUsername()));
+        return ResponseEntity.ok(user.getPassword());
     }
 }
