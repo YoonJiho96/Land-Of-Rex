@@ -11,7 +11,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       # SPRING_DATASOURCE_URL: jdbc:mysql://mysql_container:3306/land_of_rex
     networks:
-      - app-network
+      - monitoring
     volumes:
       - /home/ubuntu/volumes/spring-logs:/app/logs
 
@@ -21,13 +21,52 @@ services:
       context: .  # Set the build context to the parent directory
       dockerfile: LandofRex/Dockerfile  # Specify Dockerfile location within the build context
     ports:
-      - "3000:80"
+      - "80:80"
     volumes:
       - /usr/share/nginx/html:/app/dist  # Map build output to Nginx directory
     command: ["npm", "run", "build"]  # Run the build command only
 
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - /home/ubuntu/volumes/prometheus:/etc/prometheus
+    networks:
+      - monitoring
+    depends_on:
+      - backend
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
 networks:
-  app-network:
-    external: true
+  monitoring: 
+    driver: bridge
+
+volumes:
+  grafana-storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ubuntu/volumes/grafana
+  prometheus-storage:  # Prometheus 데이터를 위한 볼륨 추가
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ubuntu/volumes/prometheus
 
 
