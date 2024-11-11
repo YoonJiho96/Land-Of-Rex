@@ -20,7 +20,7 @@ services:
       context: .  # Set the build context to the parent directory
       dockerfile: LandofRex/Dockerfile  # Specify Dockerfile location within the build context
     ports:
-      - "80:80"
+      - "3001:80"
     networks:
       - app-network
     volumes:
