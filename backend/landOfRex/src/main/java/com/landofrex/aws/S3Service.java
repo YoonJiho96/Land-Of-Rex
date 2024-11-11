@@ -26,8 +26,6 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.s3.bucket-url}")
-    private String bucketUrl;
 
     public CompletableFuture<List<String>> uploadImageFiles(List<MultipartFile> ImageFiles) throws IOException{
         List<String> fileUrls = new ArrayList<>();
