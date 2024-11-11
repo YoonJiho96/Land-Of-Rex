@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import axios from 'axios';
-import {baseUrl} from '../../config/url.js'
+import './MyEditor-reusable.css';
 
 const TextEditorWithCustomImageUpload = ({ 
     apiEndpoint,  // API 엔드포인트
@@ -85,16 +85,12 @@ const TextEditorWithCustomImageUpload = ({
     }
 
     return (
-      <div style={{ 
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <div className="text-editor-container">
         <input 
           type="text" 
           id="postTitle" 
           placeholder="제목을 입력하세요" 
-          style={{ width: '100%', padding: '10px', marginBottom: '10px',boxSizing: 'border-box' }} // style 객체로 수정
+          className="text-editor-input"
         />
       <Editor
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
@@ -102,16 +98,15 @@ const TextEditorWithCustomImageUpload = ({
           editorRef.current = editor;
         }}
         init={{
-          height: 500,
+          height: 380, // 높이 조정
           menubar: false,
           plugins: 'image code link media',
           toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image | save',
           content_style: `p, span, .space { font-family: inherit; font-size: inherit; }`,
           file_picker_callback: handleImageUploadWithFileExplorer,
-          width: '100%',
           setup: (editor) => {
             editor.ui.registry.addButton('save', {
-              text: '등록',
+              text: '저장',
               onAction: function () {
                 handleSubmit();
                 console.log("save api send");
@@ -119,6 +114,7 @@ const TextEditorWithCustomImageUpload = ({
             });
           }
         }}
+        className="tinymce-editor"
       />
     </div>
     );

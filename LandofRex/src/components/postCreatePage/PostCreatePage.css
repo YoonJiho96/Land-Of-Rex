@@ -1,4 +1,4 @@
-.notice-create-container {
+/* .notice-create-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
@@ -71,10 +71,8 @@
   .submit-button:hover {
     background-color: #0056b3;
   }
-  .type-selector {
-    margin-bottom: 20px;
-  }
-  
+
+
   .type-selector label {
     display: block;
     margin-bottom: 8px;
@@ -89,4 +87,4 @@
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-  }
+  } */
