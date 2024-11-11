@@ -24,6 +24,7 @@ function handleIPC(mainWindow, exeDir) {
     ipcMain.on('download-game', async () => {
         mainWindow.webContents.send('set-button-state', 'download-button', true);
         mainWindow.webContents.send('set-message', '게임을 다운로드 중 입니다.', '#4CAF50');
+        mainWindow.webContents.send('set-button-state', 'game-validate', true);
         try {
             const defaultDownloadPath = path.join(exeDir, LOCAL_FOLDER);
             await downloadGame(defaultDownloadPath, mainWindow);
@@ -36,6 +37,7 @@ function handleIPC(mainWindow, exeDir) {
             mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
         } finally {
             mainWindow.webContents.send('set-button-state', 'download-button', false);
+            mainWindow.webContents.send('set-button-state', 'game-validate', false);
         }
     });
 
@@ -43,6 +45,7 @@ function handleIPC(mainWindow, exeDir) {
     ipcMain.on('update-game', async () => {
         mainWindow.webContents.send('set-button-state', 'game-update-button', true);
         mainWindow.webContents.send('set-message', '게임을 업데이트 중 입니다.', '#4CAF50');
+        mainWindow.webContents.send('set-button-state', 'game-validate', true);
         console.log("업데이트 시작");
         try {
             await doValidateGameVersion(exeDir, mainWindow);  // 서버 파일 다운로드
@@ -51,12 +54,14 @@ function handleIPC(mainWindow, exeDir) {
             mainWindow.webContents.send('download-error', error.message || '알 수 없는 오류가 발생했습니다.');
         } finally {
             mainWindow.webContents.send('set-button-state', 'game-update-button', false);
+            mainWindow.webContents.send('set-button-state', 'game-validate', false)
         }
     });
 
     // 게임 시작 IPC
     ipcMain.on('game-start', () => {
         mainWindow.webContents.send('set-button-state', 'game-start-button', true);
+        mainWindow.webContents.send('set-button-state', 'game-validate', true);
         try {
             const gamePath = path.join(exeDir, LOCAL_FOLDER, GAME_EXE);
 
@@ -73,11 +78,13 @@ function handleIPC(mainWindow, exeDir) {
             gameProcess.on('close', (code) => {
                 console.log(`게임 프로세스가 종료되었습니다. 종료 코드: ${code}`);
                 mainWindow.webContents.send('set-button-state', 'game-start-button', false);
+                mainWindow.webContents.send('set-button-state', 'game-validate', false)
             });
 
         } catch (error) {
             mainWindow.webContents.send('game-start-error', error.message);
             mainWindow.webContents.send('set-button-state', 'game-start-button', false); // 오류 시 버튼을 다시 활성화
+            mainWindow.webContents.send('set-button-state', 'game-validate', false)
         }
     });
 
