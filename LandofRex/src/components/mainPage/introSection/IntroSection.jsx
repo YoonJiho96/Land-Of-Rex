@@ -1,6 +1,5 @@
 import React from 'react';
 import './IntroSection.css';
-import downloadIcon from '../../assets/download.png'; // 아이콘 파일을 가져오기
 
 const IntroSection = React.forwardRef((props, ref) => {
   return (
