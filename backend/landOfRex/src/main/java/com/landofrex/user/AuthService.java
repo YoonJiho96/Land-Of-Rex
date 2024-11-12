@@ -2,6 +2,7 @@ package com.landofrex.user;
 
 
 import com.landofrex.exception.NicknameDuplicateException;
+import com.landofrex.exception.NicknameInvalidException;
 import com.landofrex.exception.UsernameDuplicateException;
 import com.landofrex.user.controller.UserOauthSignUpDto;
 import com.landofrex.user.controller.UserSignUpDto;
@@ -58,7 +59,7 @@ public class AuthService {
         if (NICKNAME_PATTERN.matcher(nickname).matches()) {
             return;
         }else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid nickname");
+            throw new NicknameInvalidException(nickname);
         }
     }
 

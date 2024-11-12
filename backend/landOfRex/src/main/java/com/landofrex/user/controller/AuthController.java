@@ -1,8 +1,9 @@
 package com.landofrex.user.controller;
 
 
-import com.google.protobuf.Api;
-import com.landofrex.response.ApiResponse;
+
+import com.amazonaws.Response;
+import com.landofrex.response.SuccessResponse;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.security.jwt.service.JwtService;
 import com.landofrex.user.AuthService;
@@ -44,21 +45,21 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
+    public ResponseEntity<SuccessResponse<Void>> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
         authService.signUp(userSignUpDto);
-        return ResponseEntity.ok(ApiResponse.success());
+        return ResponseEntity.ok(SuccessResponse.empty());
     }
 
     @PostMapping("/username/exists")
-    public ResponseEntity<ApiResponse<String>> checkUsernameExists(@RequestBody UsernameDto usernameDto) {
+    public ResponseEntity<SuccessResponse<String>> checkUsernameExists(@RequestBody UsernameDto usernameDto) {
         authService.checkUsernameExists(usernameDto.getUsername());
-        return ResponseEntity.ok(ApiResponse.success(usernameDto.getUsername()));
+        return ResponseEntity.ok(SuccessResponse.of(usernameDto.getUsername()));
     }
 
     @GetMapping("/nickname/{nickname}/exists")
-    public ResponseEntity<ApiResponse<String>> checkNickname(@PathVariable String nickname) {
+    public ResponseEntity<SuccessResponse<String>> checkNickname(@PathVariable String nickname) {
         authService.checkNicknameExists(nickname);
-        return ResponseEntity.ok(ApiResponse.success(nickname));
+        return ResponseEntity.ok(SuccessResponse.of(nickname));
     }
 
     @PostMapping("/signup/oauth")
@@ -69,15 +70,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
+    public ResponseEntity<SuccessResponse<Void>> logout(HttpServletResponse response) {
         jwtService.setAccessTokenExpired(response);
         jwtService.setRefreshTokenExpired(response);
-        return ResponseEntity.ok(ApiResponse.success());
+        return ResponseEntity.ok(SuccessResponse.empty());
     }
 
     @PostMapping("/password/find")
-    public ResponseEntity<ApiResponse<String>> findPassword(@RequestBody UsernameDto usernameDto){
+    public ResponseEntity<SuccessResponse<String>> findPassword(@RequestBody UsernameDto usernameDto){
         User user=userRepository.findByUsername(usernameDto.getUsername()).orElseThrow(()->new UsernameNotFoundException(usernameDto.getUsername()));
-        return ResponseEntity.ok(ApiResponse.success(user.getPassword()));
+        return ResponseEntity.ok(SuccessResponse.of(user.getPassword()));
     }
 }

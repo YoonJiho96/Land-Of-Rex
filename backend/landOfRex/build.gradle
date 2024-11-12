@@ -25,6 +25,7 @@ dependencies {
 
     implementation 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1'
 
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.google.cloud:google-cloud-storage:2.43.2'
