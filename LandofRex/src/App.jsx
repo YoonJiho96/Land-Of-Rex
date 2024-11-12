@@ -9,7 +9,8 @@ import LoginPage from './components/auth/LoginPage';
 import SignupPage from './components/auth/SignupPage';
 import PostDetailPage from './components/postDetailPage/PostDetailPage';
 import PostPage from './components/postListPage/PostListPage';
-// import PostCreatePage from './components/postCreatePage/PostCreatePage'
+import PostCreatePage from './components/postCreatePage/PostCreatePage'
+import PostEditPage  from './components/postEditPage/PostEditPage';
 import NoticeList from './components/noticeListPage/NoticeListPage';
 import NoticeCreatePage from './components/noticeCreatePage/NoticeCreatePage'
 import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
@@ -32,7 +33,7 @@ const App = () => {
           <Route path="/signup" element={<SignupPage />} />
           {/* <Route path="/posts/create" element={<PostCreatePage/>}/> */}
           <Route path="/posts/:postId" element={<PostDetailPage/>}/>
-          {/* <Route path="/posts/:postId" element={<PostEditPage/>}/> */}
+          <Route path="/posts/:postId/edit" element={<PostEditPage/>}/>
           <Route path="/posts" element={<PostPage/>}/>
           <Route path="/notices" element={<NoticeList />} />
           <Route path="/admin/notices/create" element={<NoticeCreatePage />} />

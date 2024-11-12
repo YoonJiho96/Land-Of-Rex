@@ -3,9 +3,9 @@
 // import TextEditorWithCustomImageUpload from '../../components/editor/MyEditor-reusable';
 // import './PostCreatePage.css';
 
-// const NoticeCreatePage = () => {
-//   const navigate = useNavigate();
-//   const [selectedType, setSelectedType] = useState('FREE');
+const PostCreatePage = () => {
+  const navigate = useNavigate();
+  const [selectedType, setSelectedType] = useState('FREE');
 
 //   const postTypes = [
 //     { value: 'INQUIRY', label: '문의사항' },
@@ -41,4 +41,4 @@
 //   );
 // };
 
-// export default NoticeCreatePage;
+export default PostCreatePage;

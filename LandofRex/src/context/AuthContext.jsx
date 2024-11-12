@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthor = (authorNickname) => {
-    console.log('isAuthor:', user, authorNickname);
+    // console.log('isAuthor:', user, authorNickname);
     return user && user.nickname === authorNickname;
   };
 
