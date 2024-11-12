@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import fetchNoticeDetail from '../../apis/apiNoticeDetail';
-import './NoticeDetailPage.css';
+import './NoticeDetailModal.css';
 
-const NoticeDetailPage = () => {
-  const { id } = useParams();
+const NoticeDetailModal = ({ id, onClose }) => {
   const [notice, setNotice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,12 +26,15 @@ const NoticeDetailPage = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="notice-detail">
-      <h2>{notice.title}</h2>
-      <p>{notice.createdAt}</p>
-      <p>{notice.content}</p>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content slide-up" onClick={(e) => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>X</button>
+        <h2>{notice.title}</h2>
+        <p>{notice.createdAt}</p>
+        <p>{notice.content}</p>
+      </div>
     </div>
   );
 };
 
-export default NoticeDetailPage;
+export default NoticeDetailModal; // default export 추가
