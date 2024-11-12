@@ -36,6 +36,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
     }
 
+    @ExceptionHandler(NicknameInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleNicknameInvalidException(NicknameInvalidException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("INVALID_NICKNAME", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

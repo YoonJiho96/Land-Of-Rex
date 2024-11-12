@@ -1,6 +1,7 @@
 package com.landofrex.exception;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
