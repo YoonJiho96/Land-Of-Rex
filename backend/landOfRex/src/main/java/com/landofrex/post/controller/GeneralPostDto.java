@@ -26,6 +26,7 @@ public class GeneralPostDto {
         private final String authorNickname;
         private final PostType postType;
         private final LocalDateTime createdAt;
+        private final InquiryStatus inquiryStatus;
 
         @Builder
         public ListResponse(GeneralPost generalPost) {
@@ -34,6 +35,7 @@ public class GeneralPostDto {
             this.authorNickname = generalPost.getAuthor().getNickname();
             this.createdAt = generalPost.getCreatedAt();
             this.postType= generalPost.getPostType();
+            this.inquiryStatus= generalPost.getInquiryStatus();
         }
     }
 
@@ -64,8 +66,7 @@ public class GeneralPostDto {
         private final LocalDateTime updatedAt;
         private final List<PostImageDto> images;
         private final PostType postType;
-        private final InquiryStatus status;
-
+        private final InquiryStatus inquiryStatus;
         @Builder
         public DetailResponse(GeneralPost generalPost) {
             this.id = generalPost.getId();
@@ -78,7 +79,7 @@ public class GeneralPostDto {
                     .map(PostImageDto::new)
                     .collect(Collectors.toList());
             this.postType= generalPost.getPostType();
-            this.status=generalPost.getInquiryStatus();
+            this.inquiryStatus=generalPost.getInquiryStatus();
         }
     }
 }
