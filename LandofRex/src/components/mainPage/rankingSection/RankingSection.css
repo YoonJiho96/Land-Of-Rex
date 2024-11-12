@@ -60,3 +60,34 @@
   color: #555;
   line-height: 1.6;
 }
+
+.stage-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  justify-content: center;
+}
+
+.stage-button {
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 3D 느낌의 음영 추가 */
+}
+
+.stage-button.active {
+  background-color: #0073e6;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 더욱 강한 음영 */
+}
+
+.stage-button:hover {
+  background-color: #0073e6;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 더욱 강한 음영 */
+}
