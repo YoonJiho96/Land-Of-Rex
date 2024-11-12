@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MyEditor from './MyEditor-reusable';
+import './EditorSection.css';
 
 const EditorSection = React.forwardRef((props, ref) => {
   const [selectedType, setSelectedType] = useState('FREE');
@@ -14,6 +15,9 @@ const EditorSection = React.forwardRef((props, ref) => {
   return (
     <section ref={ref} className="editor-section">
       <div className="editor-container">
+        <h2 className="editor-title">문의하기</h2>
+        <p className="editor-description">문의 유형을 선택하고, 자세한 내용을 입력해 주세요.</p>
+        
         <div className="type-selector">
           <select 
             value={selectedType}
@@ -33,7 +37,10 @@ const EditorSection = React.forwardRef((props, ref) => {
           apiEndpoint="/api/v1/posts"
           requestKey="PostCreateRequest"
           additionalFields={{ postType: selectedType }}
+          className="tinymce-container"
         />
+
+        <button className="submit-button">제출하기</button>
       </div>
     </section>
   );

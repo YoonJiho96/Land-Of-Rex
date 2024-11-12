@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './FaqSection.css';
 
 const FaqSection = React.forwardRef((props, ref) => {
-  const navigate = useNavigate();
   const [openIndices, setOpenIndices] = useState({});
 
   const handleInquiryClick = () => {
-    navigate('/editorPage'); // EditorPage로 이동
+    window.open('/editorPage', '_blank', 'width=700,height=800,left=100,top=100');
   };
 
   const toggleAnswer = (index) => {

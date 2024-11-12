@@ -1,45 +1,93 @@
+/* 섹션 전체 설정 */
+.editor-section {
+  padding: 4rem 1.5rem;
+  background-color: #f9fafb;
+  display: flex;
+  justify-content: center;
+}
 
+/* 컨테이너 스타일 */
+.editor-container {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem; /* 상하 간격 줄여 더 조화롭게 */
+}
 
+/* 제목 스타일 */
+.editor-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+/* 설명 텍스트 스타일 */
+.editor-description {
+  font-size: 1rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* 문의 유형 선택 박스 */
+.type-selector {
+  text-align: center;
+}
+
+.type-select {
+  width: 100%;
+  max-width: 250px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1f2937;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.type-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* 제출 버튼 스타일 */
+.submit-button {
+  width: 100%;
+  max-width: 100px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0rem auto 0;
+  display: block;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #2563eb;
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+@media (max-width: 768px) {
   .editor-section {
     padding: 2rem 1rem;
-    background-color: #f8fafc;
   }
   
   .editor-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
   }
-  
-  .type-selector {
-    margin-bottom: 1.5rem;
-  }
-  
-  .type-select {
-    width: 100%;
-    max-width: 300px;
-    padding: 0.75rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    background-color: white;
-    cursor: pointer;
-  }
-  
-  .type-select:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  }
-  
-  @media (max-width: 768px) {
-    .editor-section {
-      padding: 1rem 0.5rem;
-    }
-    
-    .editor-container {
-      padding: 1rem;
-    }
-  }
+}

@@ -17,6 +17,7 @@ import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
 import NoticeDetailPage from './components/noticeDetailPage/NoticeDetailPage'
 import EditorSection from './components/editor/EditorSection';
 import { AuthProvider } from './context/AuthContext';
+import './App.css';
 
 
 const App = () => {
@@ -31,7 +32,7 @@ const App = () => {
           <Route path="/dashboardPage" element={<DashboardPage />} />
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/posts/create" element={<PostCreatePage/>}/>
+          {/* <Route path="/posts/create" element={<PostCreatePage/>}/> */}
           <Route path="/posts/:postId" element={<PostDetailPage/>}/>
           <Route path="/posts/:postId/edit" element={<PostEditPage/>}/>
           <Route path="/posts" element={<PostPage/>}/>
