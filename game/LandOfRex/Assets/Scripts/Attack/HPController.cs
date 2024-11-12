@@ -13,6 +13,7 @@ public class HPController : MonoBehaviour
     public bool isUnit; // 유닛 여부
     public bool isEnemy; // 적 여부
     public bool isHidden; // 히든 여부
+    public bool isQueenWorm = false;
     public Slider hpBarSlider;  // HP 바 슬라이더 참조
     public DataManager dataManager;
     public GateManager gateManager;

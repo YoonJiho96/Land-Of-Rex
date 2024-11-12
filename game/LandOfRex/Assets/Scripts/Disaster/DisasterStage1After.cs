@@ -34,6 +34,7 @@ public class DisasterStage1After : MonoBehaviour
         {
             if (other.CompareTag("Unit") || other.CompareTag("Enemy"))
             {
+                Debug.Log(other);
                 other.GetComponent<HPController>().GetDamage(150);
                 processedColliders.Add(other);
             }

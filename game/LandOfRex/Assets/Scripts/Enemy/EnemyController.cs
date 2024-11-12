@@ -8,7 +8,6 @@ public class EnemyController : MonoBehaviour, ObjectController
     public GameObject attackPrefeb;
     public bool isAerial = false;
     public bool isMimic = false;
-    public bool isQueenWorm = false;
 
     public Animator animator;
 
