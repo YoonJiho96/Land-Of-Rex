@@ -14,6 +14,7 @@ import com.landofrex.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class NoticeController {
     @GetMapping
     public ResponseEntity<NoticePostDto.PageResponse> getAllNotices(
             Integer page, Integer size) {
-        Pageable pageable= PageRequest.of(page,size);
+        Pageable pageable= PageRequest.of(page,size,Sort.by("createdAt").descending());
         NoticePostDto.PageResponse response = noticePostService.getAllNotices(pageable);
         return ResponseEntity.ok(response);
     }
