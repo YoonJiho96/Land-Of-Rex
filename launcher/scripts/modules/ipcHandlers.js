@@ -1,4 +1,4 @@
-const { ipcMain } = require('electron');
+const { ipcMain, shell } = require('electron');
 const { downloadUpdate, installUpdate } = require('./updater');
 const { downloadGame } = require('./s3Service');
 const { doValidateGame, doValidateGameVersion } = require('./manifestValidator');
@@ -6,6 +6,7 @@ const path = require('path');
 const { validateManifest } = require('./manifestValidator');
 const { generateVersionJson, checkInstalled } = require('./checkGame');
 const { execFile } = require('child_process');
+const { GetNoticeList } = require('./noticeService');
 
 const LOCAL_FOLDER = "land-of-rex-launcher/LandOfRex";
 const GAME_EXE = "LandOfRex.exe";
@@ -110,6 +111,18 @@ function handleIPC(mainWindow, exeDir) {
             mainWindow.webContents.send('set-button-state', 'game-update-button', false);
             console.log("검사 완료");
         }
+    });
+
+    // 공지사항 요청 IPC
+    ipcMain.handle('get-notices', async (event, page, size) => {
+        const zeroBasedPage = page - 1;
+        const data = await GetNoticeList(zeroBasedPage, size);
+        return data;
+    });
+
+    // 외부 URL 열기 IPC
+    ipcMain.on('open-external-url', (event, url) => {
+        shell.openExternal(url);
     });
 }
 

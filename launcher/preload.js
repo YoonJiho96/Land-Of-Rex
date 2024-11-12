@@ -26,6 +26,9 @@ contextBridge.exposeInMainWorld('api', {
 
   // 업데이트 추가
   updateGame: () => ipcRenderer.send('update-game'),
+
+  // 외부 URL 열기 API 추가
+  openExternalURL: (url) => ipcRenderer.send('open-external-url', url)
 });
 
 // 게임 시작
@@ -45,4 +48,11 @@ contextBridge.exposeInMainWorld('validation', {
 
   // 런처 상태 메시지
   onSetMessage: (callback) => ipcRenderer.on('set-message', (event, message, color) => callback(message, color)),
+});
+
+// 공지사항 API
+contextBridge.exposeInMainWorld('noticeAPI', {
+  getNotices: async (page, size) => {
+    return await ipcRenderer.invoke('get-notices', page, size);
+  }
 });
