@@ -21,46 +21,61 @@
   color: #333;
 }
 
-/* 슬라이더 스타일 */
 .slider-container {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden; /* 양옆 잘리도록 */
+  overflow: hidden;
   width: 100%;
   max-width: 1200px;
 }
 
 .notice-item {
-  width: 250px; /* 기본 너비는 작게 설정 */
-  height: 200px; /* 모든 공지의 높이 고정 */
+  width: 270px;
+  height: 220px;
   background-color: #fff;
   padding: 15px;
   margin: 0 10px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: left;
+  text-align: center; /* 텍스트 중앙 정렬 */
   transition: opacity 0.3s ease, transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center; /* 수직 중앙 배치 */
   opacity: 0.5;
-  transform: scale(0.9); /* 양옆 공지를 작게 보이게 설정 */
+  transform: scale(0.9);
+  position: relative;
+}
+
+.notice-item h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.notice-item .date {
+  font-size: 1rem;
+  color: #666;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
 /* 중앙 공지 스타일 */
 .notice-item.active {
-  width: 400px; /* 중앙 공지의 너비를 더 넓게 설정 */
-  height: 300px; /* 중앙 공지의 높이도 크게 설정 */
+  width: 300px;
+  height: 250px;
   opacity: 1;
-  transform: scale(1.05); /* 중앙 공지를 키워서 강조 */
+  transform: scale(1.05);
   padding: 20px;
 }
 
 /* 슬라이더 버튼 */
 .slider-button {
-  font-size: 2.5rem; /* 버튼 크기 확대 */
+  font-size: 3.5rem;
   background: none;
   border: none;
   color: #0073e6;
