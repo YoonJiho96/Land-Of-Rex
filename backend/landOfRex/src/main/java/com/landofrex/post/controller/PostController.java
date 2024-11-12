@@ -29,13 +29,6 @@ public class PostController {
 
     private final GeneralPostService generalPostService;
     private final ImageService imageService;
-    private final GcsService gcsService;
-    private final BasePostRepository basePostRepository;
-
-//    @PostMapping("/init")
-//    public ResponseEntity<Long> initPost() {
-//        postService.initPost(AuthenticationUtil.getUser(), )
-//    }
 
 
     @PostMapping(consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -51,7 +44,9 @@ public class PostController {
 
         GeneralPost generalPost = generalPostService.createPost(user,postCreateRequest);
 
-        imageService.uploadImages(generalPost, imageFiles);
+        if(imageFiles!=null && !imageFiles.isEmpty()){
+            imageService.uploadImages(generalPost, imageFiles);
+        }
 
         return ResponseEntity.ok(generalPost.getId());
     }
