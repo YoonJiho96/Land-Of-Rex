@@ -3,6 +3,7 @@ import { handleDownload } from './downloadController.js';
 import { handleGameStart } from './gameController.js';
 import { handleWindowControls } from './ui/windowControls.js';
 import { handleValidationControls } from './validationController.js';
+import { handleNotice } from './noticeController.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 업데이트 관련 초기화
@@ -19,4 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 게임 유효성 검사 초기화
     handleValidationControls(window.validation);
+
+    // 공지사항 초기화
+    handleNotice(window.noticeAPI);
 });
