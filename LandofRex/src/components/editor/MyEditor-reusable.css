@@ -22,3 +22,26 @@
   margin: 0 auto;
   box-sizing: border-box;
 }
+
+.validation-error {
+  color: #dc3545;
+  background-color: #fff;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  border: 1px solid #dc3545;
+  font-size: 0.875rem;
+}
+
+.text-editor-input.error,
+.tinymce-editor.error {
+  border-color: #dc3545;
+}
+
+.text-editor-input.error:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.submit-button.submitting {
+  opacity: 0.7;
+}

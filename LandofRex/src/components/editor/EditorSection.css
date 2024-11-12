@@ -14,7 +14,7 @@
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  padding: 2.5rem 2rem; /* 상하 간격 줄여 더 조화롭게 */
+  padding: 2.5rem 2rem;
 }
 
 /* 제목 스타일 */
@@ -32,11 +32,16 @@
   text-align: center;
 }
 
-/* 문의 유형 선택 박스 */
+/* 문의 유형 선택 박스 컨테이너 */
 .type-selector {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
+/* 셀렉트 박스 스타일 */
 .type-select {
   width: 100%;
   max-width: 250px;
@@ -56,6 +61,25 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
+.type-select.error {
+  border-color: #dc3545;
+}
+
+/* 에러 메시지 스타일 */
+.type-selector .error-message {
+  width: 100%;
+  max-width: 250px;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+  background-color: #fff;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
 /* 제출 버튼 스타일 */
 .submit-button {
   width: 100%;
@@ -68,7 +92,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin: 0rem auto 0;
+  margin: 0 auto;
   display: block;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
