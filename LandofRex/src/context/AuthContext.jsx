@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn(true);
         setUser(data);
       } else {
+        // console.log("my/info not ok")
         setIsLoggedIn(false);
         setUser(null);
       }
