@@ -17,6 +17,7 @@ import NoticeEditPage from './components/noticeEditPage/NoticeEditPage'
 import NoticeDetailPage from './components/noticeDetailPage/NoticeDetailPage'
 import EditorSection from './components/editor/EditorSection';
 import { AuthProvider } from './context/AuthContext';
+import './App.css';
 
 
 const App = () => {

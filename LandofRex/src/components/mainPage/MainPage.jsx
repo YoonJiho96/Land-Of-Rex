@@ -7,6 +7,7 @@ import InquirySection from '../inquirySection/InquirySection.jsx';
 import FaqSection from '../faqSection/FaqSection.jsx';
 import Footer from '../footer/Footer.jsx';
 import './MainPage.css';
+import downloadIcon from '../../assets/download.png';
 
 // MainPage 컴포넌트 정의
 const MainPage = () => {
