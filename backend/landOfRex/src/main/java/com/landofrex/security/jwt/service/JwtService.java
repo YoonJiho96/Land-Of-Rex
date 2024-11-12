@@ -160,7 +160,7 @@ public class JwtService {
         // cookie.setSecure(true);   // HTTPS에서만 전송되도록 설정
         cookie.setPath("/");      // 쿠키의 유효 경로 설정
         cookie.setMaxAge(3600); // 7일 유효 기간 설정
-        // cookie.setDomain(".p.ssafy.io");
+        cookie.setDomain("localhost");
         // cookie.setAttribute("SameSite","None");
         response.addCookie(cookie);
     }
@@ -172,7 +172,7 @@ public class JwtService {
         // cookie.setSecure(true);   // HTTPS에서만 전송되도록 설정
         cookie.setPath("/");      // 쿠키의 유효 경로 설정
         cookie.setMaxAge(172800); // 7일 유효 기간 설정
-        // cookie.setDomain(".p.ssafy.io");
+        cookie.setDomain("localhost");
         // cookie.setAttribute("SameSite","None");
         response.addCookie(cookie);
     }
