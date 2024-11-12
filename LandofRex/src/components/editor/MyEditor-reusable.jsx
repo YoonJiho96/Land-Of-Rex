@@ -9,15 +9,18 @@ const TextEditorWithCustomImageUpload = ({
     additionalFields = {},  // 추가 필드 (isPinned 등)
     onSubmitSuccess,  // 제출 성공 시 콜백
     initialData = null,  // 수정 시 초기 데이터
-    method = 'POST'
+    method = 'POST',
+    onBeforeSubmit
 }) => {
     const editorRef = useRef(null);
     const [title, setTitle] = useState('');
     const [initialContent, setInitialContent] = useState('');
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [existingImages, setExistingImages] = useState(new Map());
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationError, setValidationError] = useState('');
     const additionalFieldsRef = useRef(additionalFields);
-
+    
     console.log('TextEditor - Received additionalFields:', additionalFields); // props로 받은 값
 
     useEffect(() => {
@@ -114,21 +117,46 @@ const TextEditorWithCustomImageUpload = ({
       return files;
     };
 
-    
+    const validateSubmission = () => {
+      // 제목 검증
+      if (!title.trim()) {
+          setValidationError('제목을 입력해주세요.');
+          document.getElementById('postTitle')?.focus();
+          return false;
+      }
+
+      // postType 검증
+      if (!additionalFieldsRef.current.postType) {
+          setValidationError('문의 유형을 선택해주세요.');
+          return false;
+      }
+
+      setValidationError('');
+      return true;
+    };
 
     const handleSubmit = useCallback(async () => {
+      // onBeforeSubmit이 있으면 실행
+      if (onBeforeSubmit && !onBeforeSubmit()) {
+        return;
+      }
+
+      // 자체 유효성 검사
+      if (!validateSubmission()) {
+          return;
+      }
+
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      setValidationError('');
+
       const formData = new FormData();
       const editor = editorRef.current;
       
       const rawHtml = editor.getContent({ format: 'raw' });
 
-      // console.log('Submit Data Check:', {
-      //       initialData,
-      //       additionalFields: additionalFieldsRef.current // ref 값 출력
-      //   });
-
       formData.append(requestKey, JSON.stringify({
-          title: document.getElementById("postTitle").value,
+          title: title,
           content: rawHtml,
           ...additionalFieldsRef.current
       }));
@@ -151,9 +179,16 @@ const TextEditorWithCustomImageUpload = ({
           });
           if (onSubmitSuccess) onSubmitSuccess();
       } catch (error) {
-          console.error('Error:', error);
+        console.error('Error:', error);
+        if (error.response?.data?.message) {
+            setValidationError(error.response.data.message);
+        } else {
+            setValidationError('제출 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+      } finally{
+        setIsSubmitting(false);
       }
-  }, [additionalFields, apiEndpoint, method, onSubmitSuccess, requestKey]);
+    }, [title,additionalFields, apiEndpoint, method, onSubmitSuccess, requestKey, isSubmitting,onBeforeSubmit]);
 
     const handleImageUploadWithFileExplorer = (callback, value, meta) => {
         if (meta.filetype === 'image') {
@@ -177,13 +212,21 @@ const TextEditorWithCustomImageUpload = ({
 
     return (
       <div className="text-editor-container">
+        {validationError && (
+          <div className="validation-error" role="alert">
+              {validationError}
+          </div>
+        )}
         <input 
           type="text" 
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) =>{
+            setTitle(e.target.value);
+            setValidationError('');
+          }}
           id="postTitle" 
           placeholder="제목을 입력하세요" 
-          className="text-editor-input"
+          className={`text-editor-input ${validationError ? 'error' : ''}`}
         />
       <Editor
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
@@ -195,21 +238,30 @@ const TextEditorWithCustomImageUpload = ({
           height: 380, // 높이 조정
           menubar: false,
           plugins: 'image code link media',
-          toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image | save',
+          toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image ',
           content_style: `p, span, .space { font-family: inherit; font-size: inherit; }`,
           file_picker_callback: handleImageUploadWithFileExplorer,
-          setup: (editor) => {
-            editor.ui.registry.addButton('save', {
-              text: '저장',
-              onAction: function () {
-                handleSubmit();
-                console.log("save api send");
-              }
-            });
-          }
+          
         }}
-        className="tinymce-editor"
+        className={`tinymce-editor ${validationError ? 'error' : ''}`}
       />
+      <button 
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className={`submit-button ${isSubmitting ? 'submitting' : ''}`}
+          style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: isSubmitting ? '#ccc' : '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              width: '100%'
+          }}
+      >
+          {isSubmitting ? '제출 진행 중...' : '제출하기'}
+      </button>
     </div>
     );
 };
