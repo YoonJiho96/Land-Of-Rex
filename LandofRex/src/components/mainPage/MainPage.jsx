@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Navbar from '../navBar/NavBar.jsx';
-import IntroSection from './introSection/IntroSection.jsx';
+import IntroSection from './introSection/IntroSection-launcher.jsx';
 import NoticeSection from './noticeSection/NoticeSection.jsx';
 import RankingSection from './rankingSection/RankingSection.jsx';
 import FaqSection from './faqSection/FaqSection.jsx';
