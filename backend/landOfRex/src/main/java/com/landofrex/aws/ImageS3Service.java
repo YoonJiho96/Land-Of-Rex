@@ -54,8 +54,7 @@ public class ImageS3Service {
             String bucket = s3Properties.getS3().getPostImage().getBucket();
 
             amazonS3.putObject(
-                    new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead) // 필요한 경우 접근 권한 설정
+                new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
             );
 
             return s3Properties.getS3().getPostImage().getBucketUrl() + "/" + fileName;
