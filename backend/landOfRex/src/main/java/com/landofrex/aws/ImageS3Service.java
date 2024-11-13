@@ -1,13 +1,12 @@
 package com.landofrex.aws;
 
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,17 +17,23 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class S3Service {
-    private final AmazonS3Client amazonS3Client;
+public class ImageS3Service {
+    private final AmazonS3 amazonS3;
+    private final S3Properties s3Properties;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    public ImageS3Service(
+            @Qualifier("appS3Client") AmazonS3 amazonS3,
+            S3Properties s3Properties
+    ) {
+        this.amazonS3 = amazonS3;
+        this.s3Properties = s3Properties;
+    }
 
 
     public CompletableFuture<List<String>> uploadImageFiles(List<MultipartFile> ImageFiles) throws IOException{
         List<String> fileUrls = new ArrayList<>();
+
         for(MultipartFile imageFile : ImageFiles) {
             String imageUrlCloud=uploadImageFile(imageFile);
             fileUrls.add(imageUrlCloud);
@@ -46,11 +51,14 @@ public class S3Service {
             objectMetadata.setContentLength(file.getSize());
 
             // S3에 업로드
-            amazonS3Client.putObject(
+            String bucket = s3Properties.getS3().getPostImage().getBucket();
+
+            amazonS3.putObject(
                     new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead) // 필요한 경우 접근 권한 설정
             );
 
-            return amazonS3Client.getUrl(bucket, fileName).toString();
+            return s3Properties.getS3().getPostImage().getBucketUrl() + "/" + fileName;
 
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
@@ -60,8 +68,9 @@ public class S3Service {
     // 이미지 삭제
     public void deleteImage(String fileUrl) {
         try {
+            String bucket = s3Properties.getS3().getPostImage().getBucket();
             String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-            amazonS3Client.deleteObject(bucket, fileName);
+            amazonS3.deleteObject(bucket, fileName);
         } catch (Exception e) {
             log.error("이미지 삭제 실패", e);
             throw new RuntimeException("이미지 삭제에 실패했습니다.");

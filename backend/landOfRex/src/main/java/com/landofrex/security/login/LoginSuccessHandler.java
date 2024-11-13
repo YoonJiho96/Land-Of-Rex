@@ -1,6 +1,9 @@
 package com.landofrex.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.landofrex.game.ranking.dto.StageProgressDto;
+import com.landofrex.game.ranking.entity.Ranking;
+import com.landofrex.game.ranking.service.RankingService;
 import com.landofrex.response.SuccessResponse;
 import com.landofrex.security.jwt.CustomUserDetails;
 import com.landofrex.security.jwt.service.JwtService;
@@ -23,6 +26,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final RankingService rankingService;
 
     @Value("${jwt.access.expiration}")
     private String accessTokenExpiration;
@@ -49,9 +54,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
+        StageProgressDto progress= rankingService.getStageProgress(user.getId());
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), SuccessResponse.of(new LoginSuccessDto(user)));
+        objectMapper.writeValue(response.getWriter(), SuccessResponse.of(new LoginSuccessDto(user,progress)));
 
         log.info("로그인에 성공하였습니다. 아이디 : {}", user.getUsername());
         log.info("로그인에 성공하였습니다. AccessToken : {}", accessToken);

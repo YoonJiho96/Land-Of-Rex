@@ -3,6 +3,7 @@ package com.landofrex.game.ranking.service;
 import com.landofrex.game.ranking.dto.RankingDto;
 import com.landofrex.game.ranking.dto.RankingResponseDto;
 import com.landofrex.game.ranking.dto.StageInfoRequestDto;
+import com.landofrex.game.ranking.dto.StageProgressDto;
 import com.landofrex.game.ranking.entity.Ranking;
 import com.landofrex.game.ranking.entity.StageInfo;
 import com.landofrex.game.ranking.repository.RankingRepository;
@@ -70,7 +71,7 @@ public class RankingService {
     }
 
     @Transactional
-    private void updateRankings(Integer stage) {
+    protected void updateRankings(Integer stage) {
         List<Ranking> rankings = rankingRepository.findByStageInfoStageOrderByRanking(stage);
 
         // Score 기준으로 정렬
@@ -117,5 +118,11 @@ public class RankingService {
         response.setData(data);
         response.setMessage(message);
         return response;
+    }
+
+    public StageProgressDto getStageProgress(Long userId) {
+        List<Ranking> rankings = rankingRepository.findByUserIdOrderByStageInfo_Stage(userId);
+
+        return StageProgressDto.fromStageInfo(rankings);
     }
 }

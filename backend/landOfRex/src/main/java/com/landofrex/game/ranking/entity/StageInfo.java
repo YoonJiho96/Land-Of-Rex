@@ -16,7 +16,7 @@ public class StageInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stage_id")
+    @Column(name = "stage_info_id")
     private Long stageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
