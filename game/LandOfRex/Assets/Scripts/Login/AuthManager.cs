@@ -6,6 +6,8 @@ using UnityEngine.Networking;
 using System.Collections;
 using TMPro;
 using TMPro.Examples;
+using JetBrains.Annotations;
+using UnityEngine.SceneManagement;
 
 // 사용자 요청 모델
 [Serializable]
@@ -37,6 +39,12 @@ public class LoginData
     public int userId;
 }
 
+[Serializable]
+public class CheckUsernameRequest
+{
+    public String username;
+}
+
 // API 응답 모델
 // 백엔드에서 넘어오는 response 
 [Serializable]
@@ -60,36 +68,154 @@ public class AuthManager : MonoBehaviour
     [SerializeField] private GameObject messageAlert;
     [SerializeField] private TMP_Text errorText;
 
+    // 성공 메시지
+    [SerializeField] private RectTransform sucessAlertTransform;
+    [SerializeField] private GameObject successMessageAlert;
+    [SerializeField] private TMP_Text successText;
+
+    // 회원가입
+    [SerializeField] private Button signUpButton;
+    private bool isUsernameValid = false;
+    private bool isNicknameValid = false;
+
+    [SerializeField] private AuthUIManager authUIManager;
+
     private const string BASE_URL = "https://k11e102.p.ssafy.io";
     private const string SIGNUP_ENDPOINT = "/api/v1/auth/signup";
     private const string LOGIN_ENDPOINT = "/api/v1/auth/login";
 
-    private void start()
+    private void Start()
     {
         // 초기 메시지 창 크기를 0으로 설정
         alertTransform.localScale = new Vector3(0, 1, 1);
+        sucessAlertTransform.localScale = new Vector3(0, 1, 1);
+
+        // 가입 버튼 초기 비활성화
+        signUpButton.interactable = false;
+    }
+
+    [Serializable]
+    public class UsernameCheckResponse
+    {
+        public string code;
+        public string message;
+        public string data;
+    }
+
+    public void CheckUsernameExists()
+    {
+        if (string.IsNullOrEmpty(signUpUsernameInput.text))
+        {
+            ShowErrorMessage("아이디를 입력해주세요.");
+            return;
+        }
+
+        Debug.Log(signUpUsernameInput.text);
+        StartCoroutine(CheckUsername(signUpUsernameInput.text));
+    }
+
+    public void CheckNicknameExists()
+    {
+        if (string.IsNullOrEmpty(signUpNicknameInput.text))
+        {
+            ShowErrorMessage("닉네임을 입력해주세요.");
+            return;
+        }
+
+        StartCoroutine(CheckNickname(signUpNicknameInput.text));
+    }
+
+    private IEnumerator CheckUsername(string username)
+    {
+        // JSON 데이터를 요청 본문에 포함하기 위한 객체 생성
+        CheckUsernameRequest checkUsernameRequest = new CheckUsernameRequest { username = username };
+        string json = JsonUtility.ToJson(checkUsernameRequest);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+
+        using (UnityWebRequest www = new UnityWebRequest($"{BASE_URL}/api/v1/auth/username/exists", "POST"))
+        {
+            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.SetRequestHeader("Content-Type", "application/json");
+
+            yield return www.SendWebRequest();
+
+            Debug.Log($"Response Code: {www.responseCode}");
+            Debug.Log($"Response Text: {www.downloadHandler.text}");
+
+            UsernameCheckResponse response = JsonUtility.FromJson<UsernameCheckResponse>(www.downloadHandler.text);
+
+            if (response.code == "success")
+            {
+                ShowSuccessMessage("사용 가능한 아이디 입니다.");
+                isUsernameValid = true;
+            }
+            else if (response.code == "DUPLICATE_USERNAME")
+            {
+                ShowErrorMessage("중복된 아이디 입니다.");
+                isUsernameValid = false;
+            }
+            else
+            {
+                ShowErrorMessage("아이디 확인 중 오류가 발생했습니다. " + response.message);
+                isUsernameValid = false;
+            }
+        }
+        UpdateSignUpButtonState();
+    }
+
+    private IEnumerator CheckNickname(string nickname)
+    {
+        using (UnityWebRequest www = UnityWebRequest.Get($"{BASE_URL}/api/v1/auth/nickname/{nickname}/exists"))
+        {
+            www.downloadHandler = new DownloadHandlerBuffer();
+            yield return www.SendWebRequest();
+
+            // JSON 응답을 파싱
+            UsernameCheckResponse response = JsonUtility.FromJson<UsernameCheckResponse>(www.downloadHandler.text);
+
+            Debug.Log(response.code);
+            if (response.code == "success")
+            {
+                ShowSuccessMessage("사용 가능한 닉네임입니다.");
+                isNicknameValid = true;
+            }
+            else if (response.code == "DUPLICATE_NICKNAME")
+            {
+                // 중복 닉네임 처리
+                ShowErrorMessage("중복된 닉네임 입니다.");
+                isNicknameValid = false;
+            }
+            else
+            {
+                ShowErrorMessage("닉네임 확인 중 오류가 발생했습니다." + response.message);
+                isNicknameValid = false;
+            }
+        }
+        UpdateSignUpButtonState();
+    }
+
+    private void UpdateSignUpButtonState()
+    {
+        // 두 조건이 모두 참일 때만 가입 버튼 활성화
+        signUpButton.interactable = isUsernameValid && isNicknameValid;
     }
 
     public void HandleSignUp()
     {
-        // 입력값 검증
-        if (string.IsNullOrEmpty(signUpUsernameInput.text) ||
-            string.IsNullOrEmpty(signUpNicknameInput.text) ||
-            string.IsNullOrEmpty(signUpPasswordInput.text))
+        if (!isUsernameValid || !isNicknameValid)
         {
-            //ShowSignUpError("모든 필드를 입력해주세요.");
-            ShowErrorMessage("모든 필드를 입력해주세요.");
-            Debug.Log("모든 필드를 입력해주세요.");
+            ShowErrorMessage("아이디와 닉네임을 확인해주세요.");
             return;
         }
 
+        // 회원가입 요청 로직
         SignUpRequest request = new SignUpRequest
         {
             username = signUpUsernameInput.text,
             nickname = signUpNicknameInput.text,
             password = signUpPasswordInput.text
         };
-
         StartCoroutine(SignUp(request));
     }
 
@@ -129,8 +255,8 @@ public class AuthManager : MonoBehaviour
             if (www.responseCode == 200)
             {
                 Debug.Log("회원가입 성공!");
-                // 회원가입 성공 처리
-                // TODO: 로그인 화면으로 전환하는 코드 추가
+                ShowSuccessMessage("회원가입 성공!");
+                authUIManager.ShowLoginPanel();
             }
             else
             {
@@ -159,6 +285,7 @@ public class AuthManager : MonoBehaviour
             {
                 // 성공적인 응답 처리
                 Debug.Log("로그인 성공!");
+                ShowSuccessMessage("로그인 성공");
 
                 // 응답 JSON을 LoginResponse 객체로 변환
                 LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(www.downloadHandler.text);
@@ -166,8 +293,11 @@ public class AuthManager : MonoBehaviour
                 // code와 data의 데이터를 출력
                 Debug.Log($"로그인 결과 - 코드: {loginResponse.code}, 닉네임: {loginResponse.data.nickname}, 사용자 ID: {loginResponse.data.userId}");
 
-                // 에러 메시지 초기화
-                // TODO: 게임 메인 화면으로 전환하는 코드 추가
+                // 로그인 데이터 저장
+                LoginDataManager.Instance.SetLoginData(loginResponse.data);
+
+                // 씬 이동
+                SceneManager.LoadScene("LobbyMap");
             }
             else
             {
@@ -209,51 +339,71 @@ public class AuthManager : MonoBehaviour
 
     private bool isAnimating = false;
 
+    // 회원가입 성공 시 성공 메시지 알림 표시 메서드 추가
+    private void ShowSuccessMessage(string message)
+    {
+        if (successMessageAlert != null && !isAnimating)
+        {
+            successText.text = message;
+            successMessageAlert.SetActive(true);
+            StartCoroutine(AnimateSuccessAlert());
+        }
+    }
+
     private void ShowErrorMessage(string message)
     {
         if (messageAlert != null && !isAnimating)
         {
             errorText.text = message;
             messageAlert.SetActive(true);
-            StartCoroutine(AnimateAlert());
+            StartCoroutine(AnimateErrorAlert());
         }
     }
 
-    private IEnumerator AnimateAlert()
+    private IEnumerator AnimateErrorAlert()
     {
-        // 애니메이션이 시작되었음을 표시
+        // 에러 메시지 애니메이션 시작
         isAnimating = true;
+        yield return StartCoroutine(AnimateAlert(alertTransform));
+        messageAlert.SetActive(false);
+        isAnimating = false;
+    }
 
-        // 메시지 확장 애니메이션
+    private IEnumerator AnimateSuccessAlert()
+    {
+        // 성공 메시지 애니메이션 시작
+        isAnimating = true;
+        yield return StartCoroutine(AnimateAlert(sucessAlertTransform));
+        successMessageAlert.SetActive(false);
+        isAnimating = false;
+    }
+
+    // 알림 메시지의 공통 애니메이션을 분리
+    private IEnumerator AnimateAlert(RectTransform targetTransform)
+    {
         float animationTime = 0.1f;
         float elapsedTime = 0f;
 
-        // 알림이 좁은 곳에서 펼쳐지게 애니메이션
+        // 알림 확장 애니메이션
         while (elapsedTime < animationTime)
         {
             elapsedTime += Time.deltaTime;
             float scale = Mathf.Lerp(0, 1, elapsedTime / animationTime);
-            alertTransform.localScale = new Vector3(scale, 1, 1);
+            targetTransform.localScale = new Vector3(scale, 1, 1);
             yield return null;
         }
 
         // 2초 대기
         yield return new WaitForSeconds(1);
 
-        // 메시지 축소 애니메이션
+        // 알림 축소 애니메이션
         elapsedTime = 0f;
         while (elapsedTime < animationTime)
         {
             elapsedTime += Time.deltaTime;
             float scale = Mathf.Lerp(1, 0, elapsedTime / animationTime);
-            alertTransform.localScale = new Vector3(scale, 1, 1);
+            targetTransform.localScale = new Vector3(scale, 1, 1);
             yield return null;
         }
-
-        // 알림 메시지 비활성화
-        messageAlert.SetActive(false);
-
-        // 애니메이션 종료
-        isAnimating = false;
     }
 }
