@@ -8,6 +8,7 @@ using TMPro;
 using TMPro.Examples;
 using JetBrains.Annotations;
 using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 // 사용자 요청 모델
 [Serializable]
@@ -104,25 +105,40 @@ public class AuthManager : MonoBehaviour
 
     public void CheckUsernameExists()
     {
-        if (string.IsNullOrEmpty(signUpUsernameInput.text))
+        string username = signUpUsernameInput.text;
+
+        if (string.IsNullOrEmpty(username))
         {
             ShowErrorMessage("아이디를 입력해주세요.");
             return;
         }
 
-        Debug.Log(signUpUsernameInput.text);
-        StartCoroutine(CheckUsername(signUpUsernameInput.text));
+        if (!IsValidUsername(username))
+        {
+            ShowErrorMessage("아이디는 영문과 숫자만 사용하여 4~12자로 입력해야 합니다.");
+            return;
+        }
+
+        StartCoroutine(CheckUsername(username));
     }
 
     public void CheckNicknameExists()
     {
-        if (string.IsNullOrEmpty(signUpNicknameInput.text))
+        string nickname = signUpNicknameInput.text;
+
+        if (string.IsNullOrEmpty(nickname))
         {
             ShowErrorMessage("닉네임을 입력해주세요.");
             return;
         }
 
-        StartCoroutine(CheckNickname(signUpNicknameInput.text));
+        if (!IsValidNickname(nickname))
+        {
+            ShowErrorMessage("닉네임은 한글, 영문, 숫자를 사용해 2~10자로 입력하세요.");
+            return;
+        }
+
+        StartCoroutine(CheckNickname(nickname));
     }
 
     private IEnumerator CheckUsername(string username)
@@ -201,15 +217,49 @@ public class AuthManager : MonoBehaviour
         signUpButton.interactable = isUsernameValid && isNicknameValid;
     }
 
+    // 정규식 패턴 정의
+    private const string NICKNAME_REGEX = @"^(?=.*[a-zA-Z가-힣0-9])(?!(.*[ㄱ-ㅎ]{2,}|.*[ㅏ-ㅣ]{2,}))[a-zA-Z0-9가-힣]{2,10}$";
+    private const string PASSWORD_REGEX = @"^[a-zA-Z0-9!@#$%^&()]{4,12}$";
+    private const string USERNAME_REGEX = @"^[a-zA-Z0-9]{4,12}$";
+
+    // 정규식 검사 함수
+    private bool IsValidUsername(string username)
+    {
+        return Regex.IsMatch(username, USERNAME_REGEX);
+    }
+
+    private bool IsValidNickname(string nickname)
+    {
+        return Regex.IsMatch(nickname, NICKNAME_REGEX);
+    }
+
+    private bool IsValidPassword(string password)
+    {
+        return Regex.IsMatch(password, PASSWORD_REGEX);
+    }
+
+    // 회원가입 핸들러에서 정규식 검사 적용
     public void HandleSignUp()
     {
-        if (!isUsernameValid || !isNicknameValid)
+        if (!IsValidUsername(signUpUsernameInput.text))
         {
-            ShowErrorMessage("아이디와 닉네임을 확인해주세요.");
+            ShowErrorMessage("아이디는 영문과 숫자만 사용하여 4~12자로 입력해야 합니다.");
             return;
         }
 
-        // 회원가입 요청 로직
+        if (!IsValidNickname(signUpNicknameInput.text))
+        {
+            ShowErrorMessage("닉네임은 한글, 영문, 숫자를 사용해 2~10자로 입력하세요.");
+            return;
+        }
+
+        if (!IsValidPassword(signUpPasswordInput.text))
+        {
+            ShowErrorMessage("비밀번호는 영문, 숫자, 특수문자(!@#$%^&())를 사용하여 4~12자로 입력하세요.");
+            return;
+        }
+
+        // 정규식 검사 통과 시 회원가입 진행
         SignUpRequest request = new SignUpRequest
         {
             username = signUpUsernameInput.text,
@@ -394,7 +444,7 @@ public class AuthManager : MonoBehaviour
         }
 
         // 2초 대기
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
 
         // 알림 축소 애니메이션
         elapsedTime = 0f;
