@@ -87,12 +87,19 @@ public class UIManager : MonoBehaviour
         Time.timeScale = isMenuUIActive ? 0 : 1;
     }
 
-    public void OnPlayButtonClicked()
+    public void PlayTutorial()
     {
-        HideScreenUI(); // Play 버튼을 눌렀을 때 ScreenUI를 닫음
-        Debug.Log("Play button clicked! Screen UI is closed.");
+        SceneManager.LoadScene("TutorialScene 1");
+    }
 
-        // 추후 여기에 다른 씬을 로드하는 코드를 추가할 수 있음
+    public void PlayStage1()
+    {
+        SceneManager.LoadScene("Stage1 1");
+    }
+
+    public void PlayStage2()
+    {
+        SceneManager.LoadScene("Stage2 1");
     }
 
     // **Continue 버튼 기능**
