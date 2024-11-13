@@ -28,8 +28,8 @@ const NoticesSection = React.forwardRef((props, ref) => {
     getNotices();
   }, []);
 
-  const handleNoticeClick = (id) => {
-    setSelectedNoticeId(id);
+  const handleNoticeClick = (noticeId) => {
+    setSelectedNoticeId(noticeId);
     setIsModalOpen(true);
 
     // 모달이 열린 후에 애니메이션 적용

@@ -34,7 +34,7 @@ const PostCreatePage = () => {
       <TextEditorWithCustomImageUpload 
         apiEndpoint="/api/v1/posts"
         requestKey="PostCreateRequest"
-        additionalFields={{ postType: selectedType }} 
+        additionalFields={{ requirePostType: true,postType: selectedType }} 
         onSubmitSuccess={() => navigate('/posts')}
       />
     </div>

@@ -1,26 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { baseUrl } from '../../config/url';
 import './NoticeDetailPage.css';
+import { baseUrl } from '../../config/url';
+import { useAuth } from '../../context/AuthContext';
 
-const NoticeDetailPage = ({ noticeId, onClose }) => {
-  const { id: paramId } = useParams();
+// 중요도에 따른 배지 스타일 매핑
+const importanceBadgeStyles = {
+  URGENT: {
+    backgroundColor: '#dc2626', // 빨간색
+    text: '긴급'
+  },
+  HIGH: {
+    backgroundColor: '#f97316', // 주황색
+    text: '중요'
+  },
+  NORMAL: {
+    backgroundColor: '#6b7280', // 회색
+    text: '일반'
+  }
+};
+
+const NoticeDetailPage = () => {
+  const { noticeId } = useParams();
   const navigate = useNavigate();
-  const id = noticeId || paramId; // prop으로 전달된 noticeId를 우선 사용, 없으면 paramId 사용
-  const [post, setPost] = useState(null);
+  const { isAdmin } = useAuth();
+  const [notice, setNotice] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!id) {
-        setError("게시글 ID가 없습니다.");
+    const fetchNotice = async () => {
+      if (!noticeId) {
+        setError("공지사항 ID가 없습니다.");
         setIsLoading(false);
         return;
       }
 
       try {
-        const postResponse = await fetch(`${baseUrl}/api/v1/notices/${id}`, {
+        const response = await fetch(`${baseUrl}/api/v1/notices/${noticeId}`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
@@ -28,12 +45,12 @@ const NoticeDetailPage = ({ noticeId, onClose }) => {
           },
         });
 
-        if (!postResponse.ok) {
-          throw new Error('데이터를 불러오는데 실패했습니다.');
+        if (!response.ok) {
+          throw new Error('공지사항을 불러오는데 실패했습니다.');
         }
 
-        const postData = await postResponse.json();
-        setPost(postData);
+        const noticeData = await response.json();
+        setNotice(noticeData);
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -42,62 +59,117 @@ const NoticeDetailPage = ({ noticeId, onClose }) => {
       }
     };
 
-    fetchData();
-  }, [id]);
+    fetchNotice();
+  }, [noticeId]);
 
-  const renderPostContent = () => {
-    if (!post?.content) return null;
-
-    const contentDiv = document.createElement('div');
-    contentDiv.innerHTML = post.content;
-
-    if (post.images) {
-      const imgs = contentDiv.getElementsByTagName('img');
-      Array.from(imgs).forEach((img, index) => {
-        if (post.images[index]) {
-          img.src = post.images[index].urlCloud;
-        }
-      });
-    }
-
-    return <div className="content-body" dangerouslySetInnerHTML={{ __html: contentDiv.innerHTML }} />;
+  const handleEdit = () => {
+    navigate(`/notices/${noticeId}/edit`);
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>{error}</div>;
+  const handleDelete = async () => {
+    if (!window.confirm('공지사항을 삭제하시겠습니까?')) return;
 
-  if (!post) {
+    try {
+      const response = await fetch(`${baseUrl}/api/v1/notices/${noticeId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('공지사항 삭제에 실패했습니다.');
+
+      navigate('/notices');
+    } catch (error) {
+      console.error('Error deleting notice:', error);
+      alert('공지사항 삭제에 실패했습니다.');
+    }
+  };
+
+  if (isLoading) {
+    return <div className="container">로딩 중...</div>;
+  }
+
+  if (error) {
     return (
-      <div className="notice-detail">
-        <h2 className="text-xl">게시글을 찾을 수 없습니다</h2>
-        <button onClick={onClose || (() => navigate(-1))} className="back-button">
-          닫기
-        </button>
+      <div className="container">
+        <div className="error-message">{error}</div>
+        <div className="button-wrapper">
+          <button onClick={() => navigate('/notices')} className="back-button">
+            목록
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!notice) {
+    return (
+      <div className="container">
+        <div>공지사항을 찾을 수 없습니다</div>
+        <div className="button-wrapper">
+          <button onClick={() => navigate('/notices')} className="back-button">
+            목록
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="notice-detail">
+    <div className="container">
       <div className="notice-section">
-        <div className="post-content">
-          <div className="content-header">{post.title}</div>
-          <div className="time-container">
-            <span className="notice-day">작성일</span>
-            <span className="notice-time">
-              {new Date(post.createdAt).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }).replace(/\.$/, '')}
+        {/* 제목 및 날짜 영역 */}
+        <div className="notice-header">
+          <div className="notice-title-wrapper">
+            <span 
+              className="notice-badge"
+              style={{ backgroundColor: importanceBadgeStyles[notice.importance].backgroundColor }}
+            >
+              {importanceBadgeStyles[notice.importance].text}
             </span>
+            <h1 className="notice-title">{notice.title}</h1>
+            {isAuthor(post.authorNickname) && (
+              <div className="author-actions">
+                <button className="edit-button" onClick={handleEdit}>
+                  수정
+                </button>
+                <button className="delete-button" >
+                  삭제
+                </button>
+              </div>
+            )}
           </div>
-          {renderPostContent()}
+          <span className="notice-date">
+            {new Date(notice.createdAt).toLocaleDateString()}
+          </span>
+        </div>
+
+        {/* 관리자 액션 */}
+        {isAdmin && (
+          <div className="admin-actions">
+            <button className="edit-button" onClick={handleEdit}>
+              수정
+            </button>
+            <button className="delete-button" onClick={handleDelete}>
+              삭제
+            </button>
+          </div>
+        )}
+
+        {/* 내용 */}
+        <div className="notice-content">
+          <div dangerouslySetInnerHTML={{ __html: notice.content }} />
+        </div>
+
+        {/* 목록 버튼 */}
+        <div className="button-wrapper">
+          <button onClick={() => navigate('/notices')} className="back-button">
+            목록
+          </button>
         </div>
       </div>
-      <button onClick={onClose || (() => navigate(-1))} className="back-button">
-        닫기
-      </button>
     </div>
   );
 };

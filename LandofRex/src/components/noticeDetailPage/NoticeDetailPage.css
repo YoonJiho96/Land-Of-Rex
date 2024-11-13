@@ -1,95 +1,127 @@
-.notice-detail {
-  max-width: 800px;
-  margin: 60px auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  color: #333;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
-.notice-detail h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1d1d1f;
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.notice-detail .post-meta {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  font-size: 0.875rem;
-  color: #8e8e93;
-}
-
-.notice-detail .post-meta .meta-item {
-  display: flex;
-  align-items: center;
-}
-
-.notice-detail .post-meta .meta-label {
-  font-weight: 500;
-  margin-right: 5px;
-}
-
-.notice-detail .post-content .content-header {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #3a3a3c;
-}
-
-.notice-detail .back-button {
-  display: block; /* 블록 요소로 변경하여 중앙 정렬 가능 */
-  margin: 20px auto 0; /* 가로 중앙 정렬 및 상단 여백 */
-  padding: 8px 16px;
-  font-size: 1rem;
-  color: black;
-  background-color: #f0f0f5;
-  border-radius: 8px;
-  text-decoration: none;
-  text-align: center;
-}
-
-.notice-detail .back-button:hover {
-  color: black;
-  background-color: #e6e6eb;
-}
-
-
-.notice-day {
-  font-weight: 600;
-  justify-content: flex-end;
-  color: #374151;
-  padding: 0.375rem 0.75rem; /* 패딩 줄임 */
-  background-color: #f3f4f6;
-  border-right: 1px solid #e5e7eb;
-}
-
-.notice-time {
-  padding: 0.375rem 0.75rem; /* 패딩 줄임 */
-  flex: 1;
-  background-color: #ffffff;
-}
-
-
-.time-container {
-  position: absolute; /* 절대 위치로 오른쪽 상단 배치 */
-  top: 70px;
-  right: 0;
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
-  padding: 0.5rem;
-}
-
-
-.notice-detail .post-content {
-  position: relative; /* 부모 요소를 기준으로 위치 지정 */
-  font-size: 1.05rem;
-  color: #1c1c1e;
-  line-height: 1.8;
-}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .notice-section {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .notice-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  
+  .notice-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 48px;
+    text-align: center;
+  }
+  
+  .notice-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    word-break: break-word;
+  }
+  
+  .notice-date {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-left: 16px;
+  }
+  
+  .notice-content {
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .admin-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .admin-actions button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .edit-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .edit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .delete-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .delete-button:hover {
+    background-color: #da190b;
+  }
+  
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  
+  .back-button {
+    padding: 8px 24px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .back-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 768px) {
+    .notice-header {
+      flex-direction: column;
+      gap: 12px;
+    }
+  
+    .notice-date {
+      margin-left: 0;
+    }
+  
+    .notice-title {
+      font-size: 20px;
+    }
+  }

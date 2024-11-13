@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import MyEditor from '../../components/editor/MyEditor-tiny';
+import MyEditor from '../../components/editor/MyEditor-reusable';
 import '../noticeCreatePage/NoticeCreatePage.css';  // 같은 스타일 사용
 
 const NoticeEditPage = () => {
