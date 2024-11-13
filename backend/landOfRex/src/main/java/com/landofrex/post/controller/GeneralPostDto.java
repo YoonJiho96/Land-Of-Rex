@@ -64,7 +64,7 @@ public class GeneralPostDto {
         private final LocalDateTime updatedAt;
         private final List<PostImageDto> images;
         private final PostType postType;
-        private final InquiryStatus inquiryStatus;
+        private final InquiryStatusResponse inquiryStatus;
         @Builder
         public DetailResponse(GeneralPost generalPost) {
             this.id = generalPost.getId();
@@ -77,7 +77,7 @@ public class GeneralPostDto {
                     .map(PostImageDto::new)
                     .collect(Collectors.toList());
             this.postType= generalPost.getPostType();
-            this.inquiryStatus=generalPost.getInquiryStatus();
+            this.inquiryStatus=InquiryStatusResponse.from(generalPost.getInquiryStatus());
         }
     }
 
