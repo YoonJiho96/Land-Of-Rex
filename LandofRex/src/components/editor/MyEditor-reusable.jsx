@@ -1,14 +1,15 @@
-import React, { useRef, useState,useEffect ,useCallback} from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import axios from 'axios';
+import swal from 'sweetalert'; // sweetalert import 추가
 import './MyEditor-reusable.css';
 
 const TextEditorWithCustomImageUpload = ({ 
-    apiEndpoint,  // API 엔드포인트
-    requestKey = "PostCreateRequest",  // formData에 담길 key 이름
-    additionalFields = {},  // 추가 필드 (isPinned 등)
-    onSubmitSuccess,  // 제출 성공 시 콜백
-    initialData = null,  // 수정 시 초기 데이터
+    apiEndpoint,
+    requestKey = "PostCreateRequest",
+    additionalFields = {},
+    onSubmitSuccess,
+    initialData = null,
     method = 'POST',
     onBeforeSubmit
 }) => {
@@ -21,19 +22,13 @@ const TextEditorWithCustomImageUpload = ({
     const [validationError, setValidationError] = useState('');
     const additionalFieldsRef = useRef(additionalFields);
     
-    console.log('TextEditor - Received additionalFields:', additionalFields); // props로 받은 값
-
     useEffect(() => {
       additionalFieldsRef.current = additionalFields;
-  }, [additionalFields]);
+    }, [additionalFields]);
 
-
-    // 초기 데이터가 있을 경우 (수정 모드) 데이터 설정
     useEffect(() => {
       if (initialData) {
         setTitle(initialData.title || '');
-        
-        // 이미지 URL 처리
         const processContent = () => {
             const contentDiv = document.createElement('div');
             contentDiv.innerHTML = initialData.content || '';
@@ -44,9 +39,9 @@ const TextEditorWithCustomImageUpload = ({
                 Array.from(imgs).forEach((img, index) => {
                   if (initialData.images[index]) {
                       const imageUrl = initialData.images[index].urlCloud;
-                      const imageId = initialData.images[index].id; // 이미지 ID 저장
+                      const imageId = initialData.images[index].id;
                       img.src = imageUrl;
-                      img.setAttribute('data-image-id', imageId); // 이미지 요소에 ID 저장
+                      img.setAttribute('data-image-id', imageId);
                       imagesMap.set(imageUrl, imageId);
                   }
                 });
@@ -56,7 +51,6 @@ const TextEditorWithCustomImageUpload = ({
 
             setInitialContent(contentDiv.innerHTML);
         };
-
         processContent();
       }
     }, [initialData]);
@@ -67,24 +61,21 @@ const TextEditorWithCustomImageUpload = ({
       }
     }, [isEditorReady, initialContent]);
 
-    // 에디터 내의 모든 이미지 순서 정보 추출
     const getImageOrderInfo = () => {
       const imgs = editorRef.current.dom.select('img');
       const orderInfo = {
-          existingImages: [], // { id: number, order: number }
-          newImages: []      // { tempUrl: string, order: number }
+          existingImages: [],
+          newImages: []
       };
 
       Array.from(imgs).forEach((img, index) => {
           const imageId = img.getAttribute('data-image-id');
           if (imageId) {
-              // 기존 이미지
               orderInfo.existingImages.push({
                   id: parseInt(imageId),
                   order: index
               });
           } else if (img.src.startsWith('blob:')) {
-              // 새로운 이미지
               orderInfo.newImages.push({
                   tempUrl: img.src,
                   order: index
@@ -118,14 +109,12 @@ const TextEditorWithCustomImageUpload = ({
     };
 
     const validateSubmission = () => {
-      // 제목 검증
       if (!title.trim()) {
           setValidationError('제목을 입력해주세요.');
           document.getElementById('postTitle')?.focus();
           return false;
       }
 
-      // postType 검증
       if (!additionalFieldsRef.current.postType) {
           setValidationError('문의 유형을 선택해주세요.');
           return false;
@@ -136,12 +125,10 @@ const TextEditorWithCustomImageUpload = ({
     };
 
     const handleSubmit = useCallback(async () => {
-      // onBeforeSubmit이 있으면 실행
       if (onBeforeSubmit && !onBeforeSubmit()) {
         return;
       }
 
-      // 자체 유효성 검사
       if (!validateSubmission()) {
           return;
       }
@@ -152,7 +139,6 @@ const TextEditorWithCustomImageUpload = ({
 
       const formData = new FormData();
       const editor = editorRef.current;
-      
       const rawHtml = editor.getContent({ format: 'raw' });
 
       formData.append(requestKey, JSON.stringify({
@@ -177,7 +163,15 @@ const TextEditorWithCustomImageUpload = ({
               },
               withCredentials: true
           });
-          if (onSubmitSuccess) onSubmitSuccess();
+
+          // SweetAlert success modal
+          swal("제출이 완료되었습니다!", "작성한 게시물이 성공적으로 제출되었습니다.", "success")
+            .then(() => {
+              if (onSubmitSuccess) onSubmitSuccess(); // Success callback
+              window.close(); // 창 닫기
+
+            });
+
       } catch (error) {
         console.error('Error:', error);
         if (error.response?.data?.message) {
@@ -185,10 +179,10 @@ const TextEditorWithCustomImageUpload = ({
         } else {
             setValidationError('제출 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
-      } finally{
+      } finally {
         setIsSubmitting(false);
       }
-    }, [title,additionalFields, apiEndpoint, method, onSubmitSuccess, requestKey, isSubmitting,onBeforeSubmit]);
+    }, [title, additionalFields, apiEndpoint, method, onSubmitSuccess, requestKey, isSubmitting, onBeforeSubmit]);
 
     const handleImageUploadWithFileExplorer = (callback, value, meta) => {
         if (meta.filetype === 'image') {
@@ -208,7 +202,7 @@ const TextEditorWithCustomImageUpload = ({
 
             input.click();
         }
-    }
+    };
 
     return (
       <div className="text-editor-container">
@@ -235,13 +229,12 @@ const TextEditorWithCustomImageUpload = ({
           setIsEditorReady(true);
         }}
         init={{
-          height: 380, // 높이 조정
+          height: 380,
           menubar: false,
           plugins: 'image code link media',
           toolbar: 'undo redo | fontsize | bold italic | alignleft aligncenter alignright | image ',
           content_style: `p, span, .space { font-family: inherit; font-size: inherit; }`,
           file_picker_callback: handleImageUploadWithFileExplorer,
-          
         }}
         className={`tinymce-editor ${validationError ? 'error' : ''}`}
       />

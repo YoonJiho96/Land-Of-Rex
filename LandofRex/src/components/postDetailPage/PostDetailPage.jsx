@@ -40,10 +40,10 @@ const CommentForm = ({ postId, onCommentAdded }) => {
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="댓글을 입력하세요"
+        placeholder="답글을 입력하세요"
         className="comment-input"
       />
-      <button type="submit" className="comment-submit">댓글 작성</button>
+      <button type="submit" className="comment-submit">답글 작성</button>
     </form>
   );
 };
@@ -167,7 +167,7 @@ const PostDetailPage = () => {
             onClick={() => navigate(-1)}
             className="back-button"
           >
-            뒤로가기
+            목록
           </button>
         </div>
       </div>
@@ -182,7 +182,7 @@ const PostDetailPage = () => {
           onClick={() => navigate(-1)}
           className="back-button"
         >
-          뒤로가기
+          목록
         </button>
       </div>
     );
@@ -244,18 +244,21 @@ const PostDetailPage = () => {
 
       {/* 댓글 섹션 */}
       <div className="comments-section">
-        <h2 className="comments-title">댓글</h2>
+        <h2 className="comments-title">답글</h2>
         <CommentForm postId={postId} onCommentAdded={handleCommentAdded} />
         <CommentList comments={comments} />
       </div>
-      
+      <div className="back-button-container">
+
       <button
         onClick={() => navigate(-1)}
         className="back-button"
       >
-        뒤로가기
+        목록
       </button>
     </div>
+    </div>
+
   );
 };
 

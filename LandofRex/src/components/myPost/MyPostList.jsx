@@ -70,12 +70,12 @@ const MyPostList = () => {
   return (
     <div className="post-list-container">
       <div className="post-header">
-        <h1>내가 쓴 게시글</h1>
+        <h1>내가 쓴 문의글</h1>
         <button
           className="write-button"
           onClick={handleInquiryClick}
         >
-          글쓰기
+          문의하기
         </button>
       </div>
 
