@@ -115,9 +115,9 @@ const TextEditorWithCustomImageUpload = ({
           return false;
       }
 
-      if (!additionalFieldsRef.current.postType) {
-          setValidationError('문의 유형을 선택해주세요.');
-          return false;
+      if (additionalFieldsRef.current.requirePostType && !additionalFieldsRef.current.postType) {
+        setValidationError('문의 유형을 선택해주세요.');
+        return false;
       }
 
       setValidationError('');
@@ -141,10 +141,12 @@ const TextEditorWithCustomImageUpload = ({
       const editor = editorRef.current;
       const rawHtml = editor.getContent({ format: 'raw' });
 
+      const { requirePostType, ...fieldsToSubmit } = additionalFieldsRef.current;
+
       formData.append(requestKey, JSON.stringify({
           title: title,
           content: rawHtml,
-          ...additionalFieldsRef.current
+          ...fieldsToSubmit
       }));
 
       const newImages = await getEditorImages();

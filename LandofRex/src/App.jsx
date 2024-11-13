@@ -39,8 +39,8 @@ const App = () => {
           <Route path="/posts" element={<PostPage/>}/>
           <Route path="/notices" element={<NoticeList />} />
           <Route path="/admin/notices/create" element={<NoticeCreatePage />} />
-          <Route path="/admin/notices/:id/edit" element={<NoticeEditPage />} />
-          <Route path="/notices/:id" element={<NoticeDetailPage />} />
+          <Route path="/admin/notices/:noticeId/edit" element={<NoticeEditPage />} />
+          <Route path="/notices/:noticeId" element={<NoticeDetailPage />} />
           <Route path="/editorPage" element={<EditorSection/>} />
           <Route path="/my/posts" element={<MyPostList/>}/>
         </Routes>
