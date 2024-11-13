@@ -30,12 +30,17 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
 
       <div className="auth-buttons">
         {isLoggedIn ? (
+          <>
+          <Link to="/my/posts">
+          <button className="my-posts-button">내 게시글</button>
+          </Link>
           <button 
             className="login-button" 
             onClick={handleLogout}
           >
             로그아웃
           </button>
+          </>
         ) : (
           <Link to="/login">
             <button className="login-button">로그인</button>

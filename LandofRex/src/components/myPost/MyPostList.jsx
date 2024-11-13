@@ -60,6 +60,10 @@ const MyPostList = () => {
     return pages;
   };
 
+  const handleInquiryClick = () => {
+    window.open('/editorPage', '_blank', 'width=700,height=800,left=100,top=100');
+  };
+
   if (isLoading) return <div className="loading">로딩 중...</div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -69,7 +73,7 @@ const MyPostList = () => {
         <h1>내가 쓴 게시글</h1>
         <button
           className="write-button"
-          onClick={() => navigate('/posts/create')}
+          onClick={handleInquiryClick}
         >
           글쓰기
         </button>
@@ -101,7 +105,12 @@ const MyPostList = () => {
                   </td>
                   <td>{post.authorNickname}</td>
                   <td>{new Date(post.createdAt).toLocaleDateString()}</td>
-                  <td>{post.inquiryStatus}</td>
+                  <td 
+                    className="status-cell"
+                    title={post.inquiryStatus?.message}  // tooltip을 위한 title 속성
+                  >
+                    {post.inquiryStatus?.status || '-'}
+                  </td>
                 </tr>
               ))
             ) : (
