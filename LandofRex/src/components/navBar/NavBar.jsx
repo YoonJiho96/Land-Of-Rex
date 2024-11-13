@@ -37,7 +37,7 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
         {isLoggedIn ? (
           <>
             <Link to="/my/posts">
-              <button className="my-posts-button">내 게시글</button>
+              <button className="my-posts-button">내 문의글</button>
             </Link>
             <button className="login-button" onClick={handleLogout}>
               로그아웃
