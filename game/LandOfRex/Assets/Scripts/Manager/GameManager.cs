@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Diagnostics;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public DataManager dataManager;
     public GameObject sunLight;
+    public GameObject dayGUI;  // 낮에 나타나는 GUI
+    public GameObject nightGUI; // 밤에 나타나는 GUI
+    public TMP_Text waveText; // 웨이브 텍스트 오브젝트 연결
     public InputActionAsset input;
     private InputAction nextAction;
 
@@ -31,6 +36,7 @@ public class GameManager : MonoBehaviour
     private float totalElapsedTime; // 측정된 총 시간을 저장할 변수
     public int[] stageGold;
 
+
     void Awake()
     {
         var playerActions = input.FindActionMap("Player");
@@ -41,6 +47,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         gameTimer.Start();
+        UpdateGUI(); // 게임 시작 시 GUI 초기화
+        UpdateWaveText(); // 시작 시 웨이브 텍스트 업데이트
     }
 
     private void OnEnable()
@@ -64,7 +72,7 @@ public class GameManager : MonoBehaviour
         {
             ClearStage();
         }
-        else if(dataManager.isDay)
+        else if (dataManager.isDay)
         {
             float nextInput = nextAction.ReadValue<float>();
             // 키가 눌린 상태로 일정 시간 지속되면 작업 실행
@@ -75,6 +83,7 @@ public class GameManager : MonoBehaviour
                 {
                     dataManager.isDay = false;
                     StartCoroutine(RotateForDuration());
+                    UpdateGUI(); // GUI 업데이트
                     holdTime = 0f;  // 동작 후 holdTime 초기화
                 }
             }
@@ -83,27 +92,43 @@ public class GameManager : MonoBehaviour
                 holdTime = 0f;  // 입력이 중단되면 초기화
             }
         }
-        else if(!dataManager.isDay)
+        else if (!dataManager.isDay)
         {
-            if(isWaveCleared)
+            if (isWaveCleared)
             {
                 isWaveCleared = false;
                 StartCoroutine(SpawnEnemys());
             }
             else
             {
-                if(dataManager.enemys.Count == 0)
+                if (dataManager.enemys.Count == 0)
                 {
                     isWaveCleared = true;
                     dataManager.isDay = true;
                     currentWave++;
                     StartCoroutine(RotateForDuration());
                     StartCoroutine(CheckGold());
+                    UpdateGUI(); // GUI 업데이트
+                    UpdateWaveText(); // 웨이브 전환 시 업데이트
                 }
             }
         }
     }
-    
+
+    private void UpdateGUI()
+    {
+        // 낮일 때는 dayGUI 활성화, 밤일 때는 nightGUI 활성화
+        dayGUI.SetActive(dataManager.isDay);
+        nightGUI.SetActive(!dataManager.isDay);
+    }
+
+    private void UpdateWaveText()
+    {
+        int displayedWave = Mathf.Min(currentWave + 1, maxStage);
+        waveText.text = $"Wave: {displayedWave} / {maxStage}";
+    }
+
+
     IEnumerator RotateForDuration()
     {
         rotationTimeElapsed = 0f;
@@ -126,7 +151,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator SpawnEnemys()
     {
-        for(int i=0; i<enemySpawnPoints.Length; i++)
+        for (int i = 0; i < enemySpawnPoints.Length; i++)
         {
             int[] waveEnemyCounts = {enemyCount[i].slime[currentWave],
                 enemyCount[i].wildBoar[currentWave],
@@ -161,18 +186,18 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator CheckGold()
+    public IEnumerator CheckGold()
     {
         dataManager.totalGold += stageGold[currentWave - 1];
         dataManager.gold += stageGold[currentWave - 1];
 
-        foreach(Transform building in dataManager.buildings)
+        foreach (Transform building in dataManager.buildings)
         {
-            if(building.gameObject.activeInHierarchy)
+            if (building.gameObject.activeInHierarchy)
             {
                 HouseData data = building.gameObject.GetComponent<HouseData>();
 
-                if(data != null)
+                if (data != null)
                 {
                     dataManager.totalGold += data.gold;
                     dataManager.gold += data.gold;
@@ -187,9 +212,9 @@ public class GameManager : MonoBehaviour
 
     private void CheckCastle()
     {
-        foreach(Transform building in dataManager.buildings)
+        foreach (Transform building in dataManager.buildings)
         {
-            if(building.CompareTag("Core"))
+            if (building.CompareTag("Core"))
             {
                 if (building.gameObject.activeInHierarchy)
                 {
@@ -206,14 +231,21 @@ public class GameManager : MonoBehaviour
     private void FailStage()
     {
         UnityEngine.Debug.Log("Failed...");
+
+        SceneManager.LoadScene("LobbyMap");
     }
 
     private void ClearStage()
     {
         gameTimer.Stop(); // 스테이지 클리어 시 타이머 정지
         totalElapsedTime = (float)gameTimer.Elapsed.TotalSeconds; // 시간을 초 단위로 저장
+        int totalGold = dataManager.totalGold;
+        int usedGold = dataManager.usedGold;
+        int deadCount = dataManager.playerDeadCount;
 
         UnityEngine.Debug.Log($"Clear!! {totalElapsedTime}초");
+
+        SceneManager.LoadScene("LobbyMap");
     }
 
     public float GetTotalElapsedTime()

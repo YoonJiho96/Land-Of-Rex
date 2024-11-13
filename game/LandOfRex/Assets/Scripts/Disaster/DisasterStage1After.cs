@@ -1,38 +1,48 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class DisasterStage1After : MonoBehaviour
 {
-    public Collider triggerCollider;
-
-    private void Awake()
-    {
-        triggerCollider = GetComponent<Collider>();
-    }
+    private HashSet<Collider> processedColliders = new HashSet<Collider>();
 
     private void OnEnable()
     {
-        CheckAndDamageUnitsInTrigger();
+        // 활성화 시점에서 초기화하여 OnTriggerStay에서 이벤트가 발생하도록 함
+        processedColliders.Clear();
     }
 
-    private void CheckAndDamageUnitsInTrigger()
+    private void OnTriggerEnter(Collider other)
     {
-        Collider[] objectsInTrigger = Physics.OverlapBox(triggerCollider.bounds.center, triggerCollider.bounds.extents, triggerCollider.transform.rotation);
-
-        foreach (Collider col in objectsInTrigger)
+        if (!processedColliders.Contains(other))
         {
-            if (col.CompareTag("Unit") || col.CompareTag("Enemy"))
+            if (other.CompareTag("Unit") || other.CompareTag("Enemy"))
             {
-                DealDamageToCollider(col);
+                other.GetComponent<HPController>().GetDamage(150);
+                processedColliders.Add(other);
+            }
+            else if(other.CompareTag("Player"))
+            {
+                other.GetComponent<PlayerHPController>().GetDamage(150);
+                processedColliders.Add(other);
             }
         }
     }
 
-    private void DealDamageToCollider(Collider col)
+    private void OnTriggerStay(Collider other)
     {
-        HPController hpController = col.GetComponent<HPController>();
-        if (hpController != null)
+        if (!processedColliders.Contains(other))
         {
-            hpController.GetDamage(10000000);
+            if (other.CompareTag("Unit") || other.CompareTag("Enemy"))
+            {
+                Debug.Log(other);
+                other.GetComponent<HPController>().GetDamage(150);
+                processedColliders.Add(other);
+            }
+            else if (other.CompareTag("Player"))
+            {
+                other.GetComponent<PlayerHPController>().GetDamage(150);
+                processedColliders.Add(other);
+            }
         }
     }
 }

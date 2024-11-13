@@ -1,11 +1,12 @@
+using System.Collections;
 using UnityEngine;
 
 public class DisasterStage1Before : MonoBehaviour
 {
-    public GameObject afterDisaster;
+    public DisasterStage1Manager manager;
 
     private void OnDestroy()
     {
-        afterDisaster.SetActive(true);
+        manager.Disaster();
     }
 }

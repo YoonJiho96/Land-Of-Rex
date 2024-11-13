@@ -12,4 +12,5 @@ public class DataManager : MonoBehaviour
     public List<Transform> buildings = new List<Transform>();
     public List<Transform> enemys = new List<Transform>();
     public Dictionary<int, List<Transform>> units = new Dictionary<int, List<Transform>>();
+
 }
