@@ -9,7 +9,7 @@ public class BuildingAttackController : MonoBehaviour
     public int towerDamage = 10;
 
     private float lastAttackTime = 0f;
-    private List<Transform> enemiesInRange = new List<Transform>();
+    public List<Transform> enemiesInRange = new List<Transform>();
 
     private void OnEnable()
     {
