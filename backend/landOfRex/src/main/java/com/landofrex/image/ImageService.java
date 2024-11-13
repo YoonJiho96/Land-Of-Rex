@@ -1,7 +1,7 @@
 package com.landofrex.image;
 
 
-import com.landofrex.aws.S3Service;
+import com.landofrex.aws.ImageS3Service;
 import com.landofrex.image.entity.PostImage;
 import com.landofrex.post.BasePostRepository;
 import com.landofrex.post.controller.PostUpdateRequest;
@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @Slf4j
 public class ImageService {
-    private final S3Service s3Service;
+    private final ImageS3Service s3Service;
     private final BasePostRepository basePostRepository;
     private final ImageRepository imageRepository;
 
