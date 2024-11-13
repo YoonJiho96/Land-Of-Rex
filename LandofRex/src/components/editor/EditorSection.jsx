@@ -13,7 +13,7 @@ const EditorSection = React.forwardRef((props, ref) => {
   useEffect(() => {
     const fetchPostTypes = async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/v1/post-types`);
+        const response = await fetch(`/api/v1/post-types`);
         const data = await response.json();
         setPostTypes(data.data);
         setIsLoading(false);
