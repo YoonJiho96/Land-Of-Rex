@@ -2,6 +2,7 @@ package com.landofrex.aws;
 
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -57,7 +58,7 @@ public class ImageS3Service {
                 new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
             );
 
-            return s3Properties.getS3().getPostImage().getBucketUrl() + "/" + fileName;
+            return amazonS3.getUrl(bucket, fileName).toString();
 
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
