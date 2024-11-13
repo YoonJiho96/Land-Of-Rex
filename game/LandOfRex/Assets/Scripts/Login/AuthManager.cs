@@ -38,6 +38,7 @@ public class LoginData
 {
     public string nickname;
     public int userId;
+    public int highestStage;
 }
 
 [Serializable]
@@ -341,7 +342,7 @@ public class AuthManager : MonoBehaviour
                 LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(www.downloadHandler.text);
 
                 // code와 data의 데이터를 출력
-                Debug.Log($"로그인 결과 - 코드: {loginResponse.code}, 닉네임: {loginResponse.data.nickname}, 사용자 ID: {loginResponse.data.userId}");
+                Debug.Log($"로그인 결과 - 코드: {loginResponse.code}, 닉네임: {loginResponse.data.nickname}, 사용자 ID: {loginResponse.data.userId}, 최종 스테이지: {loginResponse.data.highestStage}");
 
                 // 로그인 데이터 저장
                 LoginDataManager.Instance.SetLoginData(loginResponse.data);
