@@ -3,6 +3,7 @@ using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -230,14 +231,21 @@ public class GameManager : MonoBehaviour
     private void FailStage()
     {
         UnityEngine.Debug.Log("Failed...");
+
+        SceneManager.LoadScene("LobbyMap");
     }
 
     private void ClearStage()
     {
         gameTimer.Stop(); // 스테이지 클리어 시 타이머 정지
         totalElapsedTime = (float)gameTimer.Elapsed.TotalSeconds; // 시간을 초 단위로 저장
+        int totalGold = dataManager.totalGold;
+        int usedGold = dataManager.usedGold;
+        int deadCount = dataManager.playerDeadCount;
 
         UnityEngine.Debug.Log($"Clear!! {totalElapsedTime}초");
+
+        SceneManager.LoadScene("LobbyMap");
     }
 
     public float GetTotalElapsedTime()
