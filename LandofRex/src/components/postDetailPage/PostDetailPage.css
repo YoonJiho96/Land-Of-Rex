@@ -129,7 +129,7 @@
   .back-button-container {
     display: flex;
     justify-content: center;
-    margin-top: 0.5rem; /* 원하는 상단 마진 추가 */
+    margin-top: 1rem; /* 원하는 상단 마진 추가 */
 }
 
 

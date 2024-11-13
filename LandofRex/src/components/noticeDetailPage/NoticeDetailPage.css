@@ -44,7 +44,7 @@
 
 .notice-detail .back-button {
   display: block; /* 블록 요소로 변경하여 중앙 정렬 가능 */
-  margin: 0px auto 0; /* 가로 중앙 정렬 및 상단 여백 */
+  margin: 20px auto 0; /* 가로 중앙 정렬 및 상단 여백 */
   padding: 8px 16px;
   font-size: 1rem;
   color: black;
