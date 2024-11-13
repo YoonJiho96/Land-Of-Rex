@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './NoticeSection.css';
-import fetchNoticeList from '../../../apis/apiNoticeList'; // API 함수 가져오기
+import fetchNoticeList from '../../../apis/apiNoticeList';
+import NoticeDetailPage from '../../noticeDetailPage/NoticeDetailPage';
 
 const NoticesSection = React.forwardRef((props, ref) => {
-  const [notices, setNotices] = useState([]); // API에서 받아온 공지사항 목록 저장
+  const [notices, setNotices] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 오류 상태
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false); // 애니메이션 상태
 
-  // 공지사항 데이터를 가져오는 함수
   useEffect(() => {
     const getNotices = async () => {
       try {
         setLoading(true);
-        const data = await fetchNoticeList(); // API에서 데이터 가져오기
-        setNotices(data); // 공지사항 데이터 상태로 설정
+        const data = await fetchNoticeList();
+        setNotices(data);
       } catch (err) {
         setError('공지사항을 불러오는데 실패했습니다.');
       } finally {
@@ -25,16 +28,28 @@ const NoticesSection = React.forwardRef((props, ref) => {
     getNotices();
   }, []);
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? notices.length - 1 : prevIndex - 1));
+  const handleNoticeClick = (id) => {
+    setSelectedNoticeId(id);
+    setIsModalOpen(true);
+
+    // 모달이 열린 후에 애니메이션 적용
+    setTimeout(() => {
+      setIsAnimating(true);
+    }, 10); // 짧은 지연으로 애니메이션이 바로 적용되게 함
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === notices.length - 1 ? 0 : prevIndex + 1));
+  const closeModal = () => {
+    // 닫을 때 애니메이션 해제
+    setIsAnimating(false);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setSelectedNoticeId(null);
+    }, 400); // 애니메이션 시간과 맞추기
   };
 
-  const prevIndex = currentIndex === 0 ? notices.length - 1 : currentIndex - 1;
-  const nextIndex = currentIndex === notices.length - 1 ? 0 : currentIndex + 1;
+  // 순환하는 prevIndex와 nextIndex 계산
+  const prevIndex = (currentIndex - 1 + notices.length) % notices.length;
+  const nextIndex = (currentIndex + 1) % notices.length;
 
   if (loading) return <div>로딩 중...</div>;
   if (error) return <div>{error}</div>;
@@ -44,30 +59,37 @@ const NoticesSection = React.forwardRef((props, ref) => {
       <div className="notices-content">
         <h2>공지사항</h2>
         <div className="slider-container">
-          <button className="slider-button left" onClick={handlePrev}>‹</button>
+          <button className="slider-button left" onClick={() => setCurrentIndex(prevIndex)}>‹</button>
           
           {notices.length > 0 && (
             <>
-              <div className="notice-item preview">
+              <div className="notice-item preview" onClick={() => handleNoticeClick(notices[prevIndex].id)}>
                 <h3>{notices[prevIndex].title}</h3>
                 <p className="date">{notices[prevIndex].createdAt}</p>
               </div>
-
-              <div className="notice-item active">
+              <div className="notice-item active" onClick={() => handleNoticeClick(notices[currentIndex].id)}>
                 <h3>{notices[currentIndex].title}</h3>
                 <p className="date">{notices[currentIndex].createdAt}</p>
               </div>
-
-              <div className="notice-item preview">
+              <div className="notice-item preview" onClick={() => handleNoticeClick(notices[nextIndex].id)}>
                 <h3>{notices[nextIndex].title}</h3>
                 <p className="date">{notices[nextIndex].createdAt}</p>
               </div>
             </>
           )}
 
-          <button className="slider-button right" onClick={handleNext}>›</button>
+          <button className="slider-button right" onClick={() => setCurrentIndex(nextIndex)}>›</button>
         </div>
       </div>
+
+      {/* NoticeDetailPage 모달로 표시 */}
+      {isModalOpen && (
+        <div className={`modal-overlay ${isAnimating ? 'show' : ''}`} onClick={closeModal}>
+          <div className={`modal-content ${isAnimating ? 'show' : ''}`} onClick={(e) => e.stopPropagation()}>
+            <NoticeDetailPage noticeId={selectedNoticeId} onClose={closeModal} />
+          </div>
+        </div>
+      )}
     </section>
   );
 });

@@ -26,7 +26,8 @@ const LoginPage = () => {
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/api/v1/auth/login`, {
+      // console.log("loginPage")
+      const response = await fetch(`/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

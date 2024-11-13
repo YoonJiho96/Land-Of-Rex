@@ -22,6 +22,7 @@ export const fetchNoticeList = async () => {
         const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
         return {
+          id: notice.id,
           title: notice.title,
           createdAt: formattedDate,
           importance: notice.importance,

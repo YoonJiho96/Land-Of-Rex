@@ -86,3 +86,47 @@
 .slider-button:hover {
   color: #005bb5;
 }
+
+.slider-content {
+  display: flex;
+  transition: transform 0.5s ease; /* 부드러운 전환 효과 추가 */
+}
+
+/* NoticeSection.css */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease; /* 페이드인 효과 */
+}
+
+.modal-overlay.show {
+  opacity: 1;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(00px); /* 아래에서 시작 */
+  opacity: 0;
+  transition: transform 1s ease, opacity 1s ease; /* 슈욱 올라오는 효과 */
+}
+
+.modal-content.show {
+  transform: translateY(0); /* 원래 위치로 이동 */
+  opacity: 1;
+}

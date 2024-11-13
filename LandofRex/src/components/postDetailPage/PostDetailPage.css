@@ -143,7 +143,6 @@
   
   .back-button:hover {
     background-color: #e5e7eb;
-    transform: translateY(-1px);
     border-color: #d1d5db;
   }
   
