@@ -341,3 +341,9 @@
     color: #9ca3af;
     cursor: not-allowed;
   }
+
+  .status-tooltip {
+    cursor: help;
+    position: relative;
+  }
+  

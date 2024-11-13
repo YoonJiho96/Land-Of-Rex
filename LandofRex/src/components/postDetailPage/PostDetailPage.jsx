@@ -207,7 +207,12 @@ const PostDetailPage = () => {
           </div>
           <div className="meta-item">
             <span className="meta-label">상태</span>
-            <span className="meta-value">{post.status}</span>
+            <span 
+              className="meta-value status-tooltip"
+              title={post.inquiryStatus?.message}
+            >
+              {post.inquiryStatus?.status || '-'}
+            </span>
           </div>
           <div className="meta-item">
             <span className="meta-label">작성일</span>

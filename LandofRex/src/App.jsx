@@ -18,6 +18,7 @@ import NoticeDetailPage from './components/noticeDetailPage/NoticeDetailPage'
 import EditorSection from './components/editor/EditorSection';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
+import MyPostList from './components/myPost/MyPostList';
 
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/admin/notices/:id/edit" element={<NoticeEditPage />} />
           <Route path="/notices/:postId" element={<NoticeDetailPage />} />
           <Route path="/editorPage" element={<EditorSection/>} />
+          <Route path="/my/posts" element={<MyPostList/>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

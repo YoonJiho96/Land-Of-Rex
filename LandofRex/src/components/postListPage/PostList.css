@@ -154,3 +154,27 @@
   }
   
   /* 기존 CSS 유지 */
+
+  .status-cell {
+    cursor: help;  /* 물음표 커서로 변경 */
+  }
+  
+
+  .status-cell {
+    position: relative;
+  }
+  
+  /* .status-cell:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 1000;
+  } */
