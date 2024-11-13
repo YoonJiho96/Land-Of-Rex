@@ -1,11 +1,35 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2'; // sweetalert2 import
 import './FaqSection.css';
+import { useAuth } from '../../../context/AuthContext';
 
 const FaqSection = React.forwardRef((props, ref) => {
   const [openIndices, setOpenIndices] = useState({});
+  const { isLoggedIn } = useAuth();
 
   const handleInquiryClick = () => {
-    window.open('/editorPage', '_blank', 'width=700,height=800,left=100,top=100');
+    if (isLoggedIn) {
+      window.open('/editorPage', '_blank', 'width=700,height=800,left=100,top=100');
+    } else {
+      Swal.fire({
+        title: "로그인이 필요합니다",
+        text: "문의하기를 이용하려면 로그인 해주세요.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "로그인 하기",
+        cancelButtonText: "취소",
+        customClass: {
+          confirmButton: 'swal2-confirm-button', 
+          cancelButton: 'swal2-cancel-button',
+          actions: 'swal2-button-spacing' // 버튼 간격을 위한 클래스 추가
+        },
+        buttonsStyling: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/login';
+        }
+      });
+    }
   };
 
   const toggleAnswer = (index) => {

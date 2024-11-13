@@ -112,3 +112,22 @@
   height: 32px; /* 원하는 높이로 설정 */
   margin-right: 8px; /* 텍스트와 이미지 간격 */
 }
+/* NavBar-new.css */
+
+.signup-button {
+  margin-right: 10px; /* 로그아웃 버튼과의 간격 */
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #ffffff; /* 흰색 배경 */
+  color: black;
+  cursor: pointer;
+  border: 1px solid #ddd; /* 연한 테두리 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 음영 추가 */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup-button:hover {
+  background-color: #f5f5f5; /* 밝은 회색 배경 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 살짝 더 진한 음영 */
+}
