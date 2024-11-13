@@ -2,8 +2,8 @@ package com.landofrex.post.controller;
 
 import com.landofrex.post.entity.GeneralPost;
 import com.landofrex.post.entity.InquiryStatus;
-import com.landofrex.post.entity.PostStatus;
 import com.landofrex.post.entity.PostType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @Getter
 public class GeneralPostDto {
 
-
-
     @Getter
     public static class ListResponse {
         private final Long id;
@@ -26,7 +24,7 @@ public class GeneralPostDto {
         private final String authorNickname;
         private final PostType postType;
         private final LocalDateTime createdAt;
-        private final InquiryStatus inquiryStatus;
+        private final InquiryStatusResponse inquiryStatus;
 
         @Builder
         public ListResponse(GeneralPost generalPost) {
@@ -35,7 +33,7 @@ public class GeneralPostDto {
             this.authorNickname = generalPost.getAuthor().getNickname();
             this.createdAt = generalPost.getCreatedAt();
             this.postType= generalPost.getPostType();
-            this.inquiryStatus= generalPost.getInquiryStatus();
+            this.inquiryStatus = InquiryStatusResponse.from(generalPost.getInquiryStatus());
         }
     }
 
@@ -80,6 +78,15 @@ public class GeneralPostDto {
                     .collect(Collectors.toList());
             this.postType= generalPost.getPostType();
             this.inquiryStatus=generalPost.getInquiryStatus();
+        }
+    }
+
+
+    public record InquiryStatusResponse(String status, String message) {
+        public static InquiryStatusResponse from(InquiryStatus inquiryStatus) {
+            return inquiryStatus != null
+                    ? new InquiryStatusResponse(inquiryStatus.getStatus(), inquiryStatus.getMessage())
+                    : null;
         }
     }
 }
