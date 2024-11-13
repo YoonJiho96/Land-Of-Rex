@@ -1,13 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Navbar from '../navBar/NavBar.jsx';
-import IntroSection from '../introSection/IntroSection.jsx';
-import NoticeSection from '../noticeSection/NoticeSection.jsx';
-import RankingSection from '../rankingSection/RankingSection.jsx';
-import InquirySection from '../inquirySection/InquirySection.jsx';
-import FaqSection from '../faqSection/FaqSection.jsx';
+import IntroSection from './introSection/IntroSection.jsx';
+import NoticeSection from './noticeSection/NoticeSection.jsx';
+import RankingSection from './rankingSection/RankingSection.jsx';
+import FaqSection from './faqSection/FaqSection.jsx';
 import Footer from '../footer/Footer.jsx';
 import './MainPage.css';
-import downloadIcon from '../../assets/download.png';
 
 // MainPage 컴포넌트 정의
 const MainPage = () => {
@@ -15,7 +13,6 @@ const MainPage = () => {
   const introRef = useRef(null);
   const noticesRef = useRef(null);
   const rankingRef = useRef(null);
-  const inquiryRef = useRef(null);
   const faqRef = useRef(null);
 
 
@@ -27,7 +24,6 @@ const MainPage = () => {
     { name: 'intro', ref: introRef, label: '게임소개' },
     { name: 'notices', ref: noticesRef, label: '공지사항' },
     { name: 'ranking', ref: rankingRef, label: '랭킹' },
-    // { name: 'inquiry', ref: inquiryRef, label: '1:1 문의' },
     { name: 'faq', ref: faqRef, label: '문의하기' },
   ];
 
@@ -46,8 +42,12 @@ const MainPage = () => {
       { threshold: 0.5 } // 50% 이상 화면에 보여야 활성화되도록 설정
     );
 
-    // 각 섹션에 대해 Intersection Observer를 연결
-    sections.forEach((section) => observer.observe(section.ref.current));
+    // 요소가 존재할 때만 observer를 설정
+    sections.forEach((section) => {
+      if (section.ref.current) {
+        observer.observe(section.ref.current);
+      }
+    });
 
     // 컴포넌트 언마운트 시 observer 해제
     return () => observer.disconnect();
