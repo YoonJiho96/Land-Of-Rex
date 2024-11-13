@@ -22,7 +22,7 @@ const MyPostList = () => {
       setIsLoading(true);
       setError(null);
       
-      const response = await axios.get(`${baseUrl}/api/v1/my/posts`, {
+      const response = await axios.get(`/api/v1/my/posts`, {
         params: {
           page: currentPage,
           size: 10,

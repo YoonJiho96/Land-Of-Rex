@@ -15,7 +15,7 @@ const CommentForm = ({ postId, onCommentAdded }) => {
     if (!content.trim()) return;
 
     try {
-      const response = await fetch(`${baseUrl}/api/v1/posts/${postId}/comments`, {
+      const response = await fetch(`/api/v1/posts/${postId}/comments`, {
         method: 'POST',
         credentials: 'include',
         headers: {
