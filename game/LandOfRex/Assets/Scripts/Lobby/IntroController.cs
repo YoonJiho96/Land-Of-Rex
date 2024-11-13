@@ -15,6 +15,6 @@ public class IntroController : MonoBehaviour
     {
         yield return new WaitForSeconds(loadingTime);
 
-        SceneManager.LoadScene("LobbyMap");
+        SceneManager.LoadScene("Login");
     }
 }
