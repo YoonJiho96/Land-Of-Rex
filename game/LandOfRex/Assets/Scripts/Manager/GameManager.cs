@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private InputAction nextAction;
 
     public Transform destination;
+    public int stage;
 
     private float holdTime = 0f;
     public float requiredHoldTime = 1f;
@@ -244,6 +245,11 @@ public class GameManager : MonoBehaviour
         int deadCount = dataManager.playerDeadCount;
 
         UnityEngine.Debug.Log($"Clear!! {totalElapsedTime}초");
+
+        if(LoginDataManager.Instance.LoginData.highestStage < stage)
+        {
+            LoginDataManager.Instance.LoginData.highestStage = stage;
+        }
 
         SceneManager.LoadScene("LobbyMap");
     }
