@@ -130,16 +130,7 @@ const NoticeDetailPage = () => {
               {importanceBadgeStyles[notice.importance].text}
             </span>
             <h1 className="notice-title">{notice.title}</h1>
-            {isAuthor(post.authorNickname) && (
-              <div className="author-actions">
-                <button className="edit-button" onClick={handleEdit}>
-                  수정
-                </button>
-                <button className="delete-button" >
-                  삭제
-                </button>
-              </div>
-            )}
+            
           </div>
           <span className="notice-date">
             {new Date(notice.createdAt).toLocaleDateString()}
