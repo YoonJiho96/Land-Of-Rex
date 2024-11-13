@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator CheckGold()
+    public IEnumerator CheckGold()
     {
         dataManager.totalGold += stageGold[currentWave - 1];
         dataManager.gold += stageGold[currentWave - 1];
