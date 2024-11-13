@@ -44,9 +44,14 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
             </button>
           </>
         ) : (
-          <Link to="/login">
-            <button className="login-button">로그인</button>
-          </Link>
+          <>
+            <Link to="/signup">
+              <button className="signup-button">회원가입</button>
+            </Link>
+            <Link to="/login">
+              <button className="login-button">로그인</button>
+            </Link>
+          </>
         )}
       </div>
     </nav>
