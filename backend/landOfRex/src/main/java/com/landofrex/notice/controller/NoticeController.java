@@ -59,4 +59,10 @@ public class NoticeController {
         NoticePostDto.DetailResponse response = noticePostService.getNoticeById(noticeId);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{noticeId}")
+    public ResponseEntity<Void> deleteNotice(@PathVariable(name="noticeId") Long noticeId) {
+        noticePostService.deleteNotice(noticeId);
+        return ResponseEntity.noContent().build();
+    }
 }
