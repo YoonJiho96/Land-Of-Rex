@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -75,6 +76,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("DUPLICATE_NICKNAME", e.getMessage());
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
+        return new ErrorResponse("ACCESS_DENIED", e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exception(Exception e) {
         log.error("exception: ",e);
@@ -88,4 +95,6 @@ public class GlobalExceptionHandler {
         response.setMessage(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+
 }
