@@ -21,9 +21,16 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return)) // Enter 키
+        if (Input.GetKeyDown(KeyCode.Space)) // Spacebar 키
         {
-            ShowScreenUI();
+            if (isScreenUIActive) // Screen UI가 열려있을 때
+            {
+                LoadSelectedStage(); // Play 버튼 역할을 수행
+            }
+            else
+            {
+                ShowScreenUI(); // Screen UI를 열기
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape)) // Esc 키
@@ -36,6 +43,22 @@ public class UIManager : MonoBehaviour
             {
                 ToggleMenuUI(); // ScreenUI가 닫혀 있으면 MenuUI를 토글
             }
+        }
+    }
+
+    private void LoadSelectedStage()
+    {
+        if (currentScreenUI == tutoUI)
+        {
+            PlayTutorial();
+        }
+        else if (currentScreenUI == stage1UI)
+        {
+            PlayStage1();
+        }
+        else if (currentScreenUI == stage2UI)
+        {
+            PlayStage2();
         }
     }
 
