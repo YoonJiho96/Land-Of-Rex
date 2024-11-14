@@ -1,9 +1,6 @@
 package com.landofrex.game.ranking.service;
 
-import com.landofrex.game.ranking.dto.RankingDto;
-import com.landofrex.game.ranking.dto.RankingResponseDto;
-import com.landofrex.game.ranking.dto.StageInfoRequestDto;
-import com.landofrex.game.ranking.dto.StageProgressDto;
+import com.landofrex.game.ranking.dto.*;
 import com.landofrex.game.ranking.entity.Ranking;
 import com.landofrex.game.ranking.entity.StageInfo;
 import com.landofrex.game.ranking.repository.RankingRepository;
@@ -124,5 +121,41 @@ public class RankingService {
         List<Ranking> rankings = rankingRepository.findByUserIdOrderByStageInfo_Stage(userId);
 
         return StageProgressDto.fromStageInfo(rankings);
+    }
+
+    @Transactional(readOnly = true)
+    public PersonalRankingResponseDto getPersonalRanking(Long userId, Integer stage) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            Optional<Ranking> ranking = rankingRepository.findByUserAndStageInfoStage(user, stage);
+
+            PersonalRankingResponseDto response = new PersonalRankingResponseDto();
+
+            if (ranking.isPresent()) {
+                RankingDto rankingDto = new RankingDto();
+                rankingDto.setNickname(ranking.get().getUser().getNickname());
+                rankingDto.setScore(ranking.get().getStageInfo().getScore());
+                rankingDto.setRanking(ranking.get().getRanking());
+                rankingDto.setCreatedAt(ranking.get().getStageInfo().getCreatedAt());
+
+                response.setSuccess(true);
+                response.setData(rankingDto);
+                response.setMessage("Personal ranking retrieved successfully");
+            } else {
+                response.setSuccess(true);
+                response.setData(null);
+                response.setMessage("No ranking found for this stage");
+            }
+
+            return response;
+        } catch (Exception e) {
+            PersonalRankingResponseDto response = new PersonalRankingResponseDto();
+            response.setSuccess(false);
+            response.setData(null);
+            response.setMessage("Error retrieving personal ranking: " + e.getMessage());
+            return response;
+        }
     }
 }

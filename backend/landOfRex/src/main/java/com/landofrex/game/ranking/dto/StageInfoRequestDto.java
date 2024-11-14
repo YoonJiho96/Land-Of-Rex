@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 public class StageInfoRequestDto {
     @NotNull
+    private Long userId;
+    @NotNull
     private Float clearTime;
     @NotNull
     private Integer earnGold;
