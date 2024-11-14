@@ -135,13 +135,21 @@ const PostDetailPage = () => {
     const contentDiv = document.createElement('div');
     contentDiv.innerHTML = post.content;
 
-    if (post.images) {
-      const imgs = contentDiv.getElementsByTagName('img');
-      Array.from(imgs).forEach((img, index) => {
-        if (post.images[index]) {
-          img.src = post.images[index].urlCloud;
-        }
-      });
+    if (post.images && post.images.length > 0) {
+        // seq 기준으로 이미지 정렬
+        const sortedImages = [...post.images].sort((a, b) => a.seq - b.seq);
+        const imgs = contentDiv.getElementsByTagName('img');
+        
+        Array.from(imgs).forEach((img, index) => {
+            // index에 해당하는 seq를 가진 이미지 찾기
+            const matchingImage = sortedImages.find(image => image.seq === index);
+            if (matchingImage) {
+                img.src = matchingImage.urlCloud;
+                // 필요한 경우 이미지 스타일 추가
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+            }
+        });
     }
 
     return <div dangerouslySetInnerHTML={{ __html: contentDiv.innerHTML }} />;
