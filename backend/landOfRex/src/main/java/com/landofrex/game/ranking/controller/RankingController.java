@@ -1,5 +1,6 @@
 package com.landofrex.game.ranking.controller;
 
+import com.landofrex.game.ranking.dto.PersonalRankingResponseDto;
 import com.landofrex.game.ranking.dto.RankingResponseDto;
 import com.landofrex.game.ranking.dto.StageInfoRequestDto;
 import com.landofrex.game.ranking.service.RankingService;
@@ -29,5 +30,13 @@ public class RankingController {
     @GetMapping("/{stage}")
     public ResponseEntity<RankingResponseDto> getRankings(@PathVariable(name = "stage") Integer stage) {
         return ResponseEntity.ok(rankingService.getRankings(stage));
+    }
+
+    @GetMapping("/{stage}/personal")
+    public ResponseEntity<PersonalRankingResponseDto> getPersonalRanking(
+            @PathVariable(name = "stage") Integer stage,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = AuthenticationUtil.getUser().getId();
+        return ResponseEntity.ok(rankingService.getPersonalRanking(userId, stage));
     }
 }
