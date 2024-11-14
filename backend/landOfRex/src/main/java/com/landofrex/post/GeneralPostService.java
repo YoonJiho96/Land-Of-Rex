@@ -61,8 +61,14 @@ public class GeneralPostService {
         generalPost.updateStatus(postStatus);
         return generalPostRepository.save(generalPost).getId();
     }
-    public void deletePost(Long postId) {
-        generalPostRepository.deleteById(postId);
+    public void deletePost(Long postId,User user) throws IllegalAccessException {
+        GeneralPost post=generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+        if(user.getId().equals(post.getAuthor().getId())){
+            generalPostRepository.delete(post);
+        }else{
+            throw new IllegalAccessException();
+        }
+
     }
 
     public Page<GeneralPost> getMyPosts(Long authorId,Pageable pageable){

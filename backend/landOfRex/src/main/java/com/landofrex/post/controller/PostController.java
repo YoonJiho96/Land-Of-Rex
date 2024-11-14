@@ -95,7 +95,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        generalPostService.deletePost(postId);
+    public void deletePost(@PathVariable Long postId) throws IllegalAccessException {
+        User user= AuthenticationUtil.getUser();
+        generalPostService.deletePost(postId,user);
     }
 }
