@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 public class StageInfoRequestDto {
     @NotNull
-    private String secretKey;
-    @NotNull
     private Long userId;
+    @NotNull
+    private String securityKey;
     @NotNull
     private Float clearTime;
     @NotNull

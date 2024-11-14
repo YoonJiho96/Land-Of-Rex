@@ -6,6 +6,7 @@ import com.landofrex.game.ranking.dto.StageInfoRequestDto;
 import com.landofrex.game.ranking.service.RankingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +15,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RankingController {
     private final RankingService rankingService;
+    private final String securityKey = "parkyhAndleehj";
 
     @PostMapping
     public ResponseEntity<RankingResponseDto> submitScore(
             @Valid @RequestBody StageInfoRequestDto request) {
-        return ResponseEntity.ok(rankingService.submitScore(request.getUserId(), request));
+        if(request.getSecurityKey().equals(securityKey)) {
+            return ResponseEntity.ok(rankingService.submitScore(request.getUserId(), request));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @GetMapping("/{stage}")

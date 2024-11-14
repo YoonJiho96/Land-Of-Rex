@@ -88,24 +88,20 @@ public class SecurityConfig {
 
                         // 1-3. 공개 조회 API
                         .requestMatchers(HttpMethod.GET, "/api/v1/patches/latest").permitAll()
-                        .requestMatchers("/api/v1/rankings", "/api/v1/rankings/*").permitAll()
+                        .requestMatchers("/api/v1/rankings", "/api/v1/rankings/**").permitAll()
                         .requestMatchers("/api/v1/launcher/*").permitAll()
                         .requestMatchers("/api/v1/notices").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/notices/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
-
-                        // 2. GUEST 권한 필요
-                        .requestMatchers("/api/v1/auth/sign-up/oauth", "/api/v1/auth/email").hasRole("GUEST")
-
-                        // 3. ADMIN 권한 필요
+                        .requestMatchers(HttpMethod.GET,"/api/v1/notices/*").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/posts/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/patches").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/username/exists").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/auth/nickname/{nickname}/exists").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/patches").hasRole("ADMIN")
+                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/v1/auth/sign-up/oauth","/api/v1/auth/email").hasRole("GUEST")
+                        .requestMatchers("/api/v1/auth/password/find").permitAll()
+                        .requestMatchers("/api/v1/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
-
-                        // 4. USER 또는 ADMIN 권한 필요
-                        .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
-
-                        // 5. 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2LoginSuccessHandler(jwtService))
