@@ -30,22 +30,22 @@ public class PostImage extends BaseTimeEntity {
     private String urlCloud;
 
     @NonNull
-    private Integer seqence;
+    private Integer sequence;
 
     @Enumerated(EnumType.STRING)
     private ImageStatus status;
 
 
-    public PostImage(@NonNull BasePost post, String urlCloud, String fileName,Integer seqence) {
+    public PostImage(@NonNull BasePost post, String urlCloud, String fileName,Integer sequence) {
         this.urlCloud = urlCloud;
         this.post = post;
         this.fileName=fileName;
         this.status=ImageStatus.UPLOAD_SUCCESS;
-        this.seqence=seqence;
+        this.sequence = sequence;
     }
 
     public void updateSequence(Integer seqence) {
-        this.seqence=seqence;
+        this.sequence =seqence;
     }
 
 }
