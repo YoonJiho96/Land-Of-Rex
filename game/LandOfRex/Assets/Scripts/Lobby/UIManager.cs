@@ -19,6 +19,18 @@ public class UIManager : MonoBehaviour
     private bool isScreenUIActive = false;
     private bool isMenuUIActive = false;
 
+    public RankingManager rankingManager;
+    private long userId = 0;
+
+    private void Start()
+    {
+        if(LoginDataManager.Instance != null)
+        {
+            userId = LoginDataManager.Instance.LoginData.userId;
+        }
+        Debug.Log($"userId in UIManager: {userId}");  // UIManager에서
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) // Spacebar 키
@@ -71,14 +83,20 @@ public class UIManager : MonoBehaviour
         if (IsPlayerInCollider(tutoCollider))
         {
             currentScreenUI = tutoUI;
+            callAllRanking(0);
+            callPersonalRanking(0, userId);
         }
         else if (IsPlayerInCollider(stage1Collider))
         {
             currentScreenUI = stage1UI;
+            callAllRanking(1);
+            callPersonalRanking(1, userId);
         }
         else if (IsPlayerInCollider(stage2Collider))
         {
             currentScreenUI = stage2UI;
+            callAllRanking(2);
+            callPersonalRanking(2, userId);
         }
 
         if (currentScreenUI != null)
@@ -87,6 +105,49 @@ public class UIManager : MonoBehaviour
             screenUI.SetActive(true); // Screen UI 전체 활성화
             isScreenUIActive = true;
         }
+    }
+
+    private void callAllRanking(int stage)
+    {
+        // 콜백 함수를 사용하여 랭킹 데이터 받기
+        rankingManager.GetRankings(stage,
+            rankings => {
+                // 성공시: 받은 랭킹 데이터 출력
+                Debug.Log("튜토리얼 전체 플레이어 랭킹 데이터 수신 성공");
+                Debug.Log($"받은 랭킹 개수: {rankings.Count}");
+
+                foreach (var rank in rankings)
+                {
+                    Debug.Log($"순위: {rank.ranking}, " +
+                            $"닉네임: {rank.nickname}, " +
+                            $"점수: {rank.score}, " +
+                            $"시간: {rank.createdAt}");
+                }
+            },
+            error => {
+                // 실패시: 에러 메시지 출력
+                Debug.LogError($"랭킹 데이터 수신 실패: {error}");
+            }
+        );
+    }
+
+    private void callPersonalRanking(int stage, long userId)
+    {
+        // 콜백 함수를 사용하여 개인 랭킹 데이터 받기
+        rankingManager.GetPersonalRanking(stage, userId,
+            personalRank => {
+                // 성공시: 받은 개인 랭킹 데이터 출력
+                Debug.Log("개인 랭킹 데이터 수신 성공");
+                Debug.Log($"순위: {personalRank.ranking}, " +
+                        $"닉네임: {personalRank.nickname}, " +
+                        $"점수: {personalRank.score}, " +
+                        $"시간: {personalRank.createdAt}");
+            },
+            error => {
+                // 실패시: 에러 메시지 출력
+                Debug.LogError($"개인 랭킹 데이터 수신 실패: {error}");
+            }
+        );
     }
 
     private void HideScreenUI()
