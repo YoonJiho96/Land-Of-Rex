@@ -44,8 +44,8 @@ public class PostImage extends BaseTimeEntity {
         this.sequence = sequence;
     }
 
-    public void updateSequence(Integer seqence) {
-        this.sequence =seqence;
+    public void updateSequence(Integer sequence) {
+        this.sequence =sequence;
     }
 
 }

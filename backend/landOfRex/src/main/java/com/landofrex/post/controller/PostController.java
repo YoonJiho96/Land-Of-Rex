@@ -71,26 +71,30 @@ public class PostController {
     )
     public ResponseEntity<Long> updatePost(@PathVariable Long postId,
                                            @RequestParam(value="PostUpdateRequest") String postUpdateRequestString,
-                                           @RequestParam(value="ImageFiles",required = false) List<MultipartFile> imageFiles,
-                                           @RequestParam(value="ImageOrders",required = false)List<String> newImageOrders
-                                           ) throws IOException {
+                                           @RequestParam(value="ImageFiles",required = false) List<MultipartFile> imageFiles
+                                           ) throws IOException, IllegalAccessException {
         User user= AuthenticationUtil.getUser();
         ObjectMapper objectMapper = new ObjectMapper();
         PostUpdateRequest postUpdateRequest = objectMapper.readValue(postUpdateRequestString, PostUpdateRequest.class);
 
-        if (postUpdateRequest.imageOrders() != null) {
-            imageService.updateImageOrders(postId,postUpdateRequest.imageOrders());
+        if (postUpdateRequest.imageSeqInfo().getExistingImages() != null) {
+            imageService.updateImageSeqs(postId,postUpdateRequest.imageSeqInfo().getExistingImages());
         }
 
-        if (imageFiles != null && newImageOrders != null) {
-            List<Integer> orders = newImageOrders.stream()
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
+        if (imageFiles != null && postUpdateRequest.imageSeqInfo().getNewImages() != null) {
+            List<Integer> orders = postUpdateRequest.imageSeqInfo().getNewImages()
+                    .stream().map(PostUpdateRequest.NewImageSeq::getSeq).toList();
             imageService.uploadImages(postId, imageFiles, orders);
         }
 
         GeneralPost generalPost = generalPostService.updatePost(user,postId,postUpdateRequest);
 
         return ResponseEntity.ok(generalPost.getId());
+    }
+
+    @DeleteMapping("/{postId}")
+    public void deletePost(@PathVariable Long postId) throws IllegalAccessException {
+        User user= AuthenticationUtil.getUser();
+        generalPostService.deletePost(postId,user);
     }
 }

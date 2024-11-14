@@ -2,6 +2,7 @@ package com.landofrex.aws;
 
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -54,11 +55,10 @@ public class ImageS3Service {
             String bucket = s3Properties.getS3().getPostImage().getBucket();
 
             amazonS3.putObject(
-                    new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead) // 필요한 경우 접근 권한 설정
+                new PutObjectRequest(bucket, fileName, file.getInputStream(), objectMetadata)
             );
 
-            return s3Properties.getS3().getPostImage().getBucketUrl() + "/" + fileName;
+            return amazonS3.getUrl(bucket, fileName).toString();
 
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드에 실패했습니다.", e);

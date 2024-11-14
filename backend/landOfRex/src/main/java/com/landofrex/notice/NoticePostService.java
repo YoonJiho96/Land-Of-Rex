@@ -38,4 +38,9 @@ public class NoticePostService {
         return new NoticePostDto.DetailResponse(notice);
     }
 
+    @Transactional
+    public void deleteNotice(Long noticeId) {
+        noticePostRepository.deleteById(noticeId);
+    }
+
 }

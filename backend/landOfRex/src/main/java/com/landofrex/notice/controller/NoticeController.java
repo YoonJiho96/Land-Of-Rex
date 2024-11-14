@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,7 @@ public class NoticeController {
     private final ImageService imageService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createNotice(@RequestPart(value="PostCreateRequest") String postCreateRequestString,
                                              @RequestPart(value="ImageFiles",required = false) List<MultipartFile> imageFiles) throws  IOException{
         User user=AuthenticationUtil.getUser();
@@ -58,5 +60,13 @@ public class NoticeController {
     public ResponseEntity<NoticePostDto.DetailResponse> getNoticeById(@PathVariable(name="noticeId") Long noticeId) {
         NoticePostDto.DetailResponse response = noticePostService.getNoticeById(noticeId);
         return ResponseEntity.ok(response);
+    }
+
+
+    @DeleteMapping("/{noticeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> deleteNotice(@PathVariable(name="noticeId") Long noticeId) {
+        noticePostService.deleteNotice(noticeId);
+        return ResponseEntity.noContent().build();
     }
 }
