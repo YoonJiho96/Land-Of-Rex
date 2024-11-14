@@ -6,6 +6,8 @@ public class EnemyController : MonoBehaviour, ObjectController
 {
     public Transform destination; // 최종 목적지
     public GameObject attackPrefeb;
+    public Transform additionalAttackeffectPosition;
+    public GameObject additionalAttackPrefeb;
     public bool isAerial = false;
     public bool isMimic = false;
 
@@ -188,6 +190,13 @@ public class EnemyController : MonoBehaviour, ObjectController
         transform.LookAt(enemy);
         GameObject projectile = Instantiate(attackPrefeb, attackStartPoint.position, Quaternion.identity);
         projectile.GetComponent<AttackController>().Initialize(enemy, damage);
+
+        if(additionalAttackPrefeb != null)
+        {
+            GameObject additionalEffect = Instantiate(additionalAttackPrefeb, additionalAttackeffectPosition.position, Quaternion.identity);
+
+            Destroy(additionalEffect, 1f);
+        }
     }
 
     public void die()
