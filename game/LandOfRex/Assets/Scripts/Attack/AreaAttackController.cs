@@ -30,7 +30,7 @@ public class AreaAttackController : MonoBehaviour
         transform.position += direction * speed * Time.deltaTime;
 
         // 목표 지점에 도달하거나 지연 시간이 지나면 폭발
-        if (Vector3.Distance(transform.position, targetPosition) <= 0f || travelTime >= explosionDelay)
+        if (Vector3.Distance(transform.position, targetPosition) < 0.2f || travelTime >= explosionDelay)
         {
             Explode();
         }
