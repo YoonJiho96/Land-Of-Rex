@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private InputAction nextAction;
 
     public Transform destination;
+    public int stage;
 
     private float holdTime = 0f;
     public float requiredHoldTime = 1f;
@@ -49,6 +50,13 @@ public class GameManager : MonoBehaviour
         gameTimer.Start();
         UpdateGUI(); // 게임 시작 시 GUI 초기화
         UpdateWaveText(); // 시작 시 웨이브 텍스트 업데이트
+
+        // 낮 배경음 재생
+        int bgmIndex = 0;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ChangeBGM(bgmIndex);
+        }
     }
 
     private void OnEnable()
@@ -85,6 +93,13 @@ public class GameManager : MonoBehaviour
                     StartCoroutine(RotateForDuration());
                     UpdateGUI(); // GUI 업데이트
                     holdTime = 0f;  // 동작 후 holdTime 초기화
+
+                    // 낮 밤 전환
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlaySFX(0);
+                        AudioManager.Instance.ChangeBGM(1);
+                    }
                 }
             }
             else
@@ -110,6 +125,13 @@ public class GameManager : MonoBehaviour
                     StartCoroutine(CheckGold());
                     UpdateGUI(); // GUI 업데이트
                     UpdateWaveText(); // 웨이브 전환 시 업데이트
+
+                    // 낮 밤 전환
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlaySFX(1);
+                        AudioManager.Instance.ChangeBGM(0); // 낮 BGM으로 전환
+                    }
                 }
             }
         }
@@ -244,6 +266,11 @@ public class GameManager : MonoBehaviour
         int deadCount = dataManager.playerDeadCount;
 
         UnityEngine.Debug.Log($"Clear!! {totalElapsedTime}초");
+
+        if(LoginDataManager.Instance.LoginData.highestStage < stage)
+        {
+            LoginDataManager.Instance.LoginData.highestStage = stage;
+        }
 
         SceneManager.LoadScene("LobbyMap");
     }

@@ -101,6 +101,11 @@ public class UIManager : MonoBehaviour
     {
         SceneManager.LoadScene("Stage2 1");
     }
+    public void Exit()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("LobbyMap");
+    }
 
     // **Continue 버튼 기능**
     public void OnContinueButtonClicked()
@@ -118,12 +123,21 @@ public class UIManager : MonoBehaviour
     }
 
     // **Exit 버튼 기능**
+    //public void OnExitButtonClicked()
+    //{
+    //    Debug.Log("Exit button clicked! Returning to main menu.");
+    //    Time.timeScale = 1; // 게임 종료 전 시간 복구
+    //    SceneManager.LoadScene("MainMenu"); // 메인 메뉴 씬으로 이동 (MainMenu 씬 이름 사용)
+    //}
+
+    // **Exit 버튼 기능**
     public void OnExitButtonClicked()
     {
-        Debug.Log("Exit button clicked! Returning to main menu.");
+        Debug.Log("Exit button clicked! Exiting game.");
         Time.timeScale = 1; // 게임 종료 전 시간 복구
-        SceneManager.LoadScene("MainMenu"); // 메인 메뉴 씬으로 이동 (MainMenu 씬 이름 사용)
+        Application.Quit(); // 게임 종료
     }
+
 
     private bool IsPlayerInCollider(Collider collider)
     {
