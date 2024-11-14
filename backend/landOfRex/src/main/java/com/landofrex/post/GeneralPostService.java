@@ -46,14 +46,14 @@ public class GeneralPostService {
         return generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
     }
 
-    public GeneralPost updatePost(User user,Long postId, PostUpdateRequest postUpdateRequest) {
+    public GeneralPost updatePost(User user,Long postId, PostUpdateRequest postUpdateRequest) throws IllegalAccessException {
         GeneralPost generalPost = generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         if(generalPost.getAuthor().getId().equals(user.getId())){
             generalPost.updateTitleAndText(postUpdateRequest);
             generalPost.setPostType(postUpdateRequest.postType());
             return generalPostRepository.save(generalPost);
         }else{
-            throw new NoSuchElementException();
+            throw new IllegalAccessException();
         }
     }
     public Long updatePostStatus(Long postId, PostStatus postStatus) {
@@ -61,8 +61,14 @@ public class GeneralPostService {
         generalPost.updateStatus(postStatus);
         return generalPostRepository.save(generalPost).getId();
     }
-    public void deletePost(Long postId) {
-        generalPostRepository.deleteById(postId);
+    public void deletePost(Long postId,User user) throws IllegalAccessException {
+        GeneralPost post=generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+        if(user.getId().equals(post.getAuthor().getId())){
+            generalPostRepository.delete(post);
+        }else{
+            throw new IllegalAccessException();
+        }
+
     }
 
     public Page<GeneralPost> getMyPosts(Long authorId,Pageable pageable){
