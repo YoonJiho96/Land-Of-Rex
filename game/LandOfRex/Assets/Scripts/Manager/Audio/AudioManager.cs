@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance; // 싱글톤 인스턴스
+
     public AudioSource bgmSource; // 배경음 전용 AudioSource
     public AudioSource sfxSource; // 효과음 전용 AudioSource
 
@@ -11,7 +13,20 @@ public class AudioManager : MonoBehaviour
 
     private bool isPlayingDefaultBGM = true; // 기본 배경음 상태 확인
 
-    void Start()
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // 씬 전환 시 파괴되지 않도록 설정
+        }
+        else
+        {
+            Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 생성 방지
+        }
+    }
+
+    private void Start()
     {
         PlayDefaultBGM(); // 시작 시 기본 배경음 재생
     }
@@ -19,7 +34,7 @@ public class AudioManager : MonoBehaviour
     // 기본 배경음을 재생하는 메서드
     public void PlayDefaultBGM()
     {
-        if (defaultBGM != null)
+        if (defaultBGM != null && (!bgmSource.isPlaying || bgmSource.clip != defaultBGM))
         {
             bgmSource.clip = defaultBGM;
             bgmSource.loop = true;
@@ -31,7 +46,7 @@ public class AudioManager : MonoBehaviour
     // 상황에 맞는 배경음으로 전환하는 메서드
     public void ChangeBGM(int clipIndex)
     {
-        if (clipIndex >= 0 && clipIndex < bgmClips.Length)
+        if (clipIndex >= 0 && clipIndex < bgmClips.Length && bgmSource.clip != bgmClips[clipIndex])
         {
             bgmSource.clip = bgmClips[clipIndex];
             bgmSource.loop = true;
