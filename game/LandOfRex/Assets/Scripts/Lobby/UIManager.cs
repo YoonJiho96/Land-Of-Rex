@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -113,16 +115,39 @@ public class UIManager : MonoBehaviour
         rankingManager.GetRankings(stage,
             rankings => {
                 // 성공시: 받은 랭킹 데이터 출력
-                Debug.Log("튜토리얼 전체 플레이어 랭킹 데이터 수신 성공");
-                Debug.Log($"받은 랭킹 개수: {rankings.Count}");
+                //Debug.Log("튜토리얼 전체 플레이어 랭킹 데이터 수신 성공");
+                //Debug.Log($"받은 랭킹 개수: {rankings.Count}");
 
-                foreach (var rank in rankings)
+                int index = 0;
+                int middle = rankings.Count <= 3 ? rankings.Count : 3;
+                Transform contents = currentScreenUI.transform.Find("Ranking").Find("Content");
+                List<Transform> lists = new List<Transform>();
+
+                foreach(Transform child in contents)
                 {
-                    Debug.Log($"순위: {rank.ranking}, " +
-                            $"닉네임: {rank.nickname}, " +
-                            $"점수: {rank.score}, " +
-                            $"시간: {rank.createdAt}");
+                    lists.Add(child);
                 }
+
+
+                for(; index < middle; index++)
+                {
+                    lists[index].Find("Text_Name").GetComponent<TextMeshProUGUI>().text = rankings[index].nickname;
+                    lists[index].Find("Text_Score").GetComponent<TextMeshProUGUI>().text = rankings[index].score.ToString();
+                }
+
+                for(; index < 3; index++)
+                {
+                    lists[index].Find("Text_Name").GetComponent<TextMeshProUGUI>().text = "";
+                    lists[index].Find("Text_Score").GetComponent<TextMeshProUGUI>().text = "";
+                }
+
+                //foreach (var rank in rankings)
+                //{
+                //    Debug.Log($"순위: {rank.ranking}, " +
+                //            $"닉네임: {rank.nickname}, " +
+                //            $"점수: {rank.score}, " +
+                //            $"시간: {rank.createdAt}");
+                //}
             },
             error => {
                 // 실패시: 에러 메시지 출력
@@ -137,11 +162,27 @@ public class UIManager : MonoBehaviour
         rankingManager.GetPersonalRanking(stage, userId,
             personalRank => {
                 // 성공시: 받은 개인 랭킹 데이터 출력
-                Debug.Log("개인 랭킹 데이터 수신 성공");
-                Debug.Log($"순위: {personalRank.ranking}, " +
-                        $"닉네임: {personalRank.nickname}, " +
-                        $"점수: {personalRank.score}, " +
-                        $"시간: {personalRank.createdAt}");
+                //Debug.Log("개인 랭킹 데이터 수신 성공");
+                //Debug.Log($"순위: {personalRank.ranking}, " +
+                //        $"닉네임: {personalRank.nickname}, " +
+                //        $"점수: {personalRank.score}, " +
+                //        $"시간: {personalRank.createdAt}");
+
+                Transform listMe = currentScreenUI.transform.Find("Ranking").Find("ListMe");
+
+                if (personalRank.ranking == 0)
+                {
+                    listMe.Find("Text_Rank").GetComponent<TextMeshProUGUI>().text = "-";
+                    listMe.Find("Text_Name").GetComponent<TextMeshProUGUI>().text = LoginDataManager.Instance.LoginData.nickname;
+                    listMe.Find("Text_Score").GetComponent<TextMeshProUGUI>().text = "-";
+                }
+                else
+                {
+                    listMe.Find("Text_Rank").GetComponent<TextMeshProUGUI>().text = personalRank.ranking.ToString();
+                    listMe.Find("Text_Name").GetComponent<TextMeshProUGUI>().text = personalRank.nickname;
+                    listMe.Find("Text_Score").GetComponent<TextMeshProUGUI>().text = personalRank.score.ToString();
+                }
+
             },
             error => {
                 // 실패시: 에러 메시지 출력
