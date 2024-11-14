@@ -39,7 +39,7 @@ const TextEditorWithCustomImageUpload = ({
                 Array.from(imgs).forEach((img, index) => {
                   if (initialData.images[index]) {
                       const imageUrl = initialData.images[index].urlCloud;
-                      const imageId = initialData.images[index].id;
+                      const imageId = initialData.images[index].imageId;
                       img.src = imageUrl;
                       img.setAttribute('data-image-id', imageId);
                       imagesMap.set(imageUrl, imageId);

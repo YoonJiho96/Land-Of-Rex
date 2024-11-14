@@ -71,6 +71,8 @@ export const AuthProvider = ({ children }) => {
     return user && user.nickname === authorNickname;
   };
 
+  const isAdmin = 
+
   // 컴포넌트 마운트와 라우트 변경 시 인증 상태 확인
   useEffect(() => {
     checkAuthStatus();

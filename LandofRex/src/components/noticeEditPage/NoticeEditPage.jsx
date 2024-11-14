@@ -68,8 +68,8 @@ const NoticeEditPage = () => {
   }
 
   return (
-    <div className="notice-create-container">
-      <h1 className="notice-title">공지사항 수정</h1>
+    <div className="editor-container">
+      <h2 className="editor-title">공지사항 수정</h2>
       
       <form onSubmit={handleSubmit} className="notice-form">
         <div className="form-group">

@@ -20,16 +20,19 @@ const importanceBadgeStyles = {
   }
 };
 
-const NoticeDetailPage = () => {
-  const { noticeId } = useParams();
+const NoticeDetailPage = ({noticeIdProp,onClose}) => {
+  const { noticeId: noticeIdParam } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [notice, setNotice] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const noticeId = noticeIdProp || noticeIdParam;
+
   useEffect(() => {
     const fetchNotice = async () => {
+      console.log(noticeId)
       if (!noticeId) {
         setError("공지사항 ID가 없습니다.");
         setIsLoading(false);
@@ -130,16 +133,7 @@ const NoticeDetailPage = () => {
               {importanceBadgeStyles[notice.importance].text}
             </span>
             <h1 className="notice-title">{notice.title}</h1>
-            {isAuthor(post.authorNickname) && (
-              <div className="author-actions">
-                <button className="edit-button" onClick={handleEdit}>
-                  수정
-                </button>
-                <button className="delete-button" >
-                  삭제
-                </button>
-              </div>
-            )}
+            
           </div>
           <span className="notice-date">
             {new Date(notice.createdAt).toLocaleDateString()}

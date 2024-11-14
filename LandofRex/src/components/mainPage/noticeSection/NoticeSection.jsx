@@ -29,6 +29,7 @@ const NoticesSection = React.forwardRef((props, ref) => {
   }, []);
 
   const handleNoticeClick = (noticeId) => {
+    console.log(noticeId)
     setSelectedNoticeId(noticeId);
     setIsModalOpen(true);
 
@@ -86,7 +87,7 @@ const NoticesSection = React.forwardRef((props, ref) => {
       {isModalOpen && (
         <div className={`modal-overlay ${isAnimating ? 'show' : ''}`} onClick={closeModal}>
           <div className={`modal-content ${isAnimating ? 'show' : ''}`} onClick={(e) => e.stopPropagation()}>
-            <NoticeDetailPage noticeId={selectedNoticeId} onClose={closeModal} />
+            <NoticeDetailPage noticeIdProp={selectedNoticeId} onClose={closeModal} />
           </div>
         </div>
       )}
