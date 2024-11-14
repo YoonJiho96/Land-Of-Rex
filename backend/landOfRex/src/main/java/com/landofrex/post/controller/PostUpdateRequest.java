@@ -7,15 +7,27 @@ import lombok.Getter;
 import java.util.List;
 
 
-public record PostUpdateRequest(Long postId, String title, String content, PostType postType, List<ImageOrder> imageOrders, List<ImageOrder> newImageOrders ) {
+public record PostUpdateRequest(Long postId, String title, String content, PostType postType, ImageSeqInfo imageSeqInfo) {
 
     @Builder
     public PostUpdateRequest {
     }
 
     @Getter
-    public static class ImageOrder{
-        private Long id;
-        private Integer sequence;
+    public static class ImageSeq{
+        private Long imageId;
+        private Integer seq;
+    }
+
+    @Getter
+    public static class NewImageSeq{
+        private String tempUrl;
+        private Integer seq;
+    }
+
+    @Getter
+    public static class ImageSeqInfo {
+        private List<ImageSeq> existingImages;
+        private List<NewImageSeq> newImages;
     }
 }
