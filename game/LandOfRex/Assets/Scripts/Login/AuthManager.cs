@@ -82,12 +82,20 @@ public class AuthManager : MonoBehaviour
 
     [SerializeField] private AuthUIManager authUIManager;
 
+    [SerializeField] private AudioManager audioManager;
+
     private const string BASE_URL = "https://k11e102.p.ssafy.io";
     private const string SIGNUP_ENDPOINT = "/api/v1/auth/signup";
     private const string LOGIN_ENDPOINT = "/api/v1/auth/login";
 
     private void Start()
     {
+        // 기본 배경음 재생
+        if (audioManager != null)
+        {
+            audioManager.PlayDefaultBGM();
+        }
+
         // 초기 메시지 창 크기를 0으로 설정
         alertTransform.localScale = new Vector3(0, 1, 1);
         sucessAlertTransform.localScale = new Vector3(0, 1, 1);
