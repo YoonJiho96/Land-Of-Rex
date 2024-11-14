@@ -24,7 +24,7 @@ public class ImageS3Service {
     private final S3Properties s3Properties;
 
     public ImageS3Service(
-            @Qualifier("appS3Client") AmazonS3 amazonS3,
+            @Qualifier("minIOClient") AmazonS3 amazonS3,
             S3Properties s3Properties
     ) {
         this.amazonS3 = amazonS3;

@@ -24,6 +24,7 @@ public class S3Properties {
     public static class S3 {
         private BucketConfig postImage = new BucketConfig();
         private BucketConfig app = new BucketConfig();
+        private BucketConfig minIO = new BucketConfig();
     }
 
     @Getter
