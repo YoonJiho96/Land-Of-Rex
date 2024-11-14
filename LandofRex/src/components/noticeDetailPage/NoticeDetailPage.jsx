@@ -20,16 +20,19 @@ const importanceBadgeStyles = {
   }
 };
 
-const NoticeDetailPage = () => {
-  const { noticeId } = useParams();
+const NoticeDetailPage = ({noticeIdProp,onClose}) => {
+  const { noticeId: noticeIdParam } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [notice, setNotice] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const noticeId = noticeIdProp || noticeIdParam;
+
   useEffect(() => {
     const fetchNotice = async () => {
+      console.log(noticeId)
       if (!noticeId) {
         setError("공지사항 ID가 없습니다.");
         setIsLoading(false);
