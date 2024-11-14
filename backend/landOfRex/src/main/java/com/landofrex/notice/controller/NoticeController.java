@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,7 +61,9 @@ public class NoticeController {
         return ResponseEntity.ok(response);
     }
 
+
     @DeleteMapping("/{noticeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteNotice(@PathVariable(name="noticeId") Long noticeId) {
         noticePostService.deleteNotice(noticeId);
         return ResponseEntity.noContent().build();

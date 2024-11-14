@@ -88,13 +88,4 @@ public class GlobalExceptionHandler {
         response.setMessage(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<RankingResponseDto> handleValidationExceptions(MethodArgumentNotValidException e) {
-//        RankingResponseDto response = new RankingResponseDto();
-//        response.setSuccess(false);
-//        response.setMessage("Validation failed: " +
-//                e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-//    }
 }

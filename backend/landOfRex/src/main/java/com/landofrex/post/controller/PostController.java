@@ -73,7 +73,7 @@ public class PostController {
                                            @RequestParam(value="PostUpdateRequest") String postUpdateRequestString,
                                            @RequestParam(value="ImageFiles",required = false) List<MultipartFile> imageFiles,
                                            @RequestParam(value="ImageOrders",required = false)List<String> newImageOrders
-                                           ) throws IOException {
+                                           ) throws IOException, IllegalAccessException {
         User user= AuthenticationUtil.getUser();
         ObjectMapper objectMapper = new ObjectMapper();
         PostUpdateRequest postUpdateRequest = objectMapper.readValue(postUpdateRequestString, PostUpdateRequest.class);
@@ -92,5 +92,10 @@ public class PostController {
         GeneralPost generalPost = generalPostService.updatePost(user,postId,postUpdateRequest);
 
         return ResponseEntity.ok(generalPost.getId());
+    }
+
+    @DeleteMapping("/{postId}")
+    public void deletePost(@PathVariable Long postId) {
+        generalPostService.deletePost(postId);
     }
 }

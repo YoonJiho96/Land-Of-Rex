@@ -46,14 +46,14 @@ public class GeneralPostService {
         return generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
     }
 
-    public GeneralPost updatePost(User user,Long postId, PostUpdateRequest postUpdateRequest) {
+    public GeneralPost updatePost(User user,Long postId, PostUpdateRequest postUpdateRequest) throws IllegalAccessException {
         GeneralPost generalPost = generalPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         if(generalPost.getAuthor().getId().equals(user.getId())){
             generalPost.updateTitleAndText(postUpdateRequest);
             generalPost.setPostType(postUpdateRequest.postType());
             return generalPostRepository.save(generalPost);
         }else{
-            throw new NoSuchElementException();
+            throw new IllegalAccessException();
         }
     }
     public Long updatePostStatus(Long postId, PostStatus postStatus) {
