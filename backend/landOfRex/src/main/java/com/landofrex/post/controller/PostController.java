@@ -82,7 +82,8 @@ public class PostController {
         }
 
         if (imageFiles != null && postUpdateRequest.imageSeqInfo().getNewImages() != null) {
-            List<Integer> orders = postUpdateRequest.imageSeqInfo().getNewImages();
+            List<Integer> orders = postUpdateRequest.imageSeqInfo().getNewImages()
+                    .stream().map(PostUpdateRequest.NewImageSeq::getSeq).toList();
             imageService.uploadImages(postId, imageFiles, orders);
         }
 
