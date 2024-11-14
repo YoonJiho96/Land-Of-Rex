@@ -4,14 +4,14 @@ import './Sidebar.css';
 
 const Sidebar = ({ selectedMenu, setSelectedMenu }) => {
   const navigate = useNavigate();
-  const menuItems = ['대시보드', '사용자 관리', '문의내역'];
+  const menuItems = ['공지사항', '사용자 관리', '문의내역'];
 
   const handleMenuClick = (item) => {
     setSelectedMenu(item);
     
     // 메뉴 항목에 따른 경로 설정
     switch(item) {
-      case '대시보드':
+      case '공지사항':
         navigate('/dashboardPage');
         break;
       case '사용자 관리':
