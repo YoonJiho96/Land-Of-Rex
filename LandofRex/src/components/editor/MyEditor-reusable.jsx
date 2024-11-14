@@ -34,15 +34,15 @@ const TextEditorWithCustomImageUpload = ({
             contentDiv.innerHTML = initialData.content || '';
 
             if (initialData.images) {
+                const sortedImages = [...initialData.images].sort((a, b) => a.seq - b.seq);
                 const imgs = contentDiv.getElementsByTagName('img');
                 const imagesMap = new Map();
                 Array.from(imgs).forEach((img, index) => {
-                  if (initialData.images[index]) {
-                      const imageUrl = initialData.images[index].urlCloud;
-                      const imageId = initialData.images[index].imageId;
-                      img.src = imageUrl;
-                      img.setAttribute('data-image-id', imageId);
-                      imagesMap.set(imageUrl, imageId);
+                  const matchingImage = sortedImages.find(image => image.seq === index);
+                  if (matchingImage) {
+                      img.src = matchingImage.urlCloud;
+                      img.setAttribute('data-image-id', matchingImage.imageId);
+                      imagesMap.set(matchingImage.urlCloud, matchingImage.imageId);
                   }
                 });
 
@@ -61,9 +61,9 @@ const TextEditorWithCustomImageUpload = ({
       }
     }, [isEditorReady, initialContent]);
 
-    const getImageOrderInfo = () => {
+    const getImageSeqInfo = () => {
       const imgs = editorRef.current.dom.select('img');
-      const orderInfo = {
+      const seqInfo = {
           existingImages: [],
           newImages: []
       };
@@ -71,33 +71,33 @@ const TextEditorWithCustomImageUpload = ({
       Array.from(imgs).forEach((img, index) => {
           const imageId = img.getAttribute('data-image-id');
           if (imageId) {
-              orderInfo.existingImages.push({
-                  id: parseInt(imageId),
-                  order: index
+              seqInfo.existingImages.push({
+                  imageId: parseInt(imageId),
+                  seq: index
               });
           } else if (img.src.startsWith('blob:')) {
-              orderInfo.newImages.push({
-                  tempUrl: img.src,
-                  order: index
+              seqInfo.newImages.push({
+                tempUrl: img.src,
+                seq: index
               });
           }
       });
 
-      return orderInfo;
+      return seqInfo;
     };
 
     const getEditorImages = async () => {
-      const imageOrderInfo = getImageOrderInfo();
+      const imageSeqInfo = getImageSeqInfo();
       const files = [];
 
-      const fetchPromises = imageOrderInfo.newImages.map(async ({ tempUrl, order }) => {
+      const fetchPromises = imageSeqInfo.newImages.map(async ({ tempUrl, seq }) => {
           try {
               const response = await fetch(tempUrl);
               const blob = await response.blob();
-              const file = new File([blob], `image-${Date.now()}-${order}.jpg`, { type: blob.type });
+              const file = new File([blob], `image-${Date.now()}-${seq}.jpg`, { type: blob.type });
               files.push({
                   file,
-                  order
+                  seq
               });
           } catch (error) {
               console.error('Error fetching image:', error);
@@ -140,19 +140,26 @@ const TextEditorWithCustomImageUpload = ({
       const formData = new FormData();
       const editor = editorRef.current;
       const rawHtml = editor.getContent({ format: 'raw' });
+      const imageSeqInfo=getImageSeqInfo();
 
       const { requirePostType, ...fieldsToSubmit } = additionalFieldsRef.current;
 
-      formData.append(requestKey, JSON.stringify({
-          title: title,
-          content: rawHtml,
-          ...fieldsToSubmit
-      }));
+      const requestBody = {
+        title: title,
+        content: rawHtml,
+        ...fieldsToSubmit,
+      };
+
+      // PUT method일 때만 imageSeqInfo 추가
+      if (method.toUpperCase() === 'PATCH') {
+          requestBody.imageSeqInfo = imageSeqInfo;
+      }
+
+      formData.append(requestKey, JSON.stringify(requestBody));
 
       const newImages = await getEditorImages();
-      newImages.forEach(({ file, order }) => {
+      newImages.forEach(({ file, seq }) => {
           formData.append('ImageFiles', file);
-          formData.append('ImageOrders', order.toString());
       });
 
       try {
@@ -249,8 +256,8 @@ const TextEditorWithCustomImageUpload = ({
               padding: '0.5rem 1rem',
               backgroundColor: isSubmitting ? '#ccc' : '#007bff',
               color: 'white',
-              border: 'none',
-              borderRadius: '4px',
+              bseq: 'none',
+              bseqRadius: '4px',
               cursor: isSubmitting ? 'not-allowed' : 'pointer',
               width: '100%'
           }}
