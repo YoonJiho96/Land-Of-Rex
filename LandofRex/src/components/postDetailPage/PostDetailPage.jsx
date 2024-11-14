@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './PostDetailPage.css';
 import { baseUrl } from '../../config/url';
 import { useAuth } from '../../context/AuthContext';
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
 
 // 댓글 입력 컴포넌트
@@ -192,6 +194,43 @@ const PostDetailPage = () => {
     window.location.href = `${baseUrl}/posts/${post.id}/edit`;
   };
 
+  // 게시글 삭제 핸들러
+  const handleDelete = async () => {
+    Swal.fire({
+      title: '게시글을 삭제하시겠습니까?',
+      text: "삭제된 게시글은 복구할 수 없습니다.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: '삭제',
+      cancelButtonText: '취소'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios({
+            method: 'DELETE',
+            url: `${baseUrl}/api/v1/posts/${postId}`,
+            withCredentials: true,
+          });
+
+          Swal.fire(
+            '삭제 완료!',
+            '게시물이 성공적으로 삭제되었습니다.',
+            'success'
+          ).then(() => {
+            navigate('/my/posts'); // 삭제 후 "/my/posts" 경로로 이동
+          });
+        } catch (error) {
+          console.error('Error deleting post:', error);
+          Swal.fire('오류', '게시글 삭제에 실패했습니다.', 'error');
+        }
+      }
+    });
+  };
+
+
+
   return (
     <div className="container">
       {/* 게시글 섹션 */}
@@ -230,7 +269,7 @@ const PostDetailPage = () => {
                 <button className="edit-button" onClick={handleEdit}>
                   수정
                 </button>
-                <button className="delete-button" >
+                <button className="delete-button" onClick={handleDelete}>
                   삭제
                 </button>
               </div>
