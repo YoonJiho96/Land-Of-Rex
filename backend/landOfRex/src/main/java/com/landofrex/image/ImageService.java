@@ -29,7 +29,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Transactional
-    public void uploadImages(BasePost basePost, List<MultipartFile> imageFiles,List<Integer> imageOrders) throws IOException {
+    public void uploadImages(BasePost basePost, List<MultipartFile> imageFiles,List<Integer> imageSeqs) throws IOException {
 
         CompletableFuture<List<String>> uploadFuture = s3Service.uploadImageFiles(imageFiles);
 
@@ -37,7 +37,7 @@ public class ImageService {
             for (int i = 0; i < urls.size(); i++) {
                 String imageFileName = imageFiles.get(i).getOriginalFilename();
                 String url = urls.get(i);
-                PostImage postImage = new PostImage(basePost, url, imageFileName, imageOrders.get(i));
+                PostImage postImage = new PostImage(basePost, url, imageFileName, imageSeqs.get(i));
                 basePost.addImage(postImage);
             }
             basePostRepository.save(basePost);
@@ -48,22 +48,22 @@ public class ImageService {
     }
 
     @Transactional
-    public void uploadImages(Long postId, List<MultipartFile> imageFiles,List<Integer> imageOrders) throws IOException {
+    public void uploadImages(Long postId, List<MultipartFile> imageFiles,List<Integer> imageSeqs) throws IOException {
 
         BasePost foundPost=basePostRepository.findById(postId).orElseThrow(EntityNotFoundException::new);
-        uploadImages(foundPost,imageFiles,imageOrders);
+        uploadImages(foundPost,imageFiles,imageSeqs);
     }
 
     @Transactional
     public void uploadImages(BasePost newPost, List<MultipartFile> imageFiles) throws IOException{
-        List<Integer> orders = IntStream.range(0, imageFiles.size())
+        List<Integer> seqs = IntStream.range(0, imageFiles.size())
                 .boxed()
                 .toList();
-        uploadImages(newPost,imageFiles,orders);
+        uploadImages(newPost,imageFiles,seqs);
     }
 
     @Transactional
-    public void updateImageOrders(Long postId,List<PostUpdateRequest.ImageOrder> imageOrders){
+    public void updateImageSeqs(Long postId,List<PostUpdateRequest.ImageSeq> imageSeqs){
         List<PostImage> postImages = imageRepository.findByPostId(postId);
 
         // ID를 키로 하는 Map 생성하여 조회 성능 개선
@@ -71,10 +71,10 @@ public class ImageService {
                 .collect(Collectors.toMap(PostImage::getId, image -> image));
 
         // 순서 업데이트
-        for (PostUpdateRequest.ImageOrder imageOrder : imageOrders) {
-            PostImage postImage = imageMap.get(imageOrder.getId());
+        for (PostUpdateRequest.ImageSeq imageSeq : imageSeqs) {
+            PostImage postImage = imageMap.get(imageSeq.getImageId());
             if (postImage != null) {
-                postImage.updateSequence(imageOrder.getSequence());
+                postImage.updateSequence(imageSeq.getSeq());
             }
         }
     }
