@@ -39,7 +39,15 @@ const LoginPage = () => {
         throw new Error('로그인에 실패했습니다.');
       }
 
-      navigate('/');
+      const result = await response.json();
+      const { role } = result.data;
+
+      // role에 따라 라우팅
+      if (role === 'ADMIN') {
+        navigate('/adminPage');
+      } else {
+        navigate('/');
+      }
       
     } catch (err) {
       setError(err.message || '로그인 중 오류가 발생했습니다.');
