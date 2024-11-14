@@ -4,12 +4,9 @@ import com.landofrex.game.ranking.dto.PersonalRankingResponseDto;
 import com.landofrex.game.ranking.dto.RankingResponseDto;
 import com.landofrex.game.ranking.dto.StageInfoRequestDto;
 import com.landofrex.game.ranking.service.RankingService;
-import com.landofrex.security.AuthenticationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,11 +17,8 @@ public class RankingController {
 
     @PostMapping
     public ResponseEntity<RankingResponseDto> submitScore(
-            @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody StageInfoRequestDto request) {
-
-        Long userId = AuthenticationUtil.getUser().getId();
-        return ResponseEntity.ok(rankingService.submitScore(userId, request));
+        return ResponseEntity.ok(rankingService.submitScore(request.getUserId(), request));
     }
 
     @GetMapping("/{stage}")
@@ -35,8 +29,7 @@ public class RankingController {
     @GetMapping("/{stage}/personal")
     public ResponseEntity<PersonalRankingResponseDto> getPersonalRanking(
             @PathVariable(name = "stage") Integer stage,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = AuthenticationUtil.getUser().getId();
+            @RequestParam(name = "userId") Long userId) {
         return ResponseEntity.ok(rankingService.getPersonalRanking(userId, stage));
     }
 }
