@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { baseUrl } from '../../config/url';
 import NavBar from '../navBar/NavBar';
 import './SignupPage.css'
+import Swal from 'sweetalert2';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -154,32 +155,52 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validations.username.isValid || !validations.password.isValid || !validations.confirmPassword.isValid || !validations.nickname.isValid ||
-      !isChecked.username || !isChecked.nickname) {
+    
+    // 모든 필드의 유효성과 중복 확인 체크
+    if (
+      !validations.username.isValid || 
+      !validations.password.isValid || 
+      !validations.confirmPassword.isValid || 
+      !validations.nickname.isValid ||
+      !isChecked.username || 
+      !isChecked.nickname
+    ) {
       alert('모든 필드를 올바르게 입력하고 중복 확인을 완료해주세요.');
       return;
     }
-
+  
+    const dataToSend = { ...formData };
+    delete dataToSend.confirmPassword;
+  
     try {
       const response = await fetch(`${baseUrl}/api/v1/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(dataToSend)
       });
-
+  
       if (response.ok) {
-        alert('회원가입이 완료되었습니다.');
-        navigate('/login');
+        Swal.fire({
+          icon: 'success',
+          title: '회원가입이 완료되었습니다!',
+          text: '로그인 페이지로 이동합니다.',
+          confirmButtonText: '확인'
+        }).then(() => {
+          navigate('/login');
+        });
       } else {
+        const errorData = await response.json();
+        console.error("Server response error:", errorData);
         alert('회원가입 중 오류가 발생했습니다.');
       }
     } catch (error) {
+      console.error('Network error:', error);
       alert('서버 오류가 발생했습니다.');
     }
   };
-
+    
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '400px', backgroundColor: 'white', borderRadius: '8px', padding: '32px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
