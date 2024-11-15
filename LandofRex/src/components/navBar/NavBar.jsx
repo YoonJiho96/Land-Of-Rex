@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.ico'; // logo.ico 파일을 import
 
-const NavBar = ({ activeSection, scrollToSection, sections }) => {
+const NavBar = ({ activeSection, scrollToSection, sections = [] }) => { // 기본값 설정
   const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
 

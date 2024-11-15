@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './NoticeDetailPage.css';
 import { baseUrl } from '../../config/url';
 import { useAuth } from '../../context/AuthContext';
+import NavBar from '../navBar/NavBar';
 
 const importanceBadgeStyles = {
   URGENT: {
@@ -19,7 +20,7 @@ const importanceBadgeStyles = {
   }
 };
 
-const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
+const NoticeDetailPage = ({ noticeIdProp, onClose, isModal = false }) => {
   const { noticeId: noticeIdParam } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -89,12 +90,12 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
   };
 
   if (isLoading) {
-    return <div className="container">로딩 중...</div>;
+    return <div className="notice-container">로딩 중...</div>;
   }
 
   if (error) {
     return (
-      <div className="container">
+      <div className="notice-container">
         <div className="error-message">{error}</div>
         <div className="button-wrapper">
           <button onClick={() => navigate('/notices')} className="back-button">
@@ -107,7 +108,7 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
 
   if (!notice) {
     return (
-      <div className="container">
+      <div className="notice-container">
         <div>공지사항을 찾을 수 없습니다</div>
         <div className="button-wrapper">
           <button onClick={() => navigate('/notices')} className="back-button">
@@ -119,20 +120,21 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
   }
 
   return (
-    <div className="container">
-      {/* 닫기 아이콘 */}
-      {onClose && (
-        <span className="close-icon" onClick={onClose}>&times;</span>
-      )}
-      <div className="notice-section">
-        {/* 제목 및 날짜 영역 */}
+    <div className="notice-container">
+      {!isModal && <NavBar />}
+      <div className="notice-section"
+        style={{ marginTop: !isModal ? '15%' : '0' }} // 모달이 아닐 때만 상단 마진 추가
+        >
+        {onClose && (
+          <span className="close-icon" onClick={onClose}>X</span>
+        )}
         <div className="notice-header">
           <div className="notice-title-wrapper">
             <span 
               className="notice-badge"
-              style={{ backgroundColor: importanceBadgeStyles[notice.importance].backgroundColor }}
+              style={{ backgroundColor: importanceBadgeStyles[notice.importance]?.backgroundColor || '#333' }}
             >
-              {importanceBadgeStyles[notice.importance].text}
+              {importanceBadgeStyles[notice.importance]?.text || '알 수 없음'}
             </span>
             <h1 className="notice-title">{notice.title}</h1>
           </div>
@@ -140,8 +142,6 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
             {new Date(notice.createdAt).toLocaleDateString()}
           </span>
         </div>
-
-        {/* 관리자 액션 */}
         {isAdmin && (
           <div className="admin-actions">
             <button className="edit-button" onClick={handleEdit}>
@@ -152,15 +152,11 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
             </button>
           </div>
         )}
-
-        {/* 내용 */}
         <div className="notice-content">
           <div dangerouslySetInnerHTML={{ __html: notice.content }} />
         </div>
-
-        {/* 목록 버튼 */}
-        <div className="back-button-wrapper">
-          <button onClick={() => navigate('/notices')} className="back-button">
+        <div className="list-button-wrapper">
+          <button onClick={() => navigate('/notices')} className="list-button">
             목록
           </button>
         </div>

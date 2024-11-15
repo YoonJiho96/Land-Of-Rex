@@ -2,7 +2,7 @@
   position: relative; /* 닫기 버튼을 절대 위치로 배치하기 위해 추가 */
     max-width: 800px;
     max-height: 600px;
-    margin: 0 auto;
+    margin: 0px auto; /* 위아래 여백을 추가 */
     padding: 10px;
   }
   
