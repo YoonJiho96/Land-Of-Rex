@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { baseUrl } from '../../config/url.js';
 import './NoticeList.css';
+import NavBar from '../navBar/NavBar'; // NavBar를 import
+
 
 const NoticeList = () => {
   const navigate = useNavigate();
@@ -66,7 +68,9 @@ const NoticeList = () => {
   if (error) return <div className="error">{error}</div>;
 
   return (
+    
     <div className="notice-list-container">
+      <NavBar activeSection="myPosts" sections={[]} /> 
       <div className="notice-header">
         <h1>공지사항</h1>
         

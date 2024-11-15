@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './NoticeDetailPage.css';
 import { baseUrl } from '../../config/url';
 import { useAuth } from '../../context/AuthContext';
+import NavBar from '../navBar/NavBar'; // NavBar를 import
+
+
 
 const importanceBadgeStyles = {
   URGENT: {
@@ -19,7 +22,7 @@ const importanceBadgeStyles = {
   }
 };
 
-const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
+const NoticeDetailPage = ({ noticeIdProp, onClose, isModal = false }) => {
   const { noticeId: noticeIdParam } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -89,12 +92,12 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
   };
 
   if (isLoading) {
-    return <div className="container">로딩 중...</div>;
+    return <div className="notice-container">로딩 중...</div>;
   }
 
   if (error) {
     return (
-      <div className="container">
+      <div className="notice-container">
         <div className="error-message">{error}</div>
         <div className="button-wrapper">
           <button onClick={() => navigate('/notices')} className="back-button">
@@ -107,7 +110,7 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
 
   if (!notice) {
     return (
-      <div className="container">
+      <div className="notice-container">
         <div>공지사항을 찾을 수 없습니다</div>
         <div className="button-wrapper">
           <button onClick={() => navigate('/notices')} className="back-button">
@@ -119,12 +122,20 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
   }
 
   return (
-    <div className="container">
-      {/* 닫기 아이콘 */}
-      {onClose && (
-        <span className="close-icon" onClick={onClose}>&times;</span>
-      )}
+    <div className="notice-container">
+      {!isModal && <NavBar activeSection="myPosts" sections={[]} />}
+        {/* 모달이 아닐 경우에만 margin-top 적용 */}
+      <div
+        className="notice-container"
+        style={{ marginTop: !isModal ? '80px' : '0' }} // NavBar 높이만큼 여백 설정
+      >
+      </div>
       <div className="notice-section">
+        {/* 닫기 텍스트 */}
+        {onClose && (
+          <span className="close-icon" onClick={onClose}>&times;</span>
+         )}
+        
         {/* 제목 및 날짜 영역 */}
         <div className="notice-header">
           <div className="notice-title-wrapper">
@@ -140,7 +151,7 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
             {new Date(notice.createdAt).toLocaleDateString()}
           </span>
         </div>
-
+  
         {/* 관리자 액션 */}
         {isAdmin && (
           <div className="admin-actions">
@@ -152,12 +163,12 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
             </button>
           </div>
         )}
-
+  
         {/* 내용 */}
         <div className="notice-content">
           <div dangerouslySetInnerHTML={{ __html: notice.content }} />
         </div>
-
+  
         {/* 목록 버튼 */}
         <div className="list-button-wrapper">
           <button onClick={() => navigate('/notices')} className="list-button">
@@ -167,6 +178,6 @@ const NoticeDetailPage = ({ noticeIdProp, onClose }) => {
       </div>
     </div>
   );
-};
+  };
 
 export default NoticeDetailPage;
