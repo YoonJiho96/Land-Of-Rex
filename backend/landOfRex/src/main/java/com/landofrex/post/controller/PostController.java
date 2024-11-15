@@ -2,9 +2,7 @@ package com.landofrex.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.landofrex.gcs.GcsService;
 import com.landofrex.image.ImageService;
-import com.landofrex.post.BasePostRepository;
 import com.landofrex.post.GeneralPostService;
 import com.landofrex.post.entity.GeneralPost;
 import com.landofrex.security.AuthenticationUtil;
@@ -20,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class PostController {
 
     private final GeneralPostService generalPostService;
     private final ImageService imageService;
+    private final ObjectMapper objectMapper;
 
 
     @PostMapping(consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -39,7 +38,6 @@ public class PostController {
 
         User user= AuthenticationUtil.getUser();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         PostCreateRequest postCreateRequest = objectMapper.readValue(postCreateRequestString, PostCreateRequest.class);
 
         GeneralPost generalPost = generalPostService.createPost(user,postCreateRequest);
@@ -50,6 +48,7 @@ public class PostController {
 
         return ResponseEntity.ok(generalPost.getId());
     }
+
 
     @GetMapping
     public ResponseEntity<GeneralPostDto.PageResponse> getPosts(@RequestParam("page") int page, @RequestParam("size") int size) {

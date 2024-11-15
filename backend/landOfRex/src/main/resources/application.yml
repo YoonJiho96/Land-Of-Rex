@@ -10,14 +10,14 @@ spring:
     initialize: false
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
-    active: prod
-  redis:
-    port: 6379
-    host: localhost
+    active: perform-test
   jackson:
     serialization:
       write-dates-as-timestamps: false
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 logging.level:
   org.hibernate.SQL: debug

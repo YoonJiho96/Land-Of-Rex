@@ -94,6 +94,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/sign-up/oauth","/api/v1/auth/email").hasRole("GUEST")
                         .requestMatchers("/api/v1/auth/password/find").permitAll()
                         .requestMatchers("/api/v1/**").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
