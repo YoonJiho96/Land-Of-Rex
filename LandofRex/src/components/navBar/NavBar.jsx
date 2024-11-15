@@ -17,8 +17,10 @@ const NavBar = ({ activeSection, scrollToSection, sections }) => {
   return (
     <nav className="navbar">
       <div className="logo">
-        <img src={logo} alt="Land Of Rex Logo" className="logo-image" /> {/* 로고 이미지 추가 */}
-        Land Of Rex
+        <Link to="/"> {/* 로고 클릭 시 메인 페이지로 이동 */}
+          <img src={logo} alt="Land Of Rex Logo" className="logo-image" />
+          Land Of Rex
+        </Link>
       </div>
 
       <ul className="nav-links">

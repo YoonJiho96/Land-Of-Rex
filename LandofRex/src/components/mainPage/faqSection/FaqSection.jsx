@@ -40,7 +40,7 @@ const FaqSection = React.forwardRef((props, ref) => {
   };
 
   const faqs = [
-    { question: '게임을 어떻게 시작하나요?', answer: '게임 시작 버튼을 눌러 게임을 시작할 수 있습니다.' },
+    { question: '게임을 어떻게 시작하나요?', answer: '런처 다운로드 후 게임을 시작할 수 있습니다.' },
     { question: '랭킹은 어떻게 확인하나요?', answer: '랭킹 섹션에서 현재 순위를 확인할 수 있습니다.' },
     { question: '문의는 어디서 할 수 있나요?', answer: '문의 섹션을 이용해 질문을 남길 수 있습니다.' },
   ];

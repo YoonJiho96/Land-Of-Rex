@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from '../navBar/NavBar'; // NavBar를 import
 import { baseUrl } from '../../config/url.js';
 import '../postListPage/PostList.css';
 
@@ -23,10 +24,7 @@ const MyPostList = () => {
       setError(null);
       
       const response = await axios.get(`/api/v1/my/posts`, {
-        params: {
-          page: currentPage,
-          size: 10,
-        },
+        params: { page: currentPage, size: 10 },
         withCredentials: true
       });
 
@@ -34,7 +32,6 @@ const MyPostList = () => {
       setPosts(data.generalPosts || []);
       setTotalPages(data.totalPages || 1);
       setHasNext(data.hasNext || false);
-      
     } catch (error) {
       console.error('내 게시글 목록 조회 실패:', error);
       setPosts([]);
@@ -69,12 +66,12 @@ const MyPostList = () => {
 
   return (
     <div className="post-list-container">
+      {/* 상단에 NavBar 추가 */}
+      <NavBar activeSection="myPosts" sections={[]} /> 
+
       <div className="post-header">
         <h1>내가 쓴 문의글</h1>
-        <button
-          className="write-button"
-          onClick={handleInquiryClick}
-        >
+        <button className="write-button" onClick={handleInquiryClick}>
           문의하기
         </button>
       </div>
@@ -105,19 +102,14 @@ const MyPostList = () => {
                   </td>
                   <td>{post.authorNickname}</td>
                   <td>{new Date(post.createdAt).toLocaleDateString()}</td>
-                  <td 
-                    className="status-cell"
-                    title={post.inquiryStatus?.message}  // tooltip을 위한 title 속성
-                  >
+                  <td className="status-cell" title={post.inquiryStatus?.message}>
                     {post.inquiryStatus?.status || '-'}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="no-data">
-                  작성한 게시글이 없습니다.
-                </td>
+                <td colSpan="5" className="no-data">작성한 게시글이 없습니다.</td>
               </tr>
             )}
           </tbody>
@@ -128,7 +120,7 @@ const MyPostList = () => {
         <div className="pagination">
           <button
             className="page-button"
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
             disabled={currentPage === 0}
           >
             이전
@@ -136,7 +128,7 @@ const MyPostList = () => {
           {renderPagination()}
           <button
             className="page-button"
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))}
             disabled={!hasNext || currentPage === totalPages - 1}
           >
             다음
