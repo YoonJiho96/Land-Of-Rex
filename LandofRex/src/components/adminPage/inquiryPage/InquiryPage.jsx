@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import "./InquiryPage.css";
 import getFaqList from '../../../apis/apiFaqList';
@@ -8,6 +9,7 @@ const InquiryPage = () => {
   const [inquiries, setInquiries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate(); // useNavigate 추가
 
   useEffect(() => {
     fetchInquiries(currentPage);
@@ -46,7 +48,7 @@ const InquiryPage = () => {
       pages.push(
         <button
           key={i}
-          className={`page-button ${currentPage === i ? 'active' : ''}`}
+          className={`page-button ${currentPage === i ? "active" : ""}`}
           onClick={() => setCurrentPage(i)}
         >
           {i}
@@ -56,6 +58,10 @@ const InquiryPage = () => {
     return pages;
   };
 
+  const handleRowClick = (id) => {
+    navigate(`/posts/${id}`); // PostDetailPage로 이동
+  };
+
   return (
     <div className="admin-page-layout">
       <Sidebar selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
@@ -63,7 +69,7 @@ const InquiryPage = () => {
         <div className="admin-header">
           <h1>문의내역</h1>
         </div>
-        
+
         <div className="inquiry-table-container">
           <table className="inquiry-table">
             <thead>
@@ -77,27 +83,29 @@ const InquiryPage = () => {
               </tr>
             </thead>
             <tbody>
-  {inquiries.length > 0 ? (
-    <>
-      {inquiries.map((inquiry) => (
-        <tr key={inquiry.id}>
-            <td>{inquiry.id}</td>
-            <td>{getPostTypeName(inquiry.postType)}</td>
-            <td>{inquiry.title}</td>
-            <td>{inquiry.authorNickname || "알 수 없음"}</td>
-            <td>{new Date(inquiry.createdAt).toLocaleDateString()}</td>
-            <td>{inquiry.inquiryStatus?.status || "상태 없음"}</td>
-          </tr>
-        ))}
-      </>
-    ) : (
-      <tr>
-        <td colSpan="6" className="no-data">
-          문의내역이 없습니다.
-        </td>
-      </tr>
-    )}
-  </tbody>
+              {inquiries.length > 0 ? (
+                inquiries.map((inquiry) => (
+                  <tr
+                    key={inquiry.id}
+                    onClick={() => handleRowClick(inquiry.id)} // 행 클릭 시 이동
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>{inquiry.id}</td>
+                    <td>{getPostTypeName(inquiry.postType)}</td>
+                    <td>{inquiry.title}</td>
+                    <td>{inquiry.authorNickname || "알 수 없음"}</td>
+                    <td>{new Date(inquiry.createdAt).toLocaleDateString()}</td>
+                    <td>{inquiry.inquiryStatus?.status || "상태 없음"}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="no-data">
+                    문의내역이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
 
