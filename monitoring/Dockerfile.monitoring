@@ -1,0 +1,24 @@
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+# Gradle 관련 파일 복사
+COPY ../backend/landOfRex/gradlew ./gradlew
+COPY ../backend/landOfRex/gradle ./gradle
+COPY ../backend/landOfRex/build.gradle ./
+
+# 소스 코드 복사
+COPY ../backend/landOfRex/src ./src
+
+# Gradle wrapper 실행 권한 부여
+RUN chmod +x ./gradlew
+
+# 애플리케이션 빌드
+RUN ./gradlew clean build
+
+# JAR 파일 복사 및 이름 변경
+RUN cp /app/build/libs/app-0.0.1-SNAPSHOT.jar /app/app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
