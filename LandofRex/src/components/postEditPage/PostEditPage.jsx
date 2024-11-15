@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import TextEditorWithCustomImageUpload from '../../components/editor/MyEditor-reusable';
+import TextEditorWithCustomImageUpload from '../editor/MyEditor-reusable';
 import '@/components/editor/EditorSection.css';
 
 const PostEditPage = () => {
