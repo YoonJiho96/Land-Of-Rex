@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import TextEditorWithCustomImageUpload from '../../components/editor/MyEditor-reusable';
 import '@/components/editor/EditorSection.css';
 
-const NoticeCreatePage = () => {
+const NoticeCreatePage = ({ onBack }) => { // onBack prop 받기
   const navigate = useNavigate();
   const [isPinned, setIsPinned] = useState(false);
 
@@ -23,7 +23,10 @@ const NoticeCreatePage = () => {
         apiEndpoint="/api/v1/notices"
         requestKey="PostCreateRequest"
         additionalFields={{ isPinned, requirePostType: false }}
-        onSubmitSuccess={() => navigate('/notices')}
+        onSubmitSuccess={() => {
+          navigate('/dashboardPage');
+          onBack(); // 공지사항 작성 후 목록으로 돌아가기
+        }}
       />
     </div>
   );

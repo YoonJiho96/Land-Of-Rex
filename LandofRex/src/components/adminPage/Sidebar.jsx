@@ -4,7 +4,7 @@ import './Sidebar.css';
 
 const Sidebar = ({ selectedMenu, setSelectedMenu }) => {
   const navigate = useNavigate();
-  const menuItems = ['공지사항', '사용자 관리', '문의내역'];
+  const menuItems = ['공지사항', '문의내역'];
 
   const handleMenuClick = (item) => {
     setSelectedMenu(item);
@@ -13,9 +13,6 @@ const Sidebar = ({ selectedMenu, setSelectedMenu }) => {
     switch(item) {
       case '공지사항':
         navigate('/dashboardPage');
-        break;
-      case '사용자 관리':
-        navigate('/userManagement');
         break;
       case '문의내역':
         navigate('/inquiryPage');

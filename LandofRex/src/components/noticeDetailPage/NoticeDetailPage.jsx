@@ -3,9 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './NoticeDetailPage.css';
 import { baseUrl } from '../../config/url';
 import { useAuth } from '../../context/AuthContext';
-import NavBar from '../navBar/NavBar'; // NavBar를 import
-
-
+import NavBar from '../navBar/NavBar';
 
 const importanceBadgeStyles = {
   URGENT: {
@@ -123,27 +121,20 @@ const NoticeDetailPage = ({ noticeIdProp, onClose, isModal = false }) => {
 
   return (
     <div className="notice-container">
-      {!isModal && <NavBar activeSection="myPosts" sections={[]} />}
-        {/* 모달이 아닐 경우에만 margin-top 적용 */}
-      <div
-        className="notice-container"
-        style={{ marginTop: !isModal ? '80px' : '0' }} // NavBar 높이만큼 여백 설정
-      >
-      </div>
-      <div className="notice-section">
-        {/* 닫기 텍스트 */}
+      {!isModal && <NavBar />}
+      <div className="notice-section"
+        style={{ marginTop: !isModal ? '15%' : '0' }} // 모달이 아닐 때만 상단 마진 추가
+        >
         {onClose && (
-          <span className="close-icon" onClick={onClose}>&times;</span>
-         )}
-        
-        {/* 제목 및 날짜 영역 */}
+          <span className="close-icon" onClick={onClose}>X</span>
+        )}
         <div className="notice-header">
           <div className="notice-title-wrapper">
             <span 
               className="notice-badge"
-              style={{ backgroundColor: importanceBadgeStyles[notice.importance].backgroundColor }}
+              style={{ backgroundColor: importanceBadgeStyles[notice.importance]?.backgroundColor || '#333' }}
             >
-              {importanceBadgeStyles[notice.importance].text}
+              {importanceBadgeStyles[notice.importance]?.text || '알 수 없음'}
             </span>
             <h1 className="notice-title">{notice.title}</h1>
           </div>
@@ -151,8 +142,6 @@ const NoticeDetailPage = ({ noticeIdProp, onClose, isModal = false }) => {
             {new Date(notice.createdAt).toLocaleDateString()}
           </span>
         </div>
-  
-        {/* 관리자 액션 */}
         {isAdmin && (
           <div className="admin-actions">
             <button className="edit-button" onClick={handleEdit}>
@@ -163,13 +152,9 @@ const NoticeDetailPage = ({ noticeIdProp, onClose, isModal = false }) => {
             </button>
           </div>
         )}
-  
-        {/* 내용 */}
         <div className="notice-content">
           <div dangerouslySetInnerHTML={{ __html: notice.content }} />
         </div>
-  
-        {/* 목록 버튼 */}
         <div className="list-button-wrapper">
           <button onClick={() => navigate('/notices')} className="list-button">
             목록
@@ -178,6 +163,6 @@ const NoticeDetailPage = ({ noticeIdProp, onClose, isModal = false }) => {
       </div>
     </div>
   );
-  };
+};
 
 export default NoticeDetailPage;

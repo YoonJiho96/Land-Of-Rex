@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { baseUrl } from '../../config/url';
 import NavBar from '../navBar/NavBar';
+// import useAuthStore from '../../store/role'; // role 상태 관리하는 store
 
 
 const LoginPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const setRole = useAuthStore((state) => state.setRole); // setRole 함수 가져오기
   const [formData, setFormData] = useState({
     username: '',
     password: ''
