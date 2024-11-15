@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { baseUrl } from '../../config/url.js';
 import './NoticeList.css';
-import NavBar from '../navBar/NavBar'; // NavBar를 import
+import NavBar from '../navBar/NavBar'; // NavBar import
 
-
-const NoticeList = () => {
+const NoticeList = ({ onViewDetail }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [notices, setNotices] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -34,7 +34,6 @@ const NoticeList = () => {
       });
 
       const { data } = response;
-      // 실제 API 응답 구조에 맞게 수정
       setNotices(data.notices || []);
       setTotalPages(data.totalPages || 1);
       setHasNext(data.hasNext || false);
@@ -68,12 +67,12 @@ const NoticeList = () => {
   if (error) return <div className="error">{error}</div>;
 
   return (
-    
     <div className="notice-list-container">
-      <NavBar activeSection="myPosts" sections={[]} /> 
+      {/* /dashboardPage 경로가 아닐 때만 NavBar 렌더링 */}
+      {location.pathname !== '/dashboardPage' && <NavBar activeSection="myPosts" sections={[]} />}
+
       <div className="notice-header">
         <h1>공지사항</h1>
-        
       </div>
 
       <div className="notice-table">
@@ -92,7 +91,7 @@ const NoticeList = () => {
               notices.map((notice) => (
                 <tr
                   key={notice.id}
-                  onClick={() => navigate(`/notices/${notice.id}`)}
+                  onClick={() => navigate(`/notices/${notice.id}`)} // navigate 사용하여 URL 변경
                   className="notice-row"
                 >
                   <td>{notice.id}</td>
