@@ -26,7 +26,8 @@ const AppContent = () => {
   return (
     <>
       {/* /dashboardPage가 아닌 경우에만 NavBar 렌더링 */}
-      {location.pathname !== '/dashboardPage' && <NavBar />}
+      {location.pathname !== '/dashboardPage' && location.pathname !== '/inquiryPage' 
+      && location.pathname !== '/editorPage' && <NavBar />}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/adminPage" element={<AdminPage />} />

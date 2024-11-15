@@ -5,8 +5,9 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.ico'; // logo.ico 파일을 import
 
+
 const NavBar = ({ activeSection, scrollToSection, sections = [] }) => { // 기본값 설정
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, isAdmin } = useAuth(); // isAdmin을 가져옴
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -38,8 +39,8 @@ const NavBar = ({ activeSection, scrollToSection, sections = [] }) => { // 기�
       <div className="auth-buttons">
         {isLoggedIn ? (
           <>
-            <Link to="/my/posts">
-              <button className="my-posts-button">내 문의글</button>
+            <Link to={isAdmin ? "/admin/dashboard" : "/my/posts"}>
+              <button className="my-posts-button">{isAdmin ? "관리하기" : "내 문의글"}</button>
             </Link>
             <button className="login-button" onClick={handleLogout}>
               로그아웃
