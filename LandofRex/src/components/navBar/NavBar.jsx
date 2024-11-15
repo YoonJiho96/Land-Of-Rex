@@ -1,17 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar-new.css';
-import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo.ico'; // logo.ico 파일을 import
+import logo from '../../assets/logo.ico';
+import { getRole } from '../../store/role';
 
-
-const NavBar = ({ activeSection, scrollToSection, sections = [] }) => { // 기본값 설정
-  const { isLoggedIn, logout, isAdmin } = useAuth(); // isAdmin을 가져옴
+const NavBar = ({ activeSection, scrollToSection, sections = [] }) => {
   const navigate = useNavigate();
+  const role = getRole(); // localStorage에서 role 가져오기
+  const isLoggedIn = !!role; // role이 존재하면 로그인 상태로 간주
+  const isAdmin = role === 'ADMIN'; // role이 ADMIN인지 확인
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem('userRole'); // localStorage에서 role 제거
     navigate('/'); // 로그아웃 후 메인 페이지로 이동
   };
 
@@ -39,7 +40,7 @@ const NavBar = ({ activeSection, scrollToSection, sections = [] }) => { // 기�
       <div className="auth-buttons">
         {isLoggedIn ? (
           <>
-            <Link to={isAdmin ? "/admin/dashboard" : "/my/posts"}>
+            <Link to={isAdmin ? "/adminPage" : "/my/posts"}>
               <button className="my-posts-button">{isAdmin ? "관리하기" : "내 문의글"}</button>
             </Link>
             <button className="login-button" onClick={handleLogout}>

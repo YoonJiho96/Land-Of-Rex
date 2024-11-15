@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { setRole } from '../../store/role';
 import { baseUrl } from '../../config/url';
 import NavBar from '../navBar/NavBar';
 
-
 const LoginPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -15,7 +15,7 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -28,15 +28,14 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // console.log("loginPage")
-      const response = await fetch(`/api/v1/auth/login`, {
+      const response = await fetch(`${baseUrl}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-      
+
       if (!response.ok) {
         throw new Error('로그인에 실패했습니다.');
       }
@@ -44,13 +43,15 @@ const LoginPage = () => {
       const result = await response.json();
       const { role } = result.data;
 
+      // role을 localStorage에 저장
+      setRole(role);
+
       // role에 따라 라우팅
       if (role === 'ADMIN') {
         navigate('/adminPage');
       } else {
         navigate('/');
       }
-      
     } catch (err) {
       setError(err.message || '로그인 중 오류가 발생했습니다.');
     } finally {
@@ -59,7 +60,6 @@ const LoginPage = () => {
   };
 
   return (
-    
     <div style={{
       minHeight: '100vh',
       display: 'flex',
