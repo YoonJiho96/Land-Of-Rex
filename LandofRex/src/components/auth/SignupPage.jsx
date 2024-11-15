@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { baseUrl } from '../../config/url';
+import NavBar from '../navBar/NavBar';
+
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -229,7 +231,7 @@ const checkDuplicate = async (field) => {
           marginBottom: '24px',
           color: '#333'
         }}>회원가입</h2>
-        
+        <NavBar activeSection="myPosts" sections={[]} />
         <form onSubmit={handleSubmit}>
           {/* 아이디 입력 */}
           <div style={{ marginBottom: '16px' }}>

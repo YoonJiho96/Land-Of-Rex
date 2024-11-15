@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { baseUrl } from '../../config/url';
+import NavBar from '../navBar/NavBar';
+
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -57,6 +59,7 @@ const LoginPage = () => {
   };
 
   return (
+    
     <div style={{
       minHeight: '100vh',
       display: 'flex',
@@ -80,7 +83,7 @@ const LoginPage = () => {
           marginBottom: '24px',
           color: '#333'
         }}>로그인</h2>
-        
+        <NavBar activeSection="myPosts" sections={[]} />
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '16px' }}>
             <input
