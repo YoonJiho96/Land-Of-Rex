@@ -9,6 +9,7 @@ public class BootCampController : MonoBehaviour
     [SerializeField] public int lLevel = 1;
     [SerializeField] public int selectedUnit = -1;
     [SerializeField] public float interactionRange = 5f; // 플레이어와의 상호작용 범위
+    [SerializeField] public bool isElite = false;
 
     [Header("Unit Production")]
     [SerializeField] public float spawnInterval = 2f; // 유닛 스폰 시간
@@ -128,11 +129,20 @@ public class BootCampController : MonoBehaviour
         GameObject canvas = GameObject.Find("Canvas");
         if (canvas != null)
         {
-            Transform selectClassTransform = canvas.transform.Find("Select_Class");
+            Transform selectClassTransform = isElite ? canvas.transform.Find("Select_EliteClass") : canvas.transform.Find("Select_Class");
             if (selectClassTransform != null)
             {
                 GameObject selectClassUI = selectClassTransform.gameObject;
                 selectClassUI.SetActive(true); // Select_Class UI 활성화
+
+                if(!isElite)
+                {
+                    selectClassUI.GetComponent<UnitSelectionUI>().bootCamp = this;
+                }
+                else
+                {
+                    selectClassUI.GetComponent<SpecialUnitSelectionUI>().bootCamp = this;
+                }
             }
             else
             {
