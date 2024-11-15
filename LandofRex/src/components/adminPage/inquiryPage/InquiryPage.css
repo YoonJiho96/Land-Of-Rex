@@ -35,3 +35,17 @@
 .inquiry-table th:last-child {
   padding-right: 20px;
 }
+
+.save-button {
+  padding: 5px 10px;
+  background-color: #8B7FD0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #8174cd;
+}
+
