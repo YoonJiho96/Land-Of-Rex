@@ -1,10 +1,14 @@
-.container {
-    max-width: 1200px;
+.notice-container {
+  position: relative; /* 닫기 버튼을 절대 위치로 배치하기 위해 추가 */
+    max-width: 800px;
+    max-height: 600px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
   }
   
   .notice-section {
+    max-width: 800px;
+    max-height: 600px;
     background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -33,7 +37,7 @@
     padding: 4px 12px;
     border-radius: 4px;
     color: white;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     min-width: 48px;
     text-align: center;
@@ -43,7 +47,6 @@
     font-size: 24px;
     font-weight: bold;
     color: #333;
-    margin: 0;
     word-break: break-word;
   }
   
@@ -91,13 +94,13 @@
     background-color: #da190b;
   }
   
-  .button-wrapper {
+  .list-button-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 24px;
   }
   
-  .back-button {
+  .list-button {
     padding: 8px 24px;
     background-color: #f5f5f5;
     border: 1px solid #ddd;
@@ -106,7 +109,7 @@
     font-weight: 500;
   }
   
-  .back-button:hover {
+  .list-button:hover {
     background-color: #e0e0e0;
   }
   
@@ -125,3 +128,20 @@
       font-size: 20px;
     }
   }
+
+  .close-icon {
+    position: absolute;
+    top: -10px; /* notice-section의 패딩을 고려한 위치 조정 */
+    right: -10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-size: 24px;
+  }
+  
+
+.close-icon:hover {
+  color: #dc2626; /* 빨간색으로 변경 */
+}

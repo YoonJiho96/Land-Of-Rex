@@ -87,7 +87,11 @@ const NoticesSection = React.forwardRef((props, ref) => {
       {isModalOpen && (
         <div className={`modal-overlay ${isAnimating ? 'show' : ''}`} onClick={closeModal}>
           <div className={`modal-content ${isAnimating ? 'show' : ''}`} onClick={(e) => e.stopPropagation()}>
-            <NoticeDetailPage noticeIdProp={selectedNoticeId} onClose={closeModal} />
+          <NoticeDetailPage
+              noticeIdProp={selectedNoticeId}
+              onClose={closeModal}
+              isModal={true} // 모달로 사용할 때 true 전달
+            />
           </div>
         </div>
       )}
