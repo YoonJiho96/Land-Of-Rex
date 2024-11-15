@@ -33,6 +33,7 @@ public class NoticeController {
     private final ImageService imageService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createNotice(@RequestPart(value="PostCreateRequest") String postCreateRequestString,
                                              @RequestPart(value="ImageFiles",required = false) List<MultipartFile> imageFiles) throws  IOException{
         User user=AuthenticationUtil.getUser();
