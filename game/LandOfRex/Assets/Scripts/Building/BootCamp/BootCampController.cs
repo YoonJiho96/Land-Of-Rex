@@ -124,10 +124,27 @@ public class BootCampController : MonoBehaviour
 
     public void StartBootCampUI()
     {
-        // UI 생성
-        Debug.Log("1111111111");
-        isSelecting = false;
+        // Canvas 아래에 있는 Select_Class 오브젝트를 찾기
+        GameObject canvas = GameObject.Find("Canvas");
+        if (canvas != null)
+        {
+            Transform selectClassTransform = canvas.transform.Find("Select_Class");
+            if (selectClassTransform != null)
+            {
+                GameObject selectClassUI = selectClassTransform.gameObject;
+                selectClassUI.SetActive(true); // Select_Class UI 활성화
+            }
+            else
+            {
+                Debug.LogError("Select_Class UI not found under Canvas!");
+            }
+        }
+        else
+        {
+            Debug.LogError("Canvas object not found in the hierarchy!");
+        }
     }
+
 
     // 기즈모를 통한 시각적 디버깅
     public void OnDrawGizmosSelected()
