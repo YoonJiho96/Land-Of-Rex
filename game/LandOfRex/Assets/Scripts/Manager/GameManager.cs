@@ -37,6 +37,10 @@ public class GameManager : MonoBehaviour
     private float totalElapsedTime; // 측정된 총 시간을 저장할 변수
     public int[] stageGold;
 
+    public GameObject clearUI;
+    public GameObject failUI;
+    public RankingManager rankingManager;
+    public float targetTime;
 
     void Awake()
     {
@@ -252,9 +256,7 @@ public class GameManager : MonoBehaviour
 
     private void FailStage()
     {
-        UnityEngine.Debug.Log("Failed...");
-
-        SceneManager.LoadScene("LobbyMap");
+        failUI.SetActive(true);
     }
 
     private void ClearStage()
@@ -267,12 +269,20 @@ public class GameManager : MonoBehaviour
 
         UnityEngine.Debug.Log($"Clear!! {totalElapsedTime}초");
 
+        float score = 3000 * (totalGold / usedGold)
+            + 5000 * (deadCount == 0 ? 1 : 1 / (deadCount + 1))
+            + 400 * (targetTime / totalElapsedTime);
+
         if(LoginDataManager.Instance.LoginData.highestStage < stage)
         {
             LoginDataManager.Instance.LoginData.highestStage = stage;
         }
 
-        SceneManager.LoadScene("LobbyMap");
+        rankingManager.SubmitScore(totalElapsedTime, LoginDataManager.Instance.LoginData.userId, totalGold, usedGold, deadCount, (int) score, stage);
+        
+        clearUI.SetActive(true);
+
+        clearUI.transform.Find("Score").GetComponent<TextMeshProUGUI>().text = ((int) score).ToString();
     }
 
     public float GetTotalElapsedTime()
