@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BuildingController : MonoBehaviour
@@ -20,12 +21,8 @@ public class BuildingController : MonoBehaviour
     private void Awake()
     {
         dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
-
-        // GUI가 설정되었다면 기본적으로 비활성화
-        if (buildingInfoUI != null)
-        {
-            buildingInfoUI.SetActive(false);
-        }
+        GameObject canvas = GameObject.Find("Canvas");
+        buildingInfoUI = canvas.transform.Find("BuildingInfo").gameObject;
     }
 
     public void ShowPreview()
@@ -45,6 +42,7 @@ public class BuildingController : MonoBehaviour
         if (buildingInfoUI != null)
         {
             buildingInfoUI.SetActive(true);
+            SetUIText();
         }
     }
 
@@ -66,6 +64,44 @@ public class BuildingController : MonoBehaviour
             buildingInfoUI.SetActive(false);
         }
     }
+
+    private void SetUIText()
+    {
+        BuildingInfo preInfo = GetRootParent(transform).GetComponent<BuildingInfo>();
+
+        buildingInfoUI.transform.Find("Level Text").GetComponent<TextMeshProUGUI>().text = preInfo.level;
+        buildingInfoUI.transform.Find("Health Text").GetComponent<TextMeshProUGUI>().text = preInfo.health;
+        buildingInfoUI.transform.Find("Special Text").GetComponent<TextMeshProUGUI>().text = preInfo.special;
+
+        if (previewBuilding != null)
+        {
+            BuildingInfo nextInfo = previewBuilding.GetComponent<BuildingInfo>();
+
+            buildingInfoUI.transform.Find("BuildingNameText").GetComponent<TextMeshProUGUI>().text = nextInfo.buildingName;
+            buildingInfoUI.transform.Find("RangeText").GetComponent<TextMeshProUGUI>().text = nextInfo.comment;
+            buildingInfoUI.transform.Find("Level Text Next").GetComponent<TextMeshProUGUI>().text = nextInfo.level;
+            buildingInfoUI.transform.Find("Health Text Next").GetComponent<TextMeshProUGUI>().text = nextInfo.health;
+            buildingInfoUI.transform.Find("Special Text Next").GetComponent<TextMeshProUGUI>().text = nextInfo.special;
+
+            if(preInfo.special == "" && nextInfo.special != "")
+            {
+                buildingInfoUI.transform.Find("Special Text").GetComponent<TextMeshProUGUI>().text = nextInfo.special.Split("\\n")[0] + "\n-";
+            }
+
+            buildingInfoUI.transform.Find("Button_Rectangle_01_Convex_Yellow").Find("Text").GetComponent<TextMeshProUGUI>().text = "[업그레이드]\n" + GetNeedGold() + "골드 (F)";
+        }
+        else
+        {
+            buildingInfoUI.transform.Find("BuildingNameText").GetComponent<TextMeshProUGUI>().text = preInfo.buildingName;
+            buildingInfoUI.transform.Find("RangeText").GetComponent<TextMeshProUGUI>().text = preInfo.comment;
+            buildingInfoUI.transform.Find("Level Text Next").GetComponent<TextMeshProUGUI>().text = "";
+            buildingInfoUI.transform.Find("Health Text Next").GetComponent<TextMeshProUGUI>().text = "";
+            buildingInfoUI.transform.Find("Special Text Next").GetComponent<TextMeshProUGUI>().text = "";
+
+            buildingInfoUI.transform.Find("Button_Rectangle_01_Convex_Yellow").Find("Text").GetComponent<TextMeshProUGUI>().text = "최대 레벨";
+        }
+    }
+
     public int GetNeedGold()
     {
         HouseData houseData = previewBuilding.GetComponent<HouseData>();

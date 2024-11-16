@@ -34,7 +34,7 @@ public class SpecialUnitSelectionUI : MonoBehaviour
         {
             case 0:
                 descriptionText1.text = "마법사";
-                descriptionText2.text = "강련한 범위마법공격을 사용하는 원거리유닛";
+                descriptionText2.text = "강력한 범위마법공격을 사용하는 원거리유닛";
                 break;
             case 1:
                 descriptionText1.text = "기마병";
