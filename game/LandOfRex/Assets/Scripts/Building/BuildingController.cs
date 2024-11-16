@@ -13,16 +13,24 @@ public class BuildingController : MonoBehaviour
     public Material priviewRangeMaterial;
     public Material CompleteRangeMaterial;
 
+    public GameObject buildingInfoUI; // GUI 오브젝트 참조
+
     public DataManager dataManager;
 
     private void Awake()
     {
         dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+
+        // GUI가 설정되었다면 기본적으로 비활성화
+        if (buildingInfoUI != null)
+        {
+            buildingInfoUI.SetActive(false);
+        }
     }
 
     public void ShowPreview()
     {
-        if(attackRangeObject != null)
+        if (attackRangeObject != null)
         {
             attackRangeObject.SetActive(true);
         }
@@ -31,6 +39,12 @@ public class BuildingController : MonoBehaviour
         {
             previewBuilding = Instantiate(nextBuilding, transform.position, transform.rotation);
             SetMaterial(priviewMaterial, priviewRangeMaterial);
+        }
+
+        // 건물 정보 UI 활성화
+        if (buildingInfoUI != null)
+        {
+            buildingInfoUI.SetActive(true);
         }
     }
 
@@ -45,8 +59,13 @@ public class BuildingController : MonoBehaviour
         {
             Destroy(previewBuilding);
         }
-    }
 
+        // 건물 정보 UI 비활성화
+        if (buildingInfoUI != null)
+        {
+            buildingInfoUI.SetActive(false);
+        }
+    }
     public int GetNeedGold()
     {
         HouseData houseData = previewBuilding.GetComponent<HouseData>();
