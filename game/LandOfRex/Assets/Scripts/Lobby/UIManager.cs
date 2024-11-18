@@ -49,7 +49,11 @@ public class UIManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape)) // Esc 키
         {
-            if (isScreenUIActive)
+            if (settingsUI.activeSelf) // Settings UI가 활성화되어 있다면
+            {
+                OnBackToMenuButtonClicked();
+            }
+            else if (isScreenUIActive)
             {
                 HideScreenUI(); // ScreenUI가 활성화되어 있으면 ScreenUI를 닫음
             }
@@ -203,7 +207,7 @@ public class UIManager : MonoBehaviour
         isScreenUIActive = false;
     }
 
-    private void ToggleMenuUI()
+    public void ToggleMenuUI()
     {
         isMenuUIActive = !isMenuUIActive; // Menu UI의 활성화 상태를 토글
         menuUI.SetActive(isMenuUIActive); // Menu UI 활성화/비활성화
@@ -243,8 +247,16 @@ public class UIManager : MonoBehaviour
     public void OnSettingsButtonClicked()
     {
         settingsUI.SetActive(true); // Settings UI 열기
-        menuUI.SetActive(false);    // Menu UI 숨기기 (또는 메뉴에 함께 표시 가능)
+        //menuUI.SetActive(false);    // Menu UI 숨기기 (또는 메뉴에 함께 표시 가능)
         Debug.Log("Settings button clicked! Opening settings menu.");
+    }
+
+    // Settings UI에서 Menu UI로 돌아가는 버튼 기능 추가
+    public void OnBackToMenuButtonClicked()
+    {
+        settingsUI.SetActive(false); // Settings UI 닫기
+        menuUI.SetActive(true);      // Menu UI 다시 활성화
+        Debug.Log("Back to menu button clicked! Returning to menu.");
     }
 
     // **Exit 버튼 기능**
