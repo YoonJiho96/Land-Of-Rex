@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './RankingSection.css';
 import fetchRankingList from '../../../apis/apiRankingList';
 import fetchRankingList2 from '../../../apis/apiRankingList2';
+import fetchRankingListTutorial from '../../../apis/apiRankingListTutorial'; // Tutorial 데이터를 가져오는 함수
 
 const RankingSection = React.forwardRef((props, ref) => {
   const [topPlayers, setTopPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [selectedStage, setSelectedStage] = useState(1);
+  const [selectedStage, setSelectedStage] = useState(0);
 
   const getRankingData = async (fetchFunction) => {
     setLoading(true);
@@ -38,12 +39,23 @@ const RankingSection = React.forwardRef((props, ref) => {
     getRankingData(fetchRankingList2);
   };
 
+  const handleTutorialClick = () => {
+    setSelectedStage(0); // Tutorial은 0으로 설정
+    getRankingData(fetchRankingListTutorial);
+  };
+
   return (
     <section ref={ref} className="ranking-section">
       <div className="ranking-content">
         <h2>랭킹 대시보드</h2>
 
         <div className="stage-buttons">
+        <button
+            className={`stage-button ${selectedStage === 0 ? 'active' : ''}`}
+            onClick={handleTutorialClick}
+          >
+            Tutorial
+          </button>
           <button
             className={`stage-button ${selectedStage === 1 ? 'active' : ''}`}
             onClick={handleStage1Click}
