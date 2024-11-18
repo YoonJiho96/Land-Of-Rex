@@ -1,5 +1,7 @@
 # 🎮 **Land Of Rex**
 
+<img src="./docs/Image/GameImage/LandOfRex_Main.png" style="width:50%">
+
 ## 🕹️ 개요
 
 팀명: **LOR**  
