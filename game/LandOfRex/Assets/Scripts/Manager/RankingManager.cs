@@ -56,7 +56,7 @@ public class RankingManager : MonoBehaviour
 
 
     // 스테이지 클리어 데이터 전송
-    public void SubmitScore(float clearTime, long userId, int earnGold, int spendGold, int deathCount, int score, int stage, string securityKey)
+    public void SubmitScore(float clearTime, long userId, int earnGold, int spendGold, int deathCount, int score, int stage)
     {
         var request = new StageInfoRequest
         {

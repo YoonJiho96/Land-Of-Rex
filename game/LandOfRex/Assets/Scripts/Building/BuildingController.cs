@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BuildingController : MonoBehaviour
@@ -13,16 +14,20 @@ public class BuildingController : MonoBehaviour
     public Material priviewRangeMaterial;
     public Material CompleteRangeMaterial;
 
+    public GameObject buildingInfoUI; // GUI 오브젝트 참조
+
     public DataManager dataManager;
 
     private void Awake()
     {
         dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+        GameObject canvas = GameObject.Find("Canvas");
+        buildingInfoUI = canvas.transform.Find("BuildingInfo").gameObject;
     }
 
     public void ShowPreview()
     {
-        if(attackRangeObject != null)
+        if (attackRangeObject != null)
         {
             attackRangeObject.SetActive(true);
         }
@@ -31,6 +36,13 @@ public class BuildingController : MonoBehaviour
         {
             previewBuilding = Instantiate(nextBuilding, transform.position, transform.rotation);
             SetMaterial(priviewMaterial, priviewRangeMaterial);
+        }
+
+        // 건물 정보 UI 활성화
+        if (buildingInfoUI != null)
+        {
+            buildingInfoUI.SetActive(true);
+            SetUIText();
         }
     }
 
@@ -44,6 +56,49 @@ public class BuildingController : MonoBehaviour
         if (previewBuilding != null)
         {
             Destroy(previewBuilding);
+        }
+
+        // 건물 정보 UI 비활성화
+        if (buildingInfoUI != null)
+        {
+            buildingInfoUI.SetActive(false);
+        }
+    }
+
+    private void SetUIText()
+    {
+        BuildingInfo preInfo = GetRootParent(transform).GetComponent<BuildingInfo>();
+
+        buildingInfoUI.transform.Find("Level Text").GetComponent<TextMeshProUGUI>().text = preInfo.level;
+        buildingInfoUI.transform.Find("Health Text").GetComponent<TextMeshProUGUI>().text = preInfo.health;
+        buildingInfoUI.transform.Find("Special Text").GetComponent<TextMeshProUGUI>().text = preInfo.special;
+
+        if (previewBuilding != null)
+        {
+            BuildingInfo nextInfo = previewBuilding.GetComponent<BuildingInfo>();
+
+            buildingInfoUI.transform.Find("BuildingNameText").GetComponent<TextMeshProUGUI>().text = nextInfo.buildingName;
+            buildingInfoUI.transform.Find("RangeText").GetComponent<TextMeshProUGUI>().text = nextInfo.comment;
+            buildingInfoUI.transform.Find("Level Text Next").GetComponent<TextMeshProUGUI>().text = nextInfo.level;
+            buildingInfoUI.transform.Find("Health Text Next").GetComponent<TextMeshProUGUI>().text = nextInfo.health;
+            buildingInfoUI.transform.Find("Special Text Next").GetComponent<TextMeshProUGUI>().text = nextInfo.special;
+
+            if(preInfo.special == "" && nextInfo.special != "")
+            {
+                buildingInfoUI.transform.Find("Special Text").GetComponent<TextMeshProUGUI>().text = nextInfo.special.Split("\\n")[0] + "\n-";
+            }
+
+            buildingInfoUI.transform.Find("Button_Rectangle_01_Convex_Yellow").Find("Text").GetComponent<TextMeshProUGUI>().text = "[업그레이드]\n" + GetNeedGold() + "골드 (F)";
+        }
+        else
+        {
+            buildingInfoUI.transform.Find("BuildingNameText").GetComponent<TextMeshProUGUI>().text = preInfo.buildingName;
+            buildingInfoUI.transform.Find("RangeText").GetComponent<TextMeshProUGUI>().text = preInfo.comment;
+            buildingInfoUI.transform.Find("Level Text Next").GetComponent<TextMeshProUGUI>().text = "";
+            buildingInfoUI.transform.Find("Health Text Next").GetComponent<TextMeshProUGUI>().text = "";
+            buildingInfoUI.transform.Find("Special Text Next").GetComponent<TextMeshProUGUI>().text = "";
+
+            buildingInfoUI.transform.Find("Button_Rectangle_01_Convex_Yellow").Find("Text").GetComponent<TextMeshProUGUI>().text = "최대 레벨";
         }
     }
 
