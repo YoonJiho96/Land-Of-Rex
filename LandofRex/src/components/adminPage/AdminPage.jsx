@@ -12,6 +12,9 @@ const AdminPage = () => {
         <div className="admin-header">
           <h1>관리자 페이지</h1>
         </div>
+        <div className="admin-description">
+            <h3>왼쪽 메뉴바에서 관리할 메뉴를 선택해주세요</h3>
+          </div>
       </div>
     </div>
   );

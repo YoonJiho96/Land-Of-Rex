@@ -1,6 +1,11 @@
-import { create } from 'zustand';
+export const setRole = (role) => {
+  localStorage.setItem('userRole', role); // 역할 저장
+};
 
-export const useRoleStore = create((set) => ({
-  role: null, // 초기 상태
-  setRole: (newRole) => set({ role: newRole }), // 역할 업데이트 함수
-}));
+export const getRole = () => {
+  return localStorage.getItem('userRole') || ''; // 역할 가져오기
+};
+
+export const clearRole = () => {
+  localStorage.removeItem('userRole'); // 역할 제거
+};

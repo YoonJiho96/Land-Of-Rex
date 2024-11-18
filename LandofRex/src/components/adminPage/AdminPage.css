@@ -21,3 +21,12 @@
   padding: 10px 20px;
   cursor: pointer;
 }
+
+.admin-description {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 18px;
+  color: #555;
+}

@@ -11,7 +11,7 @@ export default defineConfig({
       '/api': {
         // target: 'http://localhost:8080',
         target: 'https://k11e102.p.ssafy.io',
-        changeOrigin: true
+        changeOrigin: true,
       }
     }
   },
