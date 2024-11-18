@@ -148,6 +148,7 @@ cloud:
     stack:
       auto: false
 ```
+## 데이터베이스
 ### ERD
 ![ERD_land_of_rex.png](./ERD_land_of_rex.png)
 
