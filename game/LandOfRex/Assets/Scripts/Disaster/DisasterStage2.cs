@@ -50,7 +50,7 @@ public class DisasterStage2 : MonoBehaviour
             if (other.CompareTag("Unit") || other.CompareTag("Enemy"))
             {
                 HPController hpController = other.GetComponentInParent<HPController>();
-                if (hpController != null)
+                if (hpController != null && !hpController.isQueenWorm)
                 {
                     hpController.GetDamage(30);
                 }
