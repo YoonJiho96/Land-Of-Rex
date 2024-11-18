@@ -89,22 +89,27 @@ const PostList = () => {
           </thead>
           <tbody>
             {posts && posts.length > 0 ? (
-              posts.map((post) => (
-                <tr
-                  key={post.id}
-                  onClick={() => navigate(`/posts/${post.id}`)}
-                  className="post-row"
-                >
-                  <td>{post.id}</td>
-                  <td className="post-title-cell">
-                    {post.isPinned && <span className="pinned-badge">공지</span>}
-                    {post.title}
-                  </td>
-                  <td>{post.authorNickname}</td>
-                  <td>{new Date(post.createdAt).toLocaleDateString()}</td>
-                  <td>{post.viewCount || 0}</td>
-                </tr>
-              ))
+              posts.map((post, index) => {
+                // 현재 페이지 기준으로 번호 매기기
+                const displayNumber = posts.length - index;
+
+                return (
+                  <tr
+                    key={post.id}
+                    onClick={() => navigate(`/posts/${post.id}`)}
+                    className="post-row"
+                  >
+                    <td>{displayNumber}</td>
+                    <td className="post-title-cell">
+                      {post.isPinned && <span className="pinned-badge">공지</span>}
+                      {post.title}
+                    </td>
+                    <td>{post.authorNickname}</td>
+                    <td>{new Date(post.createdAt).toLocaleDateString()}</td>
+                    <td>{post.viewCount || 0}</td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan="5" className="no-data">

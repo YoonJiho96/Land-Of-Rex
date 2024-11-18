@@ -6,6 +6,8 @@ import getFaqList from '../../../apis/apiFaqList';
 import axios from 'axios';
 import apiSaveStatus from "../../../apis/apiSaveStatus";
 import { baseUrl } from '../../../config/url';
+import Swal from 'sweetalert2';
+
 
 const STATUS_OPTIONS = {
   "미확인": "미확인",
@@ -23,13 +25,13 @@ const STATUS_MAP = {
   "반려": "REJECTED"
 };
 
-
 const InquiryPage = () => {
   const [selectedMenu, setSelectedMenu] = useState("문의내역");
   const [inquiries, setInquiries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedStatuses, setSelectedStatuses] = useState({});  // 각 문의별 선택된 상태 저장
+  const [totalElements, setTotalElements] = useState(0); // 전체 게시글 수를 저장할 state 추가
+  const [selectedStatuses, setSelectedStatuses] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,9 +41,10 @@ const InquiryPage = () => {
   const fetchInquiries = async (page) => {
     try {
       const response = await getFaqList(page - 1, 10);
-      const { generalPosts = [], totalPages = 1 } = response;
+      const { generalPosts = [], totalPages = 1, totalElements = 0 } = response;
       setInquiries(generalPosts);
       setTotalPages(totalPages);
+      setTotalElements(totalElements); // 전체 게시글 수 설정
       
       // 초기 상태값 설정
       const initialStatuses = {};
@@ -55,6 +58,11 @@ const InquiryPage = () => {
     }
   };
 
+  const getDisplayNumber = (index) => {
+    // 전체 게시글 수에서 현재 페이지와 인덱스를 이용하여 번호 계산
+    return totalElements - ((currentPage - 1) * 10 + index);
+  };
+
   const handleStatusChange = (inquiryId, newStatus) => {
     setSelectedStatuses(prev => ({
       ...prev,
@@ -62,21 +70,33 @@ const InquiryPage = () => {
     }));
   };
 
+
   const handleSave = async (inquiryId) => {
     try {
       const newStatus = selectedStatuses[inquiryId];
-      const englishStatus = STATUS_MAP[newStatus]; // 한글 -> 영문 변환
+      const englishStatus = STATUS_MAP[newStatus];
   
-      const response = await apiSaveStatus(inquiryId, englishStatus); // 영문 값 전송
+      const response = await apiSaveStatus(inquiryId, englishStatus);
   
-      alert("상태가 성공적으로 저장되었습니다.");
-      fetchInquiries(currentPage); // 목록 갱신
+      Swal.fire({
+        title: "저장 완료!",
+        text: "상태가 성공적으로 저장되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+      });
+  
+      fetchInquiries(currentPage); // 데이터 새로고침
     } catch (error) {
       console.error("상태 업데이트 실패:", error.response?.data || error.message);
-      alert("상태 변경에 실패했습니다.");
+  
+      Swal.fire({
+        title: "저장 실패",
+        text: "상태 변경에 실패했습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
     }
-  };
-    
+  };    
   const getPostTypeName = (postType) => {
     switch (postType) {
       case "GAME_FEEDBACK":
@@ -141,25 +161,21 @@ const InquiryPage = () => {
             </thead>
             <tbody>
               {inquiries.length > 0 ? (
-                inquiries.map((inquiry) => (
+                inquiries.map((inquiry, index) => (
                   <tr
                     key={inquiry.id}
                     onClick={(e) => handleRowClick(inquiry.id, e)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td>{inquiry.id}</td>
+                    <td>{getDisplayNumber(index)}</td>
                     <td>{getPostTypeName(inquiry.postType)}</td>
                     <td>{inquiry.title}</td>
                     <td>{inquiry.authorNickname || "알 수 없음"}</td>
                     <td>{new Date(inquiry.createdAt).toLocaleDateString()}</td>
                     <td className="status-cell">
                       <select
-                        value={
-                          selectedStatuses[inquiry.id] || getCurrentStatus(inquiry)
-                        }
-                        onChange={(e) =>
-                          handleStatusChange(inquiry.id, e.target.value)
-                        }
+                        value={selectedStatuses[inquiry.id] || getCurrentStatus(inquiry)}
+                        onChange={(e) => handleStatusChange(inquiry.id, e.target.value)}
                         className="status-dropdown"
                         onClick={(e) => e.stopPropagation()}
                       >
