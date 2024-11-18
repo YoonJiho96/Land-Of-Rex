@@ -66,10 +66,8 @@ const InquiryPage = () => {
     try {
       const newStatus = selectedStatuses[inquiryId];
       const englishStatus = STATUS_MAP[newStatus]; // 한글 -> 영문 변환
-      console.log(`Saving status for inquiryId: ${inquiryId}, newStatus: ${englishStatus}`); // 변환 후 상태 출력
   
       const response = await apiSaveStatus(inquiryId, englishStatus); // 영문 값 전송
-      console.log("Response data:", response); // 응답 데이터 로그
   
       alert("상태가 성공적으로 저장되었습니다.");
       fetchInquiries(currentPage); // 목록 갱신
