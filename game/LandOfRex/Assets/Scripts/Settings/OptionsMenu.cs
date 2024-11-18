@@ -158,7 +158,9 @@ public class OptionsMenu : MonoBehaviour
     // 로그 변환 함수
     private float ConvertToLogarithmic(float linearValue)
     {
-        return linearValue <= 0.0001f ? muteVolume : Mathf.Lerp(minVolume, maxVolume, linearValue);
+        return linearValue <= 0.0001f
+            ? muteVolume
+            : Mathf.Lerp(minVolume, maxVolume, Mathf.Sqrt(linearValue));
     }
 
     private float ConvertToLinear(float mixerValue)
