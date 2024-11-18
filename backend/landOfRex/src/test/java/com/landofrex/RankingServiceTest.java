@@ -18,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest
+@ActiveProfiles("test")
+@Import(RankingService.class)
 class RankingServiceTest {
 
     @Mock
@@ -51,7 +56,7 @@ class RankingServiceTest {
     @BeforeEach
     void setUp() {
         UserSignUpDto signUpDto=new UserSignUpDto("test","1234","nick");
-        userRepository.save(new User(signUpDto));
+        testUser=userRepository.save(new User(signUpDto));
 
         testRequest = new StageInfoRequestDto();
         testRequest.setStage(1);
@@ -59,7 +64,7 @@ class RankingServiceTest {
         testRequest.setDeathCount(2);
         testRequest.setEarnGold(100);
         testRequest.setSpendGold(50);
-        testRequest.setClearTime();
+        testRequest.setClearTime(100f);
 
         testStageInfo = StageInfo.of(testUser, testRequest);
 
