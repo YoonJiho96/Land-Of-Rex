@@ -1,5 +1,6 @@
 package com.landofrex.post.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landofrex.post.entity.GeneralPost;
 import com.landofrex.post.entity.InquiryStatus;
 import com.landofrex.post.entity.PostType;
@@ -23,6 +24,7 @@ public class GeneralPostDto {
         private final String title;
         private final String authorNickname;
         private final PostType postType;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private final LocalDateTime createdAt;
         private final InquiryStatusResponse inquiryStatus;
 
@@ -60,7 +62,9 @@ public class GeneralPostDto {
         private final String title;
         private final String content;
         private final String authorNickname;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private final LocalDateTime createdAt;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private final LocalDateTime updatedAt;
         private final List<PostImageDto> images;
         private final PostType postType;

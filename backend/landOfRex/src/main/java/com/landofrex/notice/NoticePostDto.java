@@ -1,5 +1,6 @@
 package com.landofrex.notice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landofrex.post.controller.PostCreateRequest;
 
 import com.landofrex.post.controller.PostImageDto;
@@ -20,6 +21,7 @@ public class NoticePostDto{
         private final Long id;
         private final String title;
         private final String authorNickname;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private final LocalDateTime createdAt;
         private final NoticeImportance importance;
 
@@ -56,7 +58,10 @@ public class NoticePostDto{
         private final String title;
         private final String content;
         private final String authorNickname;
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private final LocalDateTime createdAt;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private final LocalDateTime updatedAt;
         private final NoticeImportance importance;
         private final List<PostImageDto> images;
