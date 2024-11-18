@@ -2,10 +2,29 @@ FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
+RUN apt-get update && \
+    apt-get install -y dos2unix file
+
+
 # Gradle 관련 파일 복사
 COPY ../backend/landOfRex/gradlew ./gradlew
 COPY ../backend/landOfRex/gradle ./gradle
 COPY ../backend/landOfRex/build.gradle ./
+
+#Debug steps to check file existence and permissions
+RUN echo "Checking current directory contents:" && \
+    ls -la && \
+    echo "Checking gradlew file details:" && \
+    file gradlew && \
+    echo "Checking gradlew permissions:" && \
+    stat gradlew
+
+# Fix permissions and line endings
+RUN dos2unix gradlew && \
+    chmod +x gradlew && \
+    echo "After fixing, checking gradlew again:" && \
+    ls -la gradlew
+
 
 # 소스 코드 복사
 COPY ../backend/landOfRex/src ./src

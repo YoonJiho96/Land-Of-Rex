@@ -87,7 +87,7 @@ public class RankingService2 {
     @Transactional
     protected void updateRankingsNativeSql(Integer stage) {
         rankingRepository.getRankedRankings();
-        rankingRepository.updateRankings(stage);
+        rankingRepository.updateRanking(stage.longValue(),1);
     }
 
     @Transactional(readOnly = true)
