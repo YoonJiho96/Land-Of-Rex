@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import NavBar from '../navBar/NavBar'; // NavBar를 import
-import { baseUrl } from '../../config/url.js';
+import NavBar from '../navBar/NavBar';
 import '../postListPage/PostList.css';
 
 const MyPostList = () => {
@@ -13,6 +12,7 @@ const MyPostList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasNext, setHasNext] = useState(false);
+  const [totalPosts, setTotalPosts] = useState(0); // 전체 게시글 수를 저장할 state 추가
 
   useEffect(() => {
     fetchPosts();
@@ -32,6 +32,7 @@ const MyPostList = () => {
       setPosts(data.generalPosts || []);
       setTotalPages(data.totalPages || 1);
       setHasNext(data.hasNext || false);
+      setTotalPosts(data.totalElements || 0); // 전체 게시글 수 설정
     } catch (error) {
       console.error('내 게시글 목록 조회 실패:', error);
       setPosts([]);
@@ -39,6 +40,11 @@ const MyPostList = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getDisplayNumber = (index) => {
+    // 전체 게시글 수에서 현재 페이지와 인덱스를 이용하여 번호 계산
+    return totalPosts - (currentPage * 10 + index);
   };
 
   const renderPagination = () => {
@@ -66,8 +72,7 @@ const MyPostList = () => {
 
   return (
     <div className="post-list-container">
-      {/* 상단에 NavBar 추가 */}
-      <NavBar activeSection="myPosts" sections={[]} /> 
+      <NavBar activeSection="myPosts" sections={[]} />
 
       <div className="post-header">
         <h1>내가 쓴 문의글</h1>
@@ -89,13 +94,13 @@ const MyPostList = () => {
           </thead>
           <tbody>
             {posts && posts.length > 0 ? (
-              posts.map((post) => (
+              posts.map((post, index) => (
                 <tr
                   key={post.id}
                   onClick={() => navigate(`/posts/${post.id}`)}
                   className="post-row"
                 >
-                  <td>{post.id}</td>
+                  <td>{getDisplayNumber(index)}</td>
                   <td className="post-title-cell">
                     {post.isPinned && <span className="pinned-badge">공지</span>}
                     {post.title}

@@ -23,11 +23,20 @@ import MyPostList from './components/myPost/MyPostList';
 const AppContent = () => {
   const location = useLocation();
 
+  // /posts/:postId 경로를 포함하지 않는 경우 NavBar를 렌더링
+  const excludePaths = [
+    '/dashboardPage',
+    '/inquiryPage',
+    '/editorPage',
+    '/adminPage',
+    '/'
+  ];
+
+  const isExcludedPath = excludePaths.includes(location.pathname) || location.pathname.startsWith('/posts/');
+
   return (
     <>
-      {/* /dashboardPage가 아닌 경우에만 NavBar 렌더링 */}
-      {location.pathname !== '/dashboardPage' && location.pathname !== '/inquiryPage' 
-      && location.pathname !== '/editorPage' && <NavBar />}
+      {!isExcludedPath && <NavBar />}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/adminPage" element={<AdminPage />} />

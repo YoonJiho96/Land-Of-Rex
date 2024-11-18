@@ -15,6 +15,10 @@ const NoticeList = ({ onViewDetail }) => {
   const [error, setError] = useState(null);
   const [hasNext, setHasNext] = useState(false);
 
+  const pageSize = 10; // 한 페이지당 공지사항 개수
+  const totalItems = totalPages * pageSize;
+
+
   useEffect(() => {
     fetchNotices();
   }, [currentPage]);
@@ -27,7 +31,7 @@ const NoticeList = ({ onViewDetail }) => {
       const response = await axios.get(`${baseUrl}/api/v1/notices`, {
         params: {
           page: currentPage,
-          size: 10,
+          size: pageSize, // pageSize 사용
           sort: 'createdAt,desc'
         },
         withCredentials: true
@@ -39,7 +43,6 @@ const NoticeList = ({ onViewDetail }) => {
       setHasNext(data.hasNext || false);
       
     } catch (error) {
-      console.error('공지사항 목록 조회 실패:', error);
       setNotices([]);
       setError('공지사항을 불러오는데 실패했습니다.');
     } finally {
@@ -68,7 +71,6 @@ const NoticeList = ({ onViewDetail }) => {
 
   return (
     <div className="notice-list-container">
-      {/* /dashboardPage 경로가 아닐 때만 NavBar 렌더링 */}
       {location.pathname !== '/dashboardPage' && <NavBar activeSection="myPosts" sections={[]} />}
 
       <div className="notice-header">
@@ -83,35 +85,41 @@ const NoticeList = ({ onViewDetail }) => {
               <th width="50%">제목</th>
               <th width="15%">작성자</th>
               <th width="15%">등록일</th>
-              <th width="10%">조회수</th>
             </tr>
           </thead>
           <tbody>
-            {notices && notices.length > 0 ? (
-              notices.map((notice) => (
-                <tr
-                  key={notice.id}
-                  onClick={() => navigate(`/notices/${notice.id}`)} // navigate 사용하여 URL 변경
-                  className="notice-row"
-                >
-                  <td>{notice.id}</td>
-                  <td className="notice-title-cell">
-                    {notice.isPinned && <span className="pinned-badge">공지</span>}
-                    {notice.title}
-                  </td>
-                  <td>{notice.author?.nickname || '관리자'}</td>
-                  <td>{new Date(notice.createdAt).toLocaleDateString()}</td>
-                  <td>{notice.viewCount || 0}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="no-data">
-                  공지사항이 없습니다.
-                </td>
-              </tr>
-            )}
-          </tbody>
+  {notices && notices.length > 0 ? (
+    notices.map((notice, index) => {
+      // 현재 페이지에서의 항목 번호를 역순으로 계산
+      const displayNumber = notices.length - index;
+
+      return (
+        <tr
+          key={notice.id}
+          onClick={() => navigate(`/notices/${notice.id}`)}
+          className="notice-row"
+        >
+          <td>{displayNumber}</td>
+          <td className="notice-title-cell">
+            {notice.isPinned && <span className="pinned-badge">공지</span>}
+            {notice.title}
+          </td>
+          <td>{notice.author?.nickname || '관리자'}</td>
+          <td>{new Date(notice.createdAt).toLocaleDateString()}</td>
+        </tr>
+      );
+    })
+  ) : (
+    <tr>
+      <td colSpan="4" className="no-data">
+        공지사항이 없습니다.
+      </td>
+    </tr>
+  )}
+</tbody>
+
+
+
         </table>
       </div>
 
@@ -119,7 +127,7 @@ const NoticeList = ({ onViewDetail }) => {
         <div className="pagination">
           <button
             className="page-button"
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
             disabled={currentPage === 0}
           >
             이전
@@ -127,7 +135,9 @@ const NoticeList = ({ onViewDetail }) => {
           {renderPagination()}
           <button
             className="page-button"
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
+            }
             disabled={!hasNext || currentPage === totalPages - 1}
           >
             다음
@@ -137,5 +147,6 @@ const NoticeList = ({ onViewDetail }) => {
     </div>
   );
 };
+
 
 export default NoticeList;
