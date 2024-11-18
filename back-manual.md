@@ -149,7 +149,7 @@ cloud:
       auto: false
 ```
 ### ERD
-![image.png](./erd.png)
+![ERD_land_of_rex.png](./ERD_land_of_rex.png)
 
 
 
