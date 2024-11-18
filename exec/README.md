@@ -1,6 +1,6 @@
 # 🎮 Land Of Rex 포팅 메뉴얼
 
-## 게임
+## 🕹️ 게임
 
 ### Unity
 
@@ -15,7 +15,47 @@
     - LandOfRex 폴더에 빌드
     - 빌드된 유니티 파일 실행
 
-## Backend
+## 🚀 Game Launcher
+
+### 프레임워크
+| 항목     | 버전   |
+|----------|--------|
+| Electron | 33.0.1 |
+
+### 라이브러리
+| 항목             | 버전     |
+|------------------|----------|
+| electron-builder | 24.3.0 |
+| electron-updater | 6.3.9    |
+| aws-sdk          | 2.1691.0 |
+| dotenv           | 16.4.5   |
+| node-fetch       | 3.3.2    |
+
+### 환경 변수 - **.env**
+```.env
+AWS_ACCESS_KEY_ID= 
+AWS_SECRET_ACCESS_KEY=
+AWS_REGION=
+S3_BUCKET_NAME=
+GAME_FOLDER_NAME=
+GAME_LOCAL_FOLDER_NAME=
+GAME_EXE_NAME=
+```
+* Root 디렉터리에 .env 환경 변수 작성
+
+### 실행
+```
+npm i
+npm run start
+```
+
+### 빌드
+```
+npm i
+npm run build
+```
+
+## 💻 Backend
 
 ### IDE
 | 항목 | 버전 | 설정값 |
@@ -33,7 +73,7 @@
 | Spring Boot | 3.3.5 |
 | Spring Security | 6.3.4 |
 
-### 환경변수
+### 환경변수 - **application.yml**
 ```yml
 # application.yml 설정
 spring:
@@ -110,4 +150,17 @@ cloud:
       name: ap-northeast-2
     stack:
       auto: false
+```
+
+## 🎨 Frontend
+
+### 프레임워크
+| 항목 | 버전 |
+|------|------|
+| React | 18.3.1 |
+
+### 빌드
+```
+npm i
+npm run build
 ```
