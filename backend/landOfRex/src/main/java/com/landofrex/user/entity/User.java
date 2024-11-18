@@ -52,6 +52,8 @@ public class User {
 
     private String refreshToken; // 리프레시 토큰
 
+    private Integer highestStage;
+
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
