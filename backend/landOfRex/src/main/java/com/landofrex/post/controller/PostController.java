@@ -5,18 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.landofrex.image.ImageService;
 import com.landofrex.post.GeneralPostService;
 import com.landofrex.post.entity.GeneralPost;
+import com.landofrex.post.entity.InquiryStatus;
+import com.landofrex.response.SuccessResponse;
 import com.landofrex.security.AuthenticationUtil;
 import com.landofrex.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -94,5 +99,24 @@ public class PostController {
     public void deletePost(@PathVariable Long postId) throws IllegalAccessException {
         User user= AuthenticationUtil.getUser();
         generalPostService.deletePost(postId,user);
+    }
+
+    @PatchMapping("/{postId}/inquiry-status")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public SuccessResponse<InquiryStatus> updateInquiryStatus(
+            @RequestBody InquiryStatusRequest inquiryStatusRequest, @PathVariable Long postId){
+
+        generalPostService.updateInquiryStatus(postId,inquiryStatusRequest.getInquiryStatus());
+        return SuccessResponse.of(inquiryStatusRequest.getInquiryStatus());
+    }
+
+    @GetMapping("/inquiry-status")
+    @ResponseStatus(HttpStatus.OK)
+    public SuccessResponse<List<InquiryStatusResponse>> getInquiryStatus(){
+        List<InquiryStatusResponse> inquiryStatusResponses = Arrays.stream(InquiryStatus.values())
+                .map(InquiryStatusResponse::from)
+                .toList();
+        return SuccessResponse.of(inquiryStatusResponses);
     }
 }
