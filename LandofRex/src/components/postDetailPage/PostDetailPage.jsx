@@ -6,6 +6,7 @@ import { baseUrl } from '../../config/url';
 import { useAuth } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import {formatKoreanTime} from '../../utils/DayTimeUtil'
 
 
 // 댓글 입력 컴포넌트
@@ -59,7 +60,7 @@ const CommentList = ({ comments }) => {
           <div className="comment-header">
             <span className="comment-author">{comment.authorNickname}</span>
             <span className="comment-date">
-              {new Date(comment.createdAt).toLocaleString()}
+              {formatKoreanTime(comment.createdAt)}
             </span>
           </div>
           <div className="comment-content">{comment.content}</div>
@@ -264,7 +265,7 @@ const PostDetailPage = () => {
           <div className="meta-item">
             <span className="meta-label">작성일</span>
             <span className="meta-value">
-              {new Date(post.createdAt).toLocaleString()}
+              {formatKoreanTime(post.createdAt)}
             </span>
           </div>
         </div>
