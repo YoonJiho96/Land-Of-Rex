@@ -5,6 +5,7 @@ import com.landofrex.post.controller.GeneralPostDto;
 import com.landofrex.post.controller.PostCreateRequest;
 import com.landofrex.post.controller.PostUpdateRequest;
 import com.landofrex.post.entity.GeneralPost;
+import com.landofrex.post.entity.InquiryStatus;
 import com.landofrex.post.entity.PostStatus;
 import com.landofrex.security.sanitizer.HtmlSanitizerService;
 import com.landofrex.user.entity.User;
@@ -74,6 +75,11 @@ public class GeneralPostService {
     public Page<GeneralPost> getMyPosts(Long authorId,Pageable pageable){
         Page<GeneralPost> myPosts=generalPostRepository.findByAuthor_Id(authorId,pageable);
         return myPosts;
+    }
+
+    public void updateInquiryStatus(Long postId, InquiryStatus inquiryStatus) {
+        GeneralPost generalPost=getPost(postId);
+        generalPost.updateInquiryStatus(inquiryStatus);
     }
 
 }
