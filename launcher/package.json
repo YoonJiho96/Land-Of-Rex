@@ -1,0 +1,58 @@
+{
+  "name": "land-of-rex-launcher",
+  "version": "0.0.6",
+  "description": "Land Of Rex Game Launcher App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "E102",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.1",
+    "electron-builder": "^24.3.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "dotenv": "^16.4.5",
+    "electron-updater": "6.3.9",
+    "node-fetch": "^3.3.2"
+  },
+  "build": {
+    "appId": "com.landofrex.launcher",
+    "productName": "Land-Of-Rex",
+    "directories": {
+      "output": "dist/${version}"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "assets/",
+      "scripts/"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "signAndEditExecutable": false,
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "shortcutName": "Land Of Rex",
+      "deleteAppDataOnUninstall": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "YoonJiho96",
+        "repo": "Land-Of-Rex-Launcher"
+      }
+    ]
+  }
+}
