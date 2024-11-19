@@ -1,19 +1,18 @@
 services:
   backend:
     image: spring-app
-    container_name: spring_container
     build:
-      context: .  # Set the context to the root of your project
-      dockerfile: backend/landOfRex/Dockerfile  # Path to the Dockerfile within backend/landOfRex
+      context: ./backend/landOfRex  # Backend Dockerfile 위치
+      dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      # SPRING_DATASOURCE_URL: jdbc:mysql://mysql_container:3306/land_of_rex
+    depends_on:
+      - frontend
     networks:
-      - monitoring
-    volumes:
-      - /home/ubuntu/volumes/spring-logs:/app/logs
+      - app-network
+    restart: always
 
   frontend:
     image: react-app
@@ -21,52 +20,15 @@ services:
       context: .  # Set the build context to the parent directory
       dockerfile: LandofRex/Dockerfile  # Specify Dockerfile location within the build context
     ports:
-      - "80:80"
+      - "3001:80"
+    networks:
+      - app-network
     volumes:
       - /usr/share/nginx/html:/app/dist  # Map build output to Nginx directory
     command: ["npm", "run", "build"]  # Run the build command only
 
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - /home/ubuntu/volumes/prometheus:/etc/prometheus
-    networks:
-      - monitoring
-    depends_on:
-      - backend
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
-    volumes:
-      - grafana-storage:/var/lib/grafana
-    networks:
-      - monitoring
-    depends_on:
-      - prometheus
 
 networks:
-  monitoring: 
+  app-network:
     driver: bridge
-
-volumes:
-  grafana-storage:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/ubuntu/volumes/grafana
-  prometheus-storage:  # Prometheus 데이터를 위한 볼륨 추가
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/ubuntu/volumes/prometheus
-
 

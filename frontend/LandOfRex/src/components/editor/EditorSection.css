@@ -1,0 +1,165 @@
+/* 섹션 전체 설정 */
+.editor-section {
+  padding: 4rem 1.5rem;
+  background-color: #f9fafb;
+  display: flex;
+  justify-content: center;
+}
+
+/* 컨테이너 스타일 */
+.editor-container {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem;
+}
+
+/* 제목 스타일 */
+.editor-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+/* 설명 텍스트 스타일 */
+.editor-description {
+  font-size: 1rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* 문의 유형 선택 박스 컨테이너 */
+.type-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* 셀렉트 박스 스타일 */
+.type-select {
+  width: 100%;
+  max-width: 250px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1f2937;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.type-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.type-select.error {
+  border-color: #dc3545;
+}
+
+/* 에러 메시지 스타일 */
+.type-selector .error-message {
+  width: 100%;
+  max-width: 250px;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+  background-color: #fff;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* 제출 버튼 스타일 */
+.submit-button {
+  width: 100%;
+  max-width: 100px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #2563eb;
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+
+  .custom-checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding-left: 16px;
+  }
+
+  .custom-checkbox {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s;
+    background: white;
+  }
+
+  .custom-checkbox:hover {
+    border-color: #999;
+  }
+
+  .custom-checkbox.checked {
+    background: #4a90e2;
+    border-color: #4a90e2;
+  }
+
+  .custom-checkbox.checked:after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .checkbox-label {
+    font-size: 14px;
+    color: #333;
+    user-select: none;
+  }
+
+
+@media (max-width: 768px) {
+  .editor-section {
+    padding: 2rem 1rem;
+  }
+  
+  .editor-container {
+    padding: 1.5rem;
+  }
+}
