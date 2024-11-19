@@ -167,5 +167,45 @@ npm run build
 
 ## 🎬 시연 시나리오
 ### 1. 시나리오1
+1. 로그인
+<img src="../docs/Image/Scenario/1.PNG">
+
+2. 게임 로비 맵
+<img src="../docs/Image/Scenario/2.png">
+
+3. 스테이지 선택
+<img src="../docs/Image/Scenario/3.png">
+
+4. 캐릭터 움직이기
+<img src="../docs/Image/Scenario/4.png">
+
+5. 건물 짓기
+<img src="../docs/Image/Scenario/5.png">
+
+6. 병과 선택하기
+<img src="../docs/Image/Scenario/6.png">
+
+7. 유닛 뽑기
+<img src="../docs/Image/Scenario/7.png">
+
+8. 몬스터 웨이브 막기
+<img src="../docs/Image/Scenario/8.png">
+
+9. 건물 업그레이드 하기
+<img src="../docs/Image/Scenario/9.png">
+
+10. 환경요소로 몬스터 저지하기
+<img src="../docs/Image/Scenario/10.png">
+<img src="../docs/Image/Scenario/11.png">
+
+11. 스테이지 클리어
+<img src="../docs/Image/Scenario/12.png">
+
+
 
 ### 2. 시나리오2
+1. 랭킹 확인
+<img src="../docs/Image/Scenario/3.png">
+
+2. 런처로 게임 실행
+<img src="../docs/Image/Scenario/13.png">
