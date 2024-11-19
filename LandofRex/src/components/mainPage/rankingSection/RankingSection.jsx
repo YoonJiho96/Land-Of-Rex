@@ -9,7 +9,7 @@ const RankingSection = React.forwardRef((props, ref) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [selectedStage, setSelectedStage] = useState(0);
+  const [selectedStage, setSelectedStage] = useState(1);
 
   const getRankingData = async (fetchFunction) => {
     setLoading(true);
