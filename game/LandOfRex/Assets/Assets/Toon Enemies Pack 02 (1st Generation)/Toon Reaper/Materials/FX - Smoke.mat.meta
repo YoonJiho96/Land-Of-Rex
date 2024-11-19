@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8145a3ea6243faf4aae0979e7557140f
+timeCreated: 1462341997
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 64355
+  packageName: Toon Enemies Pack 02 (1st Generation)
+  packageVersion: 1.2
+  assetPath: Assets/Toon Enemies Pack 02 (1st Generation)/Toon Reaper/Materials/FX
+    - Smoke.mat
+  uploadId: 610698

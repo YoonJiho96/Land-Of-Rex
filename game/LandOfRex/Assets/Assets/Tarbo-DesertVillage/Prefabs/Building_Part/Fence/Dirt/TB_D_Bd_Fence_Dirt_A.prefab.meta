@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a8d0cab9b184c5b49922d1458b9c76c0
+timeCreated: 1574034420
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Building_Part/Fence/Dirt/TB_D_Bd_Fence_Dirt_A.prefab
+  uploadId: 561865

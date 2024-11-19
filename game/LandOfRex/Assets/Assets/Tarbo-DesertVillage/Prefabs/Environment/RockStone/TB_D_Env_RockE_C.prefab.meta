@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a951a1493e8883949a1ee0f7a07fa9a6
+timeCreated: 1574035993
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/RockStone/TB_D_Env_RockE_C.prefab
+  uploadId: 561865

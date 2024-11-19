@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4023c44fd61373347b3412f92acb4ddc
+timeCreated: 1574036675
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Prop/Candle/TB_D_Prop_Candle_B.prefab
+  uploadId: 561865

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7212e9a94631ee948b987eb716989014
+timeCreated: 1464686546
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 64355
+  packageName: Toon Enemies Pack 02 (1st Generation)
+  packageVersion: 1.2
+  assetPath: Assets/Toon Enemies Pack 02 (1st Generation)/Toon Wild Boar/Materials/FX
+    - Tail Aura.mat
+  uploadId: 610698

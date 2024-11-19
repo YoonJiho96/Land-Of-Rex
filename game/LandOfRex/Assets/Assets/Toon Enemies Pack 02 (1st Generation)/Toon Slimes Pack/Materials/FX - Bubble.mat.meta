@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ad3c67ffaaf6f9c489fa98fc4259cf73
+timeCreated: 1464941419
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 64355
+  packageName: Toon Enemies Pack 02 (1st Generation)
+  packageVersion: 1.2
+  assetPath: Assets/Toon Enemies Pack 02 (1st Generation)/Toon Slimes Pack/Materials/FX
+    - Bubble.mat
+  uploadId: 610698

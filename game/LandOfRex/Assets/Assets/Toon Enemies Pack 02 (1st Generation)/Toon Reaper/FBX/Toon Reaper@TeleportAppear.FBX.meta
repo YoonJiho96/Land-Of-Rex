@@ -1,0 +1,183 @@
+fileFormatVersion: 2
+guid: 2043af453908a4f40a7a130ce12d7073
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Blade
+    100002: Dummy - Weapon
+    100004: Reaper
+    100006: //RootNode
+    100008: Rig
+    100010: RigCapeBack1
+    100012: RigCapeBack1Gizmo
+    100014: RigCapeBack2
+    100016: RigCapeBack2Gizmo
+    100018: RigCapeL1
+    100020: RigCapeL1Gizmo
+    100022: RigCapeL2
+    100024: RigCapeL2Gizmo
+    100026: RigCapeR1
+    100028: RigCapeR1Gizmo
+    100030: RigCapeR2
+    100032: RigCapeR2Gizmo
+    100034: RigHead
+    100036: RigHeadGizmo
+    100038: RigNeck1
+    100040: RigNeck2
+    100042: RigPelvis
+    100044: RigPelvisGizmo
+    100046: RigRArm1
+    100048: RigRArm1Gizmo
+    100050: RigRArm2
+    100052: RigRArm2Gizmo
+    100054: RigRArmPalm
+    100056: RigRArmPalmGizmo
+    100058: RigRibcage
+    100060: RigRibcageGizmo
+    100062: RigSpine1
+    100064: RigSpine2
+    100066: RigTail1
+    100068: RigTail1Gizmo
+    100070: RigTail2
+    100072: RigTail2Gizmo
+    100074: RigTail3
+    100076: RigTail3Gizmo
+    100078: RigTail4
+    100080: RigTail4Gizmo
+    400000: Blade
+    400002: Dummy - Weapon
+    400004: Reaper
+    400006: //RootNode
+    400008: Rig
+    400010: RigCapeBack1
+    400012: RigCapeBack1Gizmo
+    400014: RigCapeBack2
+    400016: RigCapeBack2Gizmo
+    400018: RigCapeL1
+    400020: RigCapeL1Gizmo
+    400022: RigCapeL2
+    400024: RigCapeL2Gizmo
+    400026: RigCapeR1
+    400028: RigCapeR1Gizmo
+    400030: RigCapeR2
+    400032: RigCapeR2Gizmo
+    400034: RigHead
+    400036: RigHeadGizmo
+    400038: RigNeck1
+    400040: RigNeck2
+    400042: RigPelvis
+    400044: RigPelvisGizmo
+    400046: RigRArm1
+    400048: RigRArm1Gizmo
+    400050: RigRArm2
+    400052: RigRArm2Gizmo
+    400054: RigRArmPalm
+    400056: RigRArmPalmGizmo
+    400058: RigRibcage
+    400060: RigRibcageGizmo
+    400062: RigSpine1
+    400064: RigSpine2
+    400066: RigTail1
+    400068: RigTail1Gizmo
+    400070: RigTail2
+    400072: RigTail2Gizmo
+    400074: RigTail3
+    400076: RigTail3Gizmo
+    400078: RigTail4
+    400080: RigTail4Gizmo
+    2300000: Blade
+    3300000: Blade
+    4300000: Reaper
+    4300002: Blade
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Reaper
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 1
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 92745bbcadc60c54d805196a0a284b1d,
+    type: 3}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 64355
+  packageName: Toon Enemies Pack 02 (1st Generation)
+  packageVersion: 1.2
+  assetPath: Assets/Toon Enemies Pack 02 (1st Generation)/Toon Reaper/FBX/Toon Reaper@TeleportAppear.FBX
+  uploadId: 610698
