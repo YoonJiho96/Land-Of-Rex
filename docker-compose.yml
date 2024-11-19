@@ -1,0 +1,34 @@
+services:
+  backend:
+    image: spring-app
+    build:
+      context: ./backend/landOfRex  # Backend Dockerfile 위치
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - frontend
+    networks:
+      - app-network
+    restart: always
+
+  frontend:
+    image: react-app
+    build:
+      context: .  # Set the build context to the parent directory
+      dockerfile: LandofRex/Dockerfile  # Specify Dockerfile location within the build context
+    ports:
+      - "3001:80"
+    networks:
+      - app-network
+    volumes:
+      - /usr/share/nginx/html:/app/dist  # Map build output to Nginx directory
+    command: ["npm", "run", "build"]  # Run the build command only
+
+
+networks:
+  app-network:
+    driver: bridge
+

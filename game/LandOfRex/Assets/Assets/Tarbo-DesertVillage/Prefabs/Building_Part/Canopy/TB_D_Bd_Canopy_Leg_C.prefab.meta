@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0fc4b9a6c50c7ab499cb091d056aa02c
+timeCreated: 1574033403
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Building_Part/Canopy/TB_D_Bd_Canopy_Leg_C.prefab
+  uploadId: 561865

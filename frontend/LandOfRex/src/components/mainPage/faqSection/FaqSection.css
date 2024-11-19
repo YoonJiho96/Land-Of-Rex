@@ -1,0 +1,118 @@
+/* FaqSection.css */
+
+.faq-section {
+  min-height: 100vh; /* 화면 전체를 채우도록 설정 */
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 요소 정렬 */
+  justify-content: center; /* 세로 가운데 정렬 */
+  align-items: center;
+  padding: 0 20px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.faq-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 800px;
+  width: 100%; /* 가로로 꽉 차게 설정 */
+}
+
+.faq-item {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+  background-color: #e0f7fa;
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.faq-question:hover {
+  background-color: #d0e8e8;
+}
+
+.toggle-icon {
+  font-size: 24px;
+  color: #333;
+}
+
+.faq-answer {
+  padding: 0px 20px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #ffffff;
+  text-align: left;
+}
+
+.inquiry-button {
+  display: block;
+  margin: 30px auto 0; /* 상단 여백을 추가하여 FAQ 리스트와 분리 */
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.inquiry-button:hover {
+  background-color: #0056b3;
+}
+/* Custom Swal button styling */
+.swal2-confirm-button {
+  background-color: #3b82f6;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-size: 15px;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.swal2-confirm-button:hover {
+  background-color: #2563eb;
+}
+
+.swal2-cancel-button {
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 0.75rem 1.5rem;
+  font-size: 15px;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.swal2-cancel-button:hover {
+  background-color: #d1d5db;
+}
+
+/* 버튼 간의 간격 추가 */
+.swal2-button-spacing .swal2-confirm-button,
+.swal2-button-spacing .swal2-cancel-button {
+  margin: 0 0.5rem; /* 버튼 간 좌우 간격 */
+}

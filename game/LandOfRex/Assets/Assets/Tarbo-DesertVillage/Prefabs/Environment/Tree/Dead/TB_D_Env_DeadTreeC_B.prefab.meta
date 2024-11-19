@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8b4e72b962dd4a442b5b5e7dcf5dd371
+timeCreated: 1574035481
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Tree/Dead/TB_D_Env_DeadTreeC_B.prefab
+  uploadId: 561865

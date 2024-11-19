@@ -1,0 +1,104 @@
+.notice-create-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notice-create-container h1 {
+  color: #333333;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.type-selector {
+  margin-bottom: 1.5rem;
+}
+
+.type-selector select {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: white;
+  color: #333333;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.type-selector select:hover {
+  border-color: #1e90ff;
+}
+
+.type-selector select:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.1);
+}
+
+.type-selector option {
+  background-color: white;
+  color: #333333;
+  padding: 0.5rem;
+}
+
+/* 에디터 컨테이너 스타일링 */
+.editor-container {
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+/* 제목 입력 필드 스타일링 */
+input[type="text"] {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #333333;
+  background-color: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.1);
+}
+
+/* 등록 버튼 스타일링 */
+.tox .tox-tbtn[aria-label="save"] {
+  background-color: #1e90ff !important;
+  color: white !important;
+  border-radius: 4px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+}
+
+.tox .tox-tbtn[aria-label="save"]:hover {
+  background-color: #187bcd !important;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .notice-create-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .notice-create-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .type-selector select {
+    max-width: 100%;
+  }
+}

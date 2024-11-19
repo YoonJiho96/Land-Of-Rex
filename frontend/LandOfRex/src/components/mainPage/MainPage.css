@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+.main-page {
+  height: auto; /* 부모 요소에 고정 높이 설정이 없다면 생략 가능 */
+  overflow: hidden;
+}
+
+.intro {
+  background-color: #f0f8ff;
+}
+
+.notices {
+  background-color: #e6e6fa;
+}
+
+.ranking {
+  background-color: #fffacd;
+}
+
+.inquiry {
+  background-color: #fafad2;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1, h2 {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.6;
+}

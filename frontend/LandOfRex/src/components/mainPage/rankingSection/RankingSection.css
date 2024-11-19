@@ -1,0 +1,93 @@
+.ranking-section {
+  height: 100vh; /* 화면 전체를 채우도록 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #f4f6f8; /* 배경색 예시 */
+  border-bottom: 1px solid #ddd;
+}
+
+.ranking-content {
+  max-width: 800px;
+  text-align: center;
+}
+
+.ranking-content h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.ranking-table th,
+.ranking-table td {
+  padding: 15px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.ranking-table th {
+  background-color: #0073e6; /* 헤더 배경색 */
+  color: #fff;
+  font-weight: bold;
+}
+
+.ranking-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* 짝수 행 배경색 */
+}
+
+.stats {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.stats h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.stats p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.stage-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  justify-content: center;
+}
+
+.stage-button {
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 3D 느낌의 음영 추가 */
+}
+
+.stage-button.active {
+  background-color: #0073e6;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 더욱 강한 음영 */
+}
+
+.stage-button:hover {
+  background-color: #0073e6;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 더욱 강한 음영 */
+}

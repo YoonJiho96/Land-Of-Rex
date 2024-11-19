@@ -1,0 +1,71 @@
+.intro-section {
+  position: relative; /* 부모 요소를 기준으로 절대 위치 설정 가능 */
+  height: 100vh; /* 화면 전체를 채우도록 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #f0f8ff;
+  border-bottom: 1px solid #ddd;
+}
+
+.intro-content {
+  max-width: 80%;
+  text-align: center;
+  position: relative;
+}
+
+.intro-content p {
+  position: absolute;
+  top: 20px; /* 이미지 위쪽으로 20px 위치 */
+  left: 20px; /* 이미지 왼쪽으로 20px 위치 */
+  background-color: #fff; /* 배경을 하얗게 설정 */
+  padding: 10px;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
+  z-index: 10; /* 이미지 위에 표시되도록 z-index 설정 */
+}
+
+.intro-image {
+  width: 100%;
+  height: auto;
+  margin: 20px 0;
+}
+
+.download-button-container {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  align-items: center; /* 가운데 정렬 */
+  gap: 10px; /* 텍스트와 버튼 사이 간격 */
+}
+
+
+.download-button {
+  display: flex; /* 아이콘과 텍스트를 나란히 배치 */
+  align-items: center;
+  padding: 15px 40px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-size: 28px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+  background-color: #555;
+}
+
+.download-icon {
+  width: 40px; /* 아이콘 크기 조정 */
+  height: 40px;
+}
+
+.download-description {
+  font-size: 22px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+}

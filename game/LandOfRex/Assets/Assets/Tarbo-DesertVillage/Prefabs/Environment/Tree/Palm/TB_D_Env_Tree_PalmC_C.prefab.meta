@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d29f33b4f0b279d4f857255c72f2f98a
+timeCreated: 1574036206
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Tree/Palm/TB_D_Env_Tree_PalmC_C.prefab
+  uploadId: 561865

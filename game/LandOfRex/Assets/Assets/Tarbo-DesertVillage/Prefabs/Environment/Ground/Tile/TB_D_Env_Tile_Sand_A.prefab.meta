@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a876cb51e878df445867aa42e8a00782
+timeCreated: 1574036162
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158073
+  packageName: Desert Village Pack - Low Poly 3D Art
+  packageVersion: 1.0.3
+  assetPath: Assets/Tarbo-DesertVillage/Prefabs/Environment/Ground/Tile/TB_D_Env_Tile_Sand_A.prefab
+  uploadId: 561865
