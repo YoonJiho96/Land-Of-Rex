@@ -168,7 +168,7 @@ npm run build
 ## 🎬 시연 시나리오
 ### 1. 시나리오1
 1. 로그인
-<img src="../docs/Image/Scenario/1.png">
+<img src="../docs/Image/Scenario/1.PNG">
 
 2. 게임 로비 맵
 <img src="../docs/Image/Scenario/2.png">
