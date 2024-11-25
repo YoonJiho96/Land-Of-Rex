@@ -199,13 +199,13 @@ npm run build
 <img src="../docs/Image/Scenario/11.PNG">
 
 11. 스테이지 클리어
-<img src="../docs/Image/Scenario/12.png">
+<img src="../docs/Image/Scenario/12.PNG">
 
 
 
 ### 2. 시나리오2
 1. 랭킹 확인
-<img src="../docs/Image/Scenario/3.png">
+<img src="../docs/Image/Scenario/3.PNG">
 
 2. 런처로 게임 실행
-<img src="../docs/Image/Scenario/13.png">
+<img src="../docs/Image/Scenario/13.PNG">
