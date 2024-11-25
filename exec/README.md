@@ -171,32 +171,32 @@ npm run build
 <img src="../docs/Image/Scenario/1.PNG">
 
 2. 게임 로비 맵
-<img src="../docs/Image/Scenario/2.png">
+<img src="../docs/Image/Scenario/2.PNG">
 
 3. 스테이지 선택
-<img src="../docs/Image/Scenario/3.png">
+<img src="../docs/Image/Scenario/3.PNG">
 
 4. 캐릭터 움직이기
-<img src="../docs/Image/Scenario/4.png">
+<img src="../docs/Image/Scenario/4.PNG">
 
 5. 건물 짓기
-<img src="../docs/Image/Scenario/5.png">
+<img src="../docs/Image/Scenario/5.PNG">
 
 6. 병과 선택하기
-<img src="../docs/Image/Scenario/6.png">
+<img src="../docs/Image/Scenario/6.PNG">
 
 7. 유닛 뽑기
-<img src="../docs/Image/Scenario/7.png">
+<img src="../docs/Image/Scenario/7.PNG">
 
 8. 몬스터 웨이브 막기
-<img src="../docs/Image/Scenario/8.png">
+<img src="../docs/Image/Scenario/8.PNG">
 
 9. 건물 업그레이드 하기
-<img src="../docs/Image/Scenario/9.png">
+<img src="../docs/Image/Scenario/9.PNG">
 
 10. 환경요소로 몬스터 저지하기
-<img src="../docs/Image/Scenario/10.png">
-<img src="../docs/Image/Scenario/11.png">
+<img src="../docs/Image/Scenario/10.PNG">
+<img src="../docs/Image/Scenario/11.PNG">
 
 11. 스테이지 클리어
 <img src="../docs/Image/Scenario/12.png">
