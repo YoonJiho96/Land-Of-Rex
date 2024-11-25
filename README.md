@@ -60,8 +60,14 @@
 
 |                                           |                                         |
 | ----------------------------------------- | --------------------------------------- |
-| <img src="./docs/Image/web-main.png">     | <img src="./docs/Image/download.gif">   |
-| `웹 페이지` 웹 페이지 메인 화면           | `게임 다운로드` 웹 페이지 게임 다운로드 |
+| <img src="./docs/Image/GamePlay/런처게임실행.gif"> | <img src="./docs/Image/GamePlay/게임접속,로그인.gif">   |
+| 게임실행(게임런처)           | 게임접속, 로그인 |
+| <img src="./docs/Image/GamePlay/로비,스테이지접속.gif"> | <img src="./docs/Image/GamePlay/이동, 건물 짓기.gif">   |
+| 로비, 스테이지 접속           | 이동, 건물 짓기 |
+| <img src="./docs/Image/GamePlay/병영건설.gif"> | <img src="./docs/Image/GamePlay/몬스터웨이브,몬스터처치.gif">   |
+| 병영건설          | 몬스터웨이브, 몬스터처치 |
+| <img src="./docs/Image/GamePlay/지형지물 활용.gif"> | <img src="./docs/Image/GamePlay/스테이지 클리어.gif">   |
+| 지형지물 활용           | 스테이지 클리어 |
 
 
 ### 랭킹
